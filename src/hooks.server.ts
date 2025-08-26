@@ -1,6 +1,8 @@
 // import { directus } from '$lib/directus'
 // import { verifyCookie } from '$lib/utils/cookies'
 import { env } from '$env/dynamic/private'
+import { CKAN_TOKEN, CKAN_URL } from '$env/static/private'
+import { createCkanClient } from '$lib/utils/ckan/ckan'
 import { jstr } from '$lib/utils/data'
 import { directusSDK } from '$lib/utils/directus'
 import { ping } from '$lib/utils/network'
@@ -19,6 +21,7 @@ import { type Handle } from '@sveltejs/kit'
 
 export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.startTimer = Date.now()
+	event.locals.ckan = createCkanClient({ url: CKAN_URL, token: CKAN_TOKEN })
 	const backend_status = await ping(env.BACKEND_URL)
 	if (backend_status === -1) {
 		error(503, { id: 'unavailable', message: `Backend is not accessible at the moment.` })
