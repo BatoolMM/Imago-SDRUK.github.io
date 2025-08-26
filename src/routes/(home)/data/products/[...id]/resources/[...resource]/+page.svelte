@@ -1,16 +1,15 @@
 <script lang="ts">
+	import { page } from '$app/state'
 	import { jstr } from '@arturoguzman/art-ui'
 
 	let { data } = $props()
 </script>
 
 <div class="page">
-	<pre class="proxe-xs prose text-white">{jstr(data)}</pre>
-	{#if Array.isArray(data.data.result)}
-		{#each data.data.result as result}
-			<a href="/data/products/{result}">{result}</a>
-		{/each}
+	{#if Array.isArray(data.data.result) === false}
+		<a href={data.data.result.url} download>{data.data.result.name}</a>
 	{/if}
+	<pre class="proxe-xs prose text-white">{jstr(data)}</pre>
 </div>
 
 <style>
