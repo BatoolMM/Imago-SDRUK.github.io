@@ -1,4 +1,4 @@
-FROM directus/directus:latest AS cms
+FROM directus/directus:11.11.0 AS cms
 
 USER root
 RUN corepack enable
