@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.5
+### Patch Changes
+
+- 84eeb8d: fix dependency pinning
+
 ## 1.1.4
 ### Patch Changes
 
