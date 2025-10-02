@@ -1,5 +1,10 @@
 # website
 
+## 2.0.9
+### Patch Changes
+
+- 12afd9c: rollback pnpm
+
 ## 2.0.8
 ### Patch Changes
 

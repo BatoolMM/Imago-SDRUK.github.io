@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.3
+### Patch Changes
+
+- 12afd9c: rollback pnpm
+
 ## 1.1.2
 ### Patch Changes
 
