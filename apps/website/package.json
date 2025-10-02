@@ -14,7 +14,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
-		"types:directus": "cd ../backend/data/directus && pnpm run types && cp model.d.ts ../../../website/src/lib/types/directus/index.d.ts"
+		"types:directus": "cd ../cms && pnpm run types && cp model.d.ts ../website/src/lib/types/directus/index.d.ts"
 	},
 	"devDependencies": {
 		"@arturoguzman/art-ui": "^0.17.14",
