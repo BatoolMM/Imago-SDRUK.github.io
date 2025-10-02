@@ -30,7 +30,7 @@
 		grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
 		border-radius: 1rem;
 		overflow: hidden;
-		border: 1px solid var(--theme-colour-text);
+		border: 1px solid var(--theme-colour-tertiary);
 	}
 	.title {
 		color: var(--theme-colour-text);
@@ -48,5 +48,10 @@
 	.card-image {
 		height: 100%;
 		object-fit: cover;
+		filter: saturate(0);
+		transition: filter 0.3s ease-in-out;
+	}
+	.card-image:hover {
+		filter: saturate(1);
 	}
 </style>

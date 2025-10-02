@@ -64,7 +64,7 @@
 <style>
 	.hero-section {
 		position: relative;
-		background: linear-gradient(var(--theme-colour-tertiary), var(--theme-colour-background));
+		background: linear-gradient(var(--theme-colour-background), var(--theme-colour-quarternary));
 		transform: translate(0, -4rem);
 		height: 100lvh;
 		display: flex;
@@ -89,8 +89,8 @@
 		width: 100%;
 		height: 100%;
 		background: linear-gradient(
-			color-mix(in oklab, 75% var(--theme-colour-tertiary), 25% transparent) 15%,
-			var(--theme-colour-background)
+			color-mix(in oklab, 75% var(--theme-colour-background), 25% transparent) 15%,
+			var(--theme-colour-quarternary)
 		);
 	}
 	.bg-image {
@@ -114,7 +114,7 @@
 		gap: 1rem;
 	}
 	.beacon-button {
-		background-color: var(--theme-colour-background);
+		background-color: var(--theme-colour-quarternary);
 		color: var(--theme-colour-text);
 		font-family: var(--theme-font-subtitle);
 		font-weight: 600;
@@ -124,7 +124,7 @@
 		border: 1px solid var(--theme-colour-highlight);
 		border-radius: 0.5rem;
 		box-shadow:
-			0 4px 6px -1px color-mix(in oklab, var(--theme-colour-highlight) 40%, transparent 60%),
+			0 4px 6px -1px color-mix(in oklab, var(--theme-colour-quarternary) 40%, transparent 60%),
 			0 2px 4px -2px color-mix(in oklab, white 40%, transparent 60%);
 		transition: all 0.3s ease-in-out;
 	}
@@ -154,13 +154,14 @@
 			overflow: hidden;
 			align-items: flex-end;
 			position: relative;
+			background: linear-gradient(transparent, var(--theme-colour-quarternary));
 		}
 		.animation-container::after {
 			position: absolute;
 			content: '';
 			width: 100%;
 			height: 100%;
-			background: linear-gradient(transparent 75%, var(--theme-colour-background));
+			background: linear-gradient(transparent 75%, var(--theme-colour-quarternary));
 			pointer-events: none;
 		}
 		.bg-image-container {

@@ -10,7 +10,7 @@
 		rightCol,
 		onclick,
 		active,
-		alt
+		style = 'base'
 	}: {
 		anchor?: boolean
 		href?: string
@@ -19,18 +19,18 @@
 		rightCol?: Snippet
 		onclick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		alt?: boolean
+		style: 'base' | 'alt'
 	} = $props()
 </script>
 
 {#if anchor}
-	<a class:active {onclick} class:alt {href} {download}>
+	<a class="btn" class:active {onclick} data-style={style} {href} {download}>
 		{@render leftCol?.()}
 		{@render rightCol?.()}
 	</a>
 {/if}
 {#if anchor === false}
-	<button class:active {onclick} class:alt>
+	<button class="btn" class:active {onclick} data-style={style}>
 		{@render leftCol?.()}
 		{@render rightCol?.()}
 	</button>
@@ -44,8 +44,8 @@
 		padding: clamp(0.15rem, 0.117rem + 0.167vw, 0.25rem) clamp(1rem, 0.667rem + 1.667vw, 2rem);
 		color: var(--theme-colour-text);
 		font-weight: 300;
-		background-color: var(--theme-colour-primary);
-		border: 1px solid var(--theme-colour-primary);
+		background-color: var(--theme-colour-quarternary);
+		border: 1px solid var(--theme-colour-quarternary);
 		border-radius: 999px;
 		font-family: var(--theme-font-accent);
 		/* font-size: clamp(0.75rem, 0.675rem + 0.375vw, 0.975rem); */
@@ -69,17 +69,19 @@
 		outline: 3px solid var(--theme-colour-highlight);
 		outline-offset: 2px;
 	}
-	.alt {
+
+	.btn[data-style='alt'] {
 		background-color: transparent;
 		border: 1px solid var(--theme-colour-highlight);
 		color: var(--theme-colour-highlight);
 	}
 
-	.alt:hover {
+	.btn[data-style='alt']:hover {
 		background-color: color-mix(
 			in oklab,
 			var(--theme-colour-highlight) 10%,
-			var(--theme-colour-background) 90%
+			var(--theme-colour-quarternary) 90%
 		);
+		color: var(--theme-colour-highlight);
 	}
 </style>

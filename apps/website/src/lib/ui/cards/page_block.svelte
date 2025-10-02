@@ -46,7 +46,7 @@
 					{@const actions = block.actions as Action[]}
 					{#each actions as { alternative, href, label }}
 						<div class="actions">
-							<Button alt={alternative} {href} anchor>
+							<Button style={alternative ? 'alt' : 'base'} {href} anchor>
 								{#snippet leftCol()}
 									{label}
 								{/snippet}
@@ -110,6 +110,7 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
+		gap: 1rem;
 	}
 	.actions {
 		display: flex;
