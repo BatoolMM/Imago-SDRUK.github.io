@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Article } from '$lib/types/directus'
+	import type { Article, ArticleSectionBlocksFile } from '$lib/types/directus'
 	import Title from '$lib/ui/blog/title.svelte'
 	import Button from '$lib/ui/buttons/button.svelte'
 	import BaseCard from '$lib/ui/cards/base_card.svelte'
@@ -7,15 +7,45 @@
 	import { DateTime } from 'luxon'
 	import Paragraph from '../text/paragraph.svelte'
 	import Fact from '../text/fact.svelte'
+	import { getArticleSections } from '$lib/utils/directus/articles'
+	import { Picture } from '@arturoguzman/art-ui'
 	let { article }: { article: Article } = $props()
+	const sections = getArticleSections(article)
 </script>
 
 <BaseCard rounded border shadow>
 	<div class="article-card">
 		<div class="left-col">
-			<div class="image">
-				<img src="https://picsum.photos/800/600" alt="" />
-			</div>
+			{#if article.media}
+				{#each article.media as media}
+					{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
+						<div class="image">
+							<Picture image={media.directus_files_id}></Picture>
+						</div>
+					{/if}
+				{/each}
+			{/if}
+			{#if !article.media || article.media.length === 0}
+				{#if typeof sections !== 'string' && sections.length > 0}
+					{@const medias = sections.reduce((acc: ArticleSectionBlocksFile[], el) => {
+						const _media = el.content.reduce((_acc: ArticleSectionBlocksFile[], el) => {
+							if (el.media && el.media.length > 0 && _acc.length === 0) {
+								_acc.push(el.media[0])
+							}
+							return _acc
+						}, [])
+						_media.forEach((el) => acc.push(el))
+						return acc
+					}, [])}
+					{#each medias as media}
+						{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
+							<div class="image">
+								<Picture image={media.directus_files_id}></Picture>
+							</div>
+						{/if}
+					{/each}
+				{/if}
+			{/if}
 		</div>
 		<div class="right-col">
 			<div class="title">

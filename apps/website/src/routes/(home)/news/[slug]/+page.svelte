@@ -1,10 +1,11 @@
 <script lang="ts">
+	import type { ArticleSectionBlocksFile } from '$lib/types/directus'
 	import Title from '$lib/ui/blog/title.svelte'
 	import Fact from '$lib/ui/text/fact.svelte'
 	import Paragraph from '$lib/ui/text/paragraph.svelte'
 	import Subtitle from '$lib/ui/text/subtitle.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles.js'
-	import { Picture } from '@arturoguzman/art-ui'
+	import { jstr, Picture } from '@arturoguzman/art-ui'
 	import { DateTime } from 'luxon'
 	let { data } = $props()
 </script>
@@ -16,9 +17,9 @@
 			<div class="header">
 				<div class="left-col">
 					<Title size="extra-large" title={article.title}></Title>
-					{#if article.description}
-						<Paragraph text={article.description}></Paragraph>
-					{/if}
+					<!-- {#if article.description} -->
+					<!-- 	<Paragraph text={article.description}></Paragraph> -->
+					<!-- {/if} -->
 					<!-- <div class="tags"> -->
 					<!-- 	<Button alt -->
 					<!-- 		>{#snippet leftCol()} -->
@@ -54,9 +55,15 @@
 					{/if}
 				</div>
 			</div>
-			<div class="image">
-				<img src="https://picsum.photos/1200/1200" alt="" />
-			</div>
+			{#if article.media}
+				{#each article.media as media}
+					{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
+						<div class="image">
+							<Picture image={media.directus_files_id}></Picture>
+						</div>
+					{/if}
+				{/each}
+			{/if}
 			{#each sections as section}
 				{#if typeof section !== 'string'}
 					<div class="section">
@@ -77,7 +84,7 @@
 								{/if}
 								{#if block.media}
 									{#each block.media as media}
-										{#if 'directus_files_id' in media}
+										{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
 											<Picture image={media.directus_files_id}></Picture>
 										{/if}
 									{/each}
