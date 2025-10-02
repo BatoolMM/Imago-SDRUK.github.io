@@ -247,6 +247,14 @@ export interface Article {
    * Type in directus: alias
    * Type in database: no column
    */
+   media: ArticlesFile[] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: alias
+   * Type in database: no column
+   */
    sections: ArticlesArticleSection[] | null;
 
   /**
@@ -331,6 +339,33 @@ export interface ArticlesArticleSection {
    * Type in database: integer
    */
    sort: number | null;
+}
+
+export interface ArticlesFile {
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   articles_id: Article | Article["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   directus_files_id: DirectusFile | DirectusFile["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: integer
+   * Type in database: integer
+   */
+   id: number;
 }
 
 export interface Block {
@@ -3164,6 +3199,14 @@ export interface DirectusUser {
    * Type in directus: string
    * Type in database: character varying
    */
+   text_direction: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
    tfa_secret: string | null;
 
   /**
@@ -3994,7 +4037,7 @@ export interface Section {
    * Type in directus: string
    * Type in database: character varying
    */
-   design: 'general' | 'two_columns' | 'cards' | 'form' | 'columns' | 'stacks' | 'banner';
+   design: 'general' | 'cards' | 'columns' | 'stacks' | 'banner';
 
   /**
    * No description.
@@ -4320,6 +4363,7 @@ export type Collections = {
   article_sections: ArticleSection[];
   articles: Article[];
   articles_article_sections: ArticlesArticleSection[];
+  articles_files: ArticlesFile[];
   blocks: Block[];
   blocks_files: BlocksFile[];
   careers: Career[];
