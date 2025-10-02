@@ -1,5 +1,10 @@
 # website
 
+## 2.0.8
+### Patch Changes
+
+- e4e3f4d: updates the website design to use the new colours, allows using the token if node env is in development to skip the filters, pin directus version
+
 ## 2.0.7
 ### Patch Changes
 
