@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.4
+### Patch Changes
+
+- 987a5b7: update directus version
+
 ## 1.1.3
 ### Patch Changes
 
