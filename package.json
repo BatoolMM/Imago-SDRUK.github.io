@@ -11,12 +11,12 @@
 		"gen:icons": "node --experimental-transform-types ./packages/ui/src/lib/icons/script.ts"
 	},
 	"devDependencies": {
-		"@changesets/cli": "^2.29.6",
+		"@changesets/cli": "^2.29.7",
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
-		"turbo": "^2.5.5"
+		"turbo": "^2.5.8"
 	},
-	"packageManager": "pnpm@10.15.0",
+	"packageManager": "pnpm@10.17.1",
 	"engines": {
 		"node": ">=18"
 	},
