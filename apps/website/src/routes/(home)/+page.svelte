@@ -23,9 +23,9 @@
 <style>
 	.page-sections {
 		background: linear-gradient(
+			var(--theme-colour-quarternary),
 			var(--theme-colour-background),
-			var(--theme-colour-tertiary),
-			var(--theme-colour-background)
+			var(--theme-colour-quarternary)
 		);
 	}
 </style>

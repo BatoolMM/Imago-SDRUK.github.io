@@ -143,7 +143,7 @@
 	}
 	.compact-nav {
 		top: 1rem;
-		background-color: var(--theme-colour-quarternary);
+		background-color: var(--theme-colour-background);
 		width: min(100% - 2rem, 600px);
 		margin-inline: auto;
 		border: 1px solid var(--theme-colour-highlight);

@@ -4,6 +4,7 @@
 	import { notify } from '$lib/stores/notify'
 	import Title from '../blog/title.svelte'
 	import Button from '../buttons/button.svelte'
+	import BaseCard from '../cards/base_card.svelte'
 	import Email from '../inputs/email.svelte'
 	import Input from '../inputs/input.svelte'
 	import Text from '../inputs/text.svelte'
@@ -14,62 +15,65 @@
 
 {#snippet form(background?: string)}
 	<div class="form-col" data-background={background} style:--background-url="url({background})">
-		<div class="newsletter-form">
-			<div class="title">
-				<Title title="Newsletter" size="large"></Title>
-				<Paragraph
-					text="Subscribe to the newsletter to keep updated on Imago news and data products."
-				></Paragraph>
-			</div>
-			<form
-				class="form-content"
-				method="POST"
-				action="/?/newsletter"
-				use:enhance={() => {
-					return async ({ result, update }) => {
-						notify.send({
-							value:
-								'data' in result
-									? String(result.data?.message)
-									: `There's been an error submitting this request, please try again`
-						})
-						if (result.type === 'failure') notify.send({ value: String(result.data?.message) })
-						if (result.type === 'error')
-							notify.send({
-								value: `There's been an error submitting this request, please try again`
-							})
-						if (result.type === 'success') update({ reset: true, invalidateAll: true })
-					}
-				}}
-			>
-				<Input label_text="Name" layout={1} label_design={1}>
-					<Text key="name" design={1}></Text>
-				</Input>
-				<Input label_text="Email" layout={1} label_design={1}>
-					<Email key="email" design={1}></Email>
-				</Input>
-				<div class="button-container">
-					<Button
-						>{#snippet leftCol()}
-							<p>Subscribe</p>
-						{/snippet}</Button
-					>
+		<BaseCard border rounded shadow style="padded" size="md">
+			<div class="newsletter-form">
+				<div class="title">
+					<Title title="Newsletter" size="large"></Title>
+					<Paragraph
+						text="Subscribe to the newsletter to keep updated on Imago news and data products."
+					></Paragraph>
 				</div>
-			</form>
-		</div>
+				<form
+					class="form-content"
+					method="POST"
+					action="/?/newsletter"
+					use:enhance={() => {
+						return async ({ result, update }) => {
+							notify.send({
+								value:
+									'data' in result
+										? String(result.data?.message)
+										: `There's been an error submitting this request, please try again`
+							})
+							if (result.type === 'failure') notify.send({ value: String(result.data?.message) })
+							if (result.type === 'error')
+								notify.send({
+									value: `There's been an error submitting this request, please try again`
+								})
+							if (result.type === 'success') update({ reset: true, invalidateAll: true })
+						}
+					}}
+				>
+					<Input label_text="Name" layout={1} label_design={1}>
+						<Text key="name" design={1}></Text>
+					</Input>
+					<Input label_text="Email" layout={1} label_design={1}>
+						<Email key="email" design={1}></Email>
+					</Input>
+					<div class="button-container">
+						<Button
+							>{#snippet leftCol()}
+								<p>Subscribe</p>
+							{/snippet}</Button
+						>
+					</div>
+				</form>
+			</div>
+		</BaseCard>
 	</div>
 {/snippet}
 
 {#if $window_width < 768}
 	<OneColumnSection>
-		{@render form(`/static/ui/terrain_1.png`)}
+		{@render form(`/static/terrain_3.svg`)}
+		<!-- {@render form(`/static/ui/terrain_1.png`)} -->
 	</OneColumnSection>
 {/if}
 
 {#if $window_width > 767}
 	<TwoColumnsSection>
 		{#snippet leftCol()}
-			<img src="/static/ui/terrain_1.png" alt="" class="img" />
+			<img src="/static/terrain_3.svg" alt="" class="img" />
 		{/snippet}
 		{#snippet rightCol()}
 			{@render form()}
@@ -82,6 +86,7 @@
 		height: 100lvh;
 		display: flex;
 		align-items: center;
+		justify-content: center;
 	}
 	.form-col[data-background] {
 		background: center / cover no-repeat var(--background-url);
@@ -107,14 +112,15 @@
 		justify-content: flex-end;
 	}
 	.newsletter-form {
-		width: min(100% - 1rem, 400px);
+		/* width: min(100% - 1rem, 400px); */
 		margin-inline: auto;
 		z-index: 1;
 		background: color-mix(in oklab, var(--theme-colour-background) 80%, transparent 20%);
 		/* border: 1px solid var(--theme-colour-text); */
-		padding: 2rem;
-		border-radius: 1rem;
-		box-shadow: var(--glass);
+		/* padding: 2rem; */
+		/* border-radius: 1rem; */
+		/* box-shadow: var(--glass); */
+		/* border: 1px solid var(--theme-colour-quarternary); */
 	}
 	.form-content {
 		padding: 1rem 0;
@@ -122,6 +128,7 @@
 	.img {
 		height: 100lvh;
 		object-fit: cover;
-		opacity: 0.5;
+		/* opacity: 1; */
+		/* mix-blend-mode: luminosity; */
 	}
 </style>

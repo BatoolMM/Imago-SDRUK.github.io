@@ -10,7 +10,7 @@
 	let { article }: { article: Article } = $props()
 </script>
 
-<BaseCard>
+<BaseCard rounded border shadow>
 	<div class="article-card">
 		<div class="left-col">
 			<div class="image">
@@ -69,7 +69,7 @@
 <style>
 	.article-card {
 		background: color-mix(in oklab, var(--theme-colour-background) 20%, transparent 80%);
-		box-shadow: var(--glass);
+		/* box-shadow: var(--glass); */
 		color: var(--theme-colour-text);
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
