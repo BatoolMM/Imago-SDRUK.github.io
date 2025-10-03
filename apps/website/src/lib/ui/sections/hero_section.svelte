@@ -31,7 +31,10 @@
 		<img class="bg-image" src="/static/ui/terrain_1.png" alt="" />
 	</div>
 	<div class="title-wrapper">
-		<Title size="huge" title="Making satellite imagery useful, usable and used for..."></Title>
+		<Title
+			size="huge"
+			title="Making satellite imagery more useful, usable and used across social research and policy"
+		></Title>
 	</div>
 	<div class="beacons-buttons">
 		{#each ids as id (id)}
