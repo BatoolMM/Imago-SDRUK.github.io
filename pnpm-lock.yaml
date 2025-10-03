@@ -60,8 +60,8 @@ importers:
   apps/website:
     devDependencies:
       '@arturoguzman/art-ui':
-        specifier: ^0.17.14
-        version: 0.17.14(svelte@5.39.7)
+        specifier: ^1.0.1
+        version: 1.0.1(svelte@5.39.7)
       '@azure/communication-email':
         specifier: ^1.0.0
         version: 1.0.0
@@ -252,8 +252,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@arturoguzman/art-ui@0.17.14':
-    resolution: {integrity: sha1-B/h782hJqk0oBhDAA0ShYg0YeY0=, tarball: https://gitlab.com/api/v4/projects/57545903/packages/npm/@arturoguzman/art-ui/-/@arturoguzman/art-ui-0.17.14.tgz}
+  '@arturoguzman/art-ui@1.0.1':
+    resolution: {integrity: sha1-4Zyt80R2y4ZSh9P6F/z6RqB+3Pw=, tarball: https://gitlab.com/api/v4/projects/57545903/packages/npm/@arturoguzman/art-ui/-/@arturoguzman/art-ui-1.0.1.tgz}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -8513,7 +8513,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@arturoguzman/art-ui@0.17.14(svelte@5.39.7)':
+  '@arturoguzman/art-ui@1.0.1(svelte@5.39.7)':
     dependencies:
       svelte: 5.39.7
 
