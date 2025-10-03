@@ -17,7 +17,7 @@
 		"types:directus": "cd ../cms && pnpm run types && cp model.d.ts ../website/src/lib/types/directus/index.d.ts"
 	},
 	"devDependencies": {
-		"@arturoguzman/art-ui": "^0.17.14",
+		"@arturoguzman/art-ui": "^1.0.1",
 		"@azure/communication-email": "^1.0.0",
 		"@azure/identity": "^4.12.0",
 		"@directus/sdk": "^20.1.0",
