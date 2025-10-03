@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { notify } from '$lib/stores/notify.js'
-	import { jstr } from '@arturoguzman/art-ui'
 	import { slide } from 'svelte/transition'
 </script>
 

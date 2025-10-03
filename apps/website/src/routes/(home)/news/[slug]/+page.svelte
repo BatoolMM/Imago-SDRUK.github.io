@@ -1,11 +1,12 @@
 <script lang="ts">
 	import Title from '$lib/ui/blog/title.svelte'
 	import NewsletterCard from '$lib/ui/cards/newsletter_card.svelte'
+	import Carousel from '$lib/ui/components/carousel.svelte'
 	import Fact from '$lib/ui/text/fact.svelte'
 	import Paragraph from '$lib/ui/text/paragraph.svelte'
 	import Subtitle from '$lib/ui/text/subtitle.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles.js'
-	import { Picture } from '@arturoguzman/art-ui'
+	import { jstr } from '@arturoguzman/art-ui'
 	import { DateTime } from 'luxon'
 	let { data } = $props()
 </script>
@@ -36,13 +37,7 @@
 				</div>
 			</div>
 			{#if article.media}
-				{#each article.media as media}
-					{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
-						<div class="image">
-							<Picture image={media.directus_files_id}></Picture>
-						</div>
-					{/if}
-				{/each}
+				<Carousel media={article.media}></Carousel>
 			{/if}
 			{#each sections as section}
 				{#if typeof section !== 'string'}
@@ -66,14 +61,7 @@
 								{/if}
 								{#if block.type === 'image'}
 									{#if block.media}
-										{#each block.media as media}
-											<!-- {#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media} -->
-											{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
-												{#if typeof media.directus_files_id !== 'string'}
-													<Picture image={media.directus_files_id}></Picture>
-												{/if}
-											{/if}
-										{/each}
+										<Carousel media={block.media}></Carousel>
 									{/if}
 								{/if}
 								{#if block.type === 'cta'}
@@ -122,20 +110,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.15rem;
-	}
-
-	.image {
-		height: 100%;
-		width: 100%;
-		object-fit: cover;
-		overflow: hidden;
-		display: flex;
-	}
-	img {
-		height: 100%;
-		width: 100%;
-		object-fit: cover;
-		overflow: hidden;
 	}
 	.section {
 		display: flex;

@@ -1,15 +1,12 @@
 <script lang="ts">
 	import type { PagesSection } from '$lib/types/directus'
-	import { jstr } from '@arturoguzman/art-ui'
 	import Title from '../blog/title.svelte'
 	import PageBlock from '../cards/page_block.svelte'
 	import Subtitle from '../text/subtitle.svelte'
 	import BannerSection from './banner_section.svelte'
-	import BaseSection from './base_section.svelte'
 	import CardsSection from './cards_section.svelte'
 	import MulticolumnsSection from './multicolumns_section.svelte'
 	import StacksSection from './stacks_section.svelte'
-	import Content from '../blog/content.svelte'
 	import GeneralSection from './general_section.svelte'
 
 	let { sections }: { sections: PagesSection[] | null } = $props()
