@@ -106,8 +106,6 @@
 			grid-template-rows: minmax(0, 1fr);
 			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 			gap: 4rem;
-			/* height: 100lvh; */
-			/* position: sticky; */
 			top: var(--sticky-top);
 			left: 0;
 		}
@@ -124,15 +122,5 @@
 			align-items: center;
 			padding-top: var(--padding-top, 0);
 		}
-		/* .left-col::before { */
-		/* 	content: ''; */
-		/* 	position: absolute; */
-		/* 	top: 0; */
-		/* 	left: 0; */
-		/* 	height: 100%; */
-		/* 	width: 50%; */
-		/* 	background: linear-gradient(transparent, var(--theme-colour-background) 35%); */
-		/* 	z-index: -1; */
-		/* } */
 	}
 </style>

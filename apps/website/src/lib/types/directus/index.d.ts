@@ -4093,7 +4093,7 @@ export interface Section {
    * Type in directus: string
    * Type in database: character varying
    */
-   design: 'general' | 'cards' | 'columns' | 'stacks' | 'banner';
+   design: 'general' | 'cards' | 'columns' | 'stacks' | 'banner' | 'full_page';
 
   /**
    * No description.

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { NAV_HEIGHT } from '$lib/globals/style'
 	import type { Section } from '$lib/types/directus'
 	import Content from '../blog/content.svelte'
 	import Title from '../blog/title.svelte'
@@ -16,7 +17,7 @@
 </script>
 
 <BaseSection>
-	<div class="general-section">
+	<div class="full-page-section" style:--nav-height={NAV_HEIGHT}>
 		<div class="header">
 			{#if section.title}
 				<Title size="large" title={section.title}></Title>
@@ -39,11 +40,12 @@
 </BaseSection>
 
 <style>
-	.general-section {
+	.full-page-section {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, max-content) minmax(0, 1fr);
 		gap: 2rem;
+		min-height: calc(100lvh - var(--nav-height));
 	}
 	.blocks {
 		display: flex;
