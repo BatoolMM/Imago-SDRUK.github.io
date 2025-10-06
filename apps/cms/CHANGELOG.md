@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.6
+### Patch Changes
+
+- 30cba09: add stackable notifications, improve picture and picture dx, automatically handle individual or multiple pictures
+
 ## 1.1.5
 ### Patch Changes
 
