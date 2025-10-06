@@ -3,6 +3,14 @@ export interface ArticleSectionBlock {
   /**
    * No description.
    *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   action: 'newsletter' | null;
+
+  /**
+   * No description.
+   *
    * Type in directus: text
    * Type in database: text
    */
@@ -63,6 +71,14 @@ export interface ArticleSectionBlock {
    * Type in database: character varying
    */
    status: 'published' | 'draft' | 'archived';
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   type: 'text' | 'image' | 'cta' | null;
 
   /**
    * No description.
@@ -2703,6 +2719,46 @@ export interface DirectusSetting {
    * Type in database: character varying
    */
    mapbox_key: string | null;
+
+  /**
+   * $t:fields.directus_settings.mcp_allow_deletes_note
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   mcp_allow_deletes: boolean;
+
+  /**
+   * $t:fields.directus_settings.mcp_enabled_note
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   mcp_enabled: boolean;
+
+  /**
+   * $t:fields.directus_settings.mcp_prompts_collection_note
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   mcp_prompts_collection: string | null;
+
+  /**
+   * $t:fields.directus_settings.mcp_system_prompt_note
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   mcp_system_prompt: string | null;
+
+  /**
+   * $t:fields.directus_settings.mcp_system_prompt_enabled_note
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   mcp_system_prompt_enabled: boolean;
 
   /**
    * No description.

@@ -19,7 +19,7 @@
 		rightCol?: Snippet
 		onclick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style: 'base' | 'alt'
+		style?: 'base' | 'alt'
 	} = $props()
 </script>
 

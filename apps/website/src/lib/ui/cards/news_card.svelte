@@ -9,6 +9,7 @@
 	import Fact from '../text/fact.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles'
 	import { Picture } from '@arturoguzman/art-ui'
+	import Carousel from '../components/carousel.svelte'
 	let { article }: { article: Article } = $props()
 	const sections = getArticleSections(article)
 </script>
@@ -16,15 +17,14 @@
 <BaseCard rounded border shadow>
 	<div class="article-card">
 		<div class="left-col">
-			{#if article.media}
-				{#each article.media as media}
-					{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
-						<div class="image">
-							<Picture image={media.directus_files_id}></Picture>
-						</div>
-					{/if}
-				{/each}
-			{/if}
+			<Carousel media={article.media}></Carousel>
+			<!-- {#each article.media as media} -->
+			<!-- 	{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media} -->
+			<!-- 		<div class="image"> -->
+			<!-- 			<Picture image={media.directus_files_id}></Picture> -->
+			<!-- 		</div> -->
+			<!-- 	{/if} -->
+			<!-- {/each} -->
 			{#if !article.media || article.media.length === 0}
 				{#if typeof sections !== 'string' && sections.length > 0}
 					{@const medias = sections.reduce((acc: ArticleSectionBlocksFile[], el) => {

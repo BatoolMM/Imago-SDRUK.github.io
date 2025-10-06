@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type { ArticleSectionBlocksFile } from '$lib/types/directus'
 	import Title from '$lib/ui/blog/title.svelte'
+	import NewsletterCard from '$lib/ui/cards/newsletter_card.svelte'
+	import Carousel from '$lib/ui/components/carousel.svelte'
 	import Fact from '$lib/ui/text/fact.svelte'
 	import Paragraph from '$lib/ui/text/paragraph.svelte'
 	import Subtitle from '$lib/ui/text/subtitle.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles.js'
-	import { jstr, Picture } from '@arturoguzman/art-ui'
+	import { jstr } from '@arturoguzman/art-ui'
 	import { DateTime } from 'luxon'
 	let { data } = $props()
 </script>
@@ -17,26 +18,6 @@
 			<div class="header">
 				<div class="left-col">
 					<Title size="extra-large" title={article.title}></Title>
-					<!-- {#if article.description} -->
-					<!-- 	<Paragraph text={article.description}></Paragraph> -->
-					<!-- {/if} -->
-					<!-- <div class="tags"> -->
-					<!-- 	<Button alt -->
-					<!-- 		>{#snippet leftCol()} -->
-					<!-- 			<p>Tag</p> -->
-					<!-- 		{/snippet}</Button -->
-					<!-- 	> -->
-					<!-- 	<Button alt -->
-					<!-- 		>{#snippet leftCol()} -->
-					<!-- 			<p>Tag</p> -->
-					<!-- 		{/snippet}</Button -->
-					<!-- 	> -->
-					<!-- 	<Button alt -->
-					<!-- 		>{#snippet leftCol()} -->
-					<!-- 			<p>Tag</p> -->
-					<!-- 		{/snippet}</Button -->
-					<!-- 	> -->
-					<!-- </div> -->
 				</div>
 				<div class="right-col">
 					{#if article.user_created && typeof article.user_created !== 'string' && article.user_created.first_name}
@@ -56,13 +37,7 @@
 				</div>
 			</div>
 			{#if article.media}
-				{#each article.media as media}
-					{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
-						<div class="image">
-							<Picture image={media.directus_files_id}></Picture>
-						</div>
-					{/if}
-				{/each}
+				<Carousel media={article.media}></Carousel>
 			{/if}
 			{#each sections as section}
 				{#if typeof section !== 'string'}
@@ -77,17 +52,22 @@
 						</div>
 						<div class="section-blocks">
 							{#each section.content as block}
-								{#if block.content}
-									<div class="content prose">
-										<Paragraph text={block.content}></Paragraph>
-									</div>
+								{#if block.type === 'text'}
+									{#if block.content}
+										<div class="content prose">
+											<Paragraph text={block.content}></Paragraph>
+										</div>
+									{/if}
 								{/if}
-								{#if block.media}
-									{#each block.media as media}
-										{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
-											<Picture image={media.directus_files_id}></Picture>
-										{/if}
-									{/each}
+								{#if block.type === 'image'}
+									{#if block.media}
+										<Carousel media={block.media}></Carousel>
+									{/if}
+								{/if}
+								{#if block.type === 'cta'}
+									{#if block.action === 'newsletter'}
+										<NewsletterCard></NewsletterCard>
+									{/if}
 								{/if}
 							{/each}
 						</div>
@@ -131,33 +111,25 @@
 		flex-direction: column;
 		gap: 0.15rem;
 	}
-
-	.image {
-		height: 100%;
-		width: 100%;
-		object-fit: cover;
-		overflow: hidden;
-		display: flex;
-	}
-	img {
-		height: 100%;
-		width: 100%;
-		object-fit: cover;
-		overflow: hidden;
-	}
 	.section {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		border-bottom: 1px solid
+			color-mix(in oklab, var(--theme-colour-text) 30%, var(--theme-colour-background) 70%);
+		padding-bottom: 4rem;
+		margin-bottom: 4rem;
+	}
+	.section:last-of-type {
+		border-bottom: none;
 	}
 	.section-blocks {
 		padding-left: 3rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 	.content {
 		width: min(100% - 2rem, 600px);
-		padding-bottom: 4rem;
-		margin-bottom: 4rem;
-		border-bottom: 1px solid
-			color-mix(in oklab, var(--theme-colour-text) 30%, var(--theme-colour-background) 70%);
 	}
 </style>

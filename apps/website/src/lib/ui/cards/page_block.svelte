@@ -6,6 +6,7 @@
 	import Content from '../blog/content.svelte'
 	import Subtitle from '../text/subtitle.svelte'
 	import Carousel from '../components/carousel.svelte'
+	import { Picture } from '@arturoguzman/art-ui'
 	type Action = {
 		label: string
 		href?: string
@@ -23,7 +24,7 @@
 	{#if block.style === 'general'}
 		<div class="block">
 			<div class="left-col">
-				<Carousel {block}></Carousel>
+				<Carousel media={block.media}></Carousel>
 			</div>
 			<div class="right-col">
 				<div class="copy">
@@ -72,7 +73,18 @@
 				{/if}
 			</div>
 			<div class="card-content">
-				<div class="card-image"></div>
+				<div class="card-image">
+					{#if block.media}
+						{#each block.media as media}
+							<!-- {#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media} -->
+							{#if typeof media !== 'string' && typeof media !== 'number' && 'directus_files_id' in media}
+								{#if typeof media.directus_files_id !== 'string'}
+									<Picture fit="contain" image={media.directus_files_id}></Picture>
+								{/if}
+							{/if}
+						{/each}
+					{/if}
+				</div>
 			</div>
 		</div>
 	{/if}
@@ -132,7 +144,9 @@
 	.card-image {
 		width: 100%;
 		aspect-ratio: 1 / 1;
-		background-color: var(--theme-colour-primary);
+		background-color: var(--theme-colour-tertiary);
+		padding: 4rem;
+		/* background-color: white; */
 	}
 	.cta-card {
 		aspect-ratio: 1 / 1;
