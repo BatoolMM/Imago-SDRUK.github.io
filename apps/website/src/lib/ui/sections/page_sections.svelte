@@ -65,5 +65,8 @@
 		{#if section.design === 'general'}
 			<GeneralSection {section}></GeneralSection>
 		{/if}
+		{#if section.design === 'full_page'}
+			<GeneralSection {section}></GeneralSection>
+		{/if}
 	{/if}
 {/each}
