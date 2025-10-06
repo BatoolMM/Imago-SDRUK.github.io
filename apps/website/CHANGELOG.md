@@ -1,5 +1,10 @@
 # website
 
+## 2.0.12
+### Patch Changes
+
+- 05170dd: fix sections, fix image description
+
 ## 2.0.11
 ### Patch Changes
 
