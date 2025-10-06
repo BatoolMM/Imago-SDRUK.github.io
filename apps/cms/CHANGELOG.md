@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.8
+### Patch Changes
+
+- 05170dd: fix sections, fix image description
+
 ## 1.1.7
 ### Patch Changes
 
