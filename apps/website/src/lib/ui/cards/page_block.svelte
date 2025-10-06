@@ -23,9 +23,11 @@
 	{@const block = blocks_id}
 	{#if block.style === 'general'}
 		<div class="block">
-			<div class="left-col">
-				<Carousel media={block.media}></Carousel>
-			</div>
+			{#if block.media && block.media.length > 0}
+				<div class="left-col">
+					<Carousel media={block.media}></Carousel>
+				</div>
+			{/if}
 			<div class="right-col">
 				<div class="copy">
 					<div class="header">
