@@ -1,0 +1,106 @@
+{
+	"name": "website",
+	"version": "2.0.9",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev --host",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"test:unit": "vitest",
+		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"test:e2e": "playwright test",
+		"types:directus": "cd ../cms && pnpm run types && cp model.d.ts ../website/src/lib/types/directus/index.d.ts"
+	},
+	"devDependencies": {
+		"@arturoguzman/art-ui": "^1.0.2",
+		"@azure/communication-email": "^1.0.0",
+		"@azure/identity": "^4.12.0",
+		"@directus/sdk": "^20.1.0",
+		"@eslint/compat": "^1.4.0",
+		"@eslint/js": "^9.37.0",
+		"@fontsource-variable/figtree": "^5.2.10",
+		"@fontsource-variable/noto-sans": "^5.2.10",
+		"@fontsource-variable/quicksand": "^5.2.10",
+		"@fontsource-variable/space-grotesk": "^5.2.10",
+		"@fontsource/cousine": "^5.2.7",
+		"@imago/config": "workspace:*",
+		"@playwright/test": "^1.55.1",
+		"@semantic-release/changelog": "^6.0.3",
+		"@semantic-release/commit-analyzer": "^13.0.1",
+		"@semantic-release/git": "^10.0.1",
+		"@semantic-release/github": "^11.0.6",
+		"@semantic-release/npm": "github:semantic-release/npm",
+		"@semantic-release/release-notes-generator": "^14.1.0",
+		"@sindresorhus/slugify": "^2.2.1",
+		"@sveltejs/adapter-node": "^5.3.3",
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.44.0",
+		"@sveltejs/vite-plugin-svelte": "^6.2.1",
+		"@tabler/icons-svelte": "^3.35.0",
+		"@tailwindcss/container-queries": "^0.1.1",
+		"@tailwindcss/forms": "^0.5.10",
+		"@tailwindcss/typography": "^0.5.19",
+		"@types/luxon": "^3.7.1",
+		"@types/node": "^24.7.0",
+		"autoprefixer": "^10.4.21",
+		"eslint": "^9.37.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.12.4",
+		"feed": "^5.1.0",
+		"globals": "^16.4.0",
+		"lottie-web": "^5.13.0",
+		"luxon": "^3.7.2",
+		"mdsvex": "^0.12.6",
+		"motion": "^12.23.22",
+		"prettier": "^3.6.2",
+		"prettier-plugin-svelte": "^3.4.0",
+		"prettier-plugin-tailwindcss": "^0.6.14",
+		"semantic-release": "^24.2.9",
+		"svelte": "^5.39.9",
+		"svelte-check": "^4.3.2",
+		"svelte-seo": "^1.7.1",
+		"tailwindcss": "^3.4.18",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.45.0",
+		"typescript-svelte-plugin": "^0.3.50",
+		"vite": "^7.1.9",
+		"vitest": "^3.2.4"
+	},
+	"release": {
+		"branches": [
+			"main"
+		],
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			"@semantic-release/changelog",
+			"@semantic-release/npm",
+			[
+				"@semantic-release/github",
+				{
+					"assets": [
+						{
+							"path": "dist.zip",
+							"label": "Distribution"
+						}
+					]
+				}
+			],
+			[
+				"@semantic-release/git",
+				{
+					"assets": [
+						"package.json",
+						"CHANGELOG.md"
+					],
+					"message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+				}
+			]
+		]
+	}
+}

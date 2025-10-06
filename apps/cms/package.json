@@ -1,0 +1,30 @@
+{
+	"type": "module",
+	"name": "cms",
+	"version": "1.1.3",
+	"main": "index.js",
+	"scripts": {
+		"start": "./node_modules/.bin/directus start",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "./node_modules/directus/cli.js start",
+		"types": "./node_modules/directus/cli.js models snapshot model.d.ts",
+		"migrate": "./node_modules/directus/cli.js database migrate:latest"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"dependencies": {
+		"@bicou/directus-extension-tiptap": "^1.18.6",
+		"@tiptap/core": "^2.26.2",
+		"@tiptap/extension-character-count": "^2.26.2",
+		"@tiptap/extension-font-family": "^2.26.2",
+		"@tiptap/extension-text-style": "^2.26.2",
+		"@tiptap/extension-typography": "^2.26.2",
+		"@tiptap/pm": "^2.26.2",
+		"@tiptap/starter-kit": "^2.26.1",
+		"directus": "^11.12.0",
+		"directus-extension-models": "^2.5.2",
+		"pg": "^8.16.3"
+	}
+}
