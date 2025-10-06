@@ -3,35 +3,39 @@
 	import type { MouseEventHandler } from 'svelte/elements'
 
 	let {
-		anchor = false,
 		href,
 		download,
 		leftCol,
 		rightCol,
+		children,
 		onclick,
 		active,
-		style = 'base'
+		style = 'base',
+		type
 	}: {
-		anchor?: boolean
 		href?: string
 		download?: string
 		leftCol?: Snippet
 		rightCol?: Snippet
+		children?: Snippet
 		onclick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
 		style?: 'base' | 'alt'
+		type?: 'button' | 'submit' | 'reset' | null
 	} = $props()
 </script>
 
-{#if anchor}
+{#if href}
 	<a class="btn" class:active {onclick} data-style={style} {href} {download}>
 		{@render leftCol?.()}
+		{@render children?.()}
 		{@render rightCol?.()}
 	</a>
 {/if}
-{#if anchor === false}
-	<button class="btn" class:active {onclick} data-style={style}>
+{#if href === undefined}
+	<button class="btn" class:active {onclick} data-style={style} {type}>
 		{@render leftCol?.()}
+		{@render children?.()}
 		{@render rightCol?.()}
 	</button>
 {/if}
