@@ -41,8 +41,8 @@ export const ROUTES: (Route & { subpaths: Route[] })[] = [
 		label: 'About',
 		href: '/about',
 		subpaths: [
-			{ label: 'Partners', href: '/about/partners' }
-			// { label: 'Team', href: '/about/team' }
+			// { label: 'Partners', href: '/about/partners' }
+			{ label: 'Team', href: '/about' }
 		]
 	}
 ]
