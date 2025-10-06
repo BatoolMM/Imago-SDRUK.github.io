@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.7
+### Patch Changes
+
+- 5e74bd4: fix blocks position
+
 ## 1.1.6
 ### Patch Changes
 

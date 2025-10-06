@@ -1,5 +1,10 @@
 # website
 
+## 2.0.11
+### Patch Changes
+
+- 5e74bd4: fix blocks position
+
 ## 2.0.10
 ### Patch Changes
 
