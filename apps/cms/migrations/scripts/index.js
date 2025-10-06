@@ -1,4 +1,4 @@
-import { writeFileSync } from 'node:fs'
+import { unlinkSync, writeFileSync } from 'node:fs'
 const ARGS = ['--token', '--from', '--to']
 const sluggy = (str) =>
 	String(str)
@@ -9,6 +9,9 @@ const sluggy = (str) =>
 		.replace(/[^a-z0-9 -]/g, '')
 		.replace(/\s+/g, '-')
 		.replace(/-+/g, '-')
+let DATE = ''
+
+const getFilename = (to, date) => `../backup-${sluggy(to)}-${date}.json`
 
 const getArguments = (args) => {
 	return process.argv.reduce(
@@ -44,7 +47,7 @@ async function saveExisting({ to, token }) {
 	if (to && token) {
 		console.log('Creating backup snapshot...')
 		const now = new Date()
-		const date = now
+		DATE = now
 			.toLocaleString('en-GB')
 			.replaceAll('/', '_')
 			.replaceAll(', ', '-')
@@ -53,7 +56,7 @@ async function saveExisting({ to, token }) {
 		const { data } = await fetch(URL)
 			.then((r) => r.json())
 			.catch(handleError('saving existing'))
-		writeFileSync(`../backup-${sluggy(to)}-${date}.json`, JSON.stringify(data, null, 2))
+		writeFileSync(getFilename(to, DATE), JSON.stringify(data, null, 2))
 		return data
 	}
 	return
@@ -71,7 +74,7 @@ async function getDiff({ to, token, snapshot }) {
 			}
 		}).catch(handleError('get difference'))
 		if (res.status === 200) {
-			const { data } = res.json()
+			const { data } = await res.json()
 			return data
 		}
 		console.log(`There are no outstanding migrations to apply.`)
@@ -101,6 +104,7 @@ async function applyDiff({ to, token, diff }) {
 			console.log('\x1b[31m%s\x1b[0m', element.message)
 			console.log(JSON.stringify(element.extensions, null, 2))
 		})
+		unlinkSync(getFilename(to, DATE))
 	}
 	console.log('Difference applied!')
 }
