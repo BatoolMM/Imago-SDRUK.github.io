@@ -20,7 +20,7 @@
 			<Paragraph
 				text="We've sent you an email. Please check your inbox to confirm your account creation."
 			></Paragraph>
-			<Button href="/register">I have confirmed my account creation</Button>
+			<Button href="/register">I have confirmed my account</Button>
 			<div class="form-bottom">
 				<Paragraph>
 					Need help? <span><a href="/">Contact Us</a></span>
