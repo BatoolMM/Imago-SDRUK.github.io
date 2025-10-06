@@ -1,8 +1,8 @@
 <script lang="ts">
-	let { text }: { text: string } = $props()
+	let { text, size = 'base' }: { text: string; size?: 'base' | 'sm' } = $props()
 </script>
 
-<span class="paragraph">
+<span class="paragraph prose" data-size={size}>
 	{@html text}
 </span>
 
@@ -15,5 +15,10 @@
 	}
 	:global(.paragraph *) {
 		color: var(--theme-colour-text);
+	}
+
+	.paragraph[data-size='sm'] {
+		font-size: clamp(0.825rem, 0.808rem + 0.083vw, 0.875rem);
+		font-weight: 200;
 	}
 </style>

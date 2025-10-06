@@ -11,7 +11,7 @@
 	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
 	import ArrowLeft from '@tabler/icons-svelte/icons/arrow-left'
 	import type { DirectusFile } from '$lib/types/directus'
-	import { IconCircle, IconCircleFilled } from '@tabler/icons-svelte'
+	import { IconCircleFilled } from '@tabler/icons-svelte'
 	import Paragraph from '../text/paragraph.svelte'
 	let { media }: Props = $props()
 	const id = getId()
@@ -39,7 +39,7 @@
 			{#if media[current] && typeof media !== 'string'}
 				{@const { directus_files_id } = media[current]}
 				{#if directus_files_id && typeof directus_files_id !== 'string' && directus_files_id.description}
-					<Paragraph text={directus_files_id.description}></Paragraph>
+					<Paragraph size="sm" text={directus_files_id.description}></Paragraph>
 				{/if}
 			{/if}
 		</div>
@@ -144,5 +144,8 @@
 	.circle-button[data-active] {
 		display: flex;
 		color: var(--theme-colour-secondary);
+	}
+	.description {
+		text-align: right;
 	}
 </style>

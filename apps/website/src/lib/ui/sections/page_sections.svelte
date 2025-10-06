@@ -8,6 +8,7 @@
 	import MulticolumnsSection from './multicolumns_section.svelte'
 	import StacksSection from './stacks_section.svelte'
 	import GeneralSection from './general_section.svelte'
+	import FullPageSection from './full_page_section.svelte'
 
 	let { sections }: { sections: PagesSection[] | null } = $props()
 </script>
@@ -66,7 +67,7 @@
 			<GeneralSection {section}></GeneralSection>
 		{/if}
 		{#if section.design === 'full_page'}
-			<GeneralSection {section}></GeneralSection>
+			<FullPageSection {section}></FullPageSection>
 		{/if}
 	{/if}
 {/each}
