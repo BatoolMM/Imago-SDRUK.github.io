@@ -1,9 +1,20 @@
 <script lang="ts">
-	let { text, size = 'base' }: { text: string; size?: 'base' | 'sm' } = $props()
+	import type { Snippet } from 'svelte'
+
+	let {
+		children,
+		text,
+		size = 'base'
+	}: { text?: string; size?: 'base' | 'sm'; children?: Snippet } = $props()
 </script>
 
 <span class="paragraph prose" data-size={size}>
-	{@html text}
+	{#if children}
+		{@render children()}
+	{/if}
+	{#if !children}
+		<p>{@html text}</p>
+	{/if}
 </span>
 
 <style>
