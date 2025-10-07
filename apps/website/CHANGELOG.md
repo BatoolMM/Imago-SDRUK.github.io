@@ -1,5 +1,20 @@
 # website
 
+## 2.0.12
+### Patch Changes
+
+- 05170dd: fix sections, fix image description
+
+## 2.0.11
+### Patch Changes
+
+- 5e74bd4: fix blocks position
+
+## 2.0.10
+### Patch Changes
+
+- 30cba09: add stackable notifications, improve picture and picture dx, automatically handle individual or multiple pictures
+
 ## 2.0.9
 ### Patch Changes
 

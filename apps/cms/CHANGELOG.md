@@ -1,5 +1,30 @@
 # cms
 
+## 1.1.8
+### Patch Changes
+
+- 05170dd: fix sections, fix image description
+
+## 1.1.7
+### Patch Changes
+
+- 5e74bd4: fix blocks position
+
+## 1.1.6
+### Patch Changes
+
+- 30cba09: add stackable notifications, improve picture and picture dx, automatically handle individual or multiple pictures
+
+## 1.1.5
+### Patch Changes
+
+- 84eeb8d: fix dependency pinning
+
+## 1.1.4
+### Patch Changes
+
+- 987a5b7: update directus version
+
 ## 1.1.3
 ### Patch Changes
 
