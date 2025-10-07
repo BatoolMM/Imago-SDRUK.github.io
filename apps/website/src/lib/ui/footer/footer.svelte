@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { DateTime } from 'luxon'
-	import Title from '../blog/title.svelte'
 	import Logos from '../cards/logos.svelte'
 	import { IconBrandGithub, IconBrandLinkedin, IconMail } from '@tabler/icons-svelte'
 	import IconButton from '../buttons/icon_button.svelte'
-	import Subtitle from '../text/subtitle.svelte'
+	import { Button, Subtitle, Title } from '@imago/ui'
 	const platform_collection = [1, 2, 3].map((x) => ({
 		href: '/',
 		label: `Data product ${x}`
@@ -44,44 +43,38 @@
 	<div class="footer-content">
 		<div class="top">
 			<div class="left-col">
-				<Title title="Imago © {DateTime.now().year}"></Title>
+				<Title>Imago © {DateTime.now().year}</Title>
 			</div>
 		</div>
 
 		<div class="bottom">
 			<Logos footer href="https://www.sdruk.ukri.org/"></Logos>
 			<div class="social-media">
-				<Subtitle subtitle="Contact us: "></Subtitle>
-				<IconButton
+				<Subtitle>Contact us:</Subtitle>
+				<Button
+					style="clean"
 					onclick={() => {
 						window.location = 'mailto:imago@liverpool.ac.uk'
 					}}
 				>
 					<IconMail></IconMail>
-				</IconButton>
-				<IconButton
+				</Button>
+				<Button
+					style="clean"
 					onclick={() => {
 						window.location = 'https://www.linkedin.com/company/sdr-imago'
 					}}
 				>
 					<IconBrandLinkedin></IconBrandLinkedin>
-				</IconButton>
-				<IconButton
+				</Button>
+				<Button
+					style="clean"
 					onclick={() => {
 						window.location = 'https://github.com/Imago-SDRUK/'
 					}}
 				>
 					<IconBrandGithub></IconBrandGithub>
-				</IconButton>
-				<!-- <IconButton> -->
-				<!-- 	<IconBrandMastodon></IconBrandMastodon> -->
-				<!-- </IconButton> -->
-				<!-- <IconButton> -->
-				<!-- 	<IconBrandTwitter></IconBrandTwitter> -->
-				<!-- </IconButton> -->
-				<!-- <IconButton> -->
-				<!-- 	<IconLink></IconLink> -->
-				<!-- </IconButton> -->
+				</Button>
 			</div>
 		</div>
 	</div>
@@ -90,7 +83,7 @@
 <style>
 	footer {
 		height: var(--footer-height);
-		background-color: #040326;
+		background-color: var(--tertiary);
 	}
 	.footer-content {
 		width: min(100% - 6rem, 1440px);
@@ -120,7 +113,7 @@
 	.social-media {
 		color: white;
 		display: flex;
-		gap: 0.25rem;
+		gap: 1rem;
 	}
 
 	@media (min-width: 1024px) {
@@ -133,10 +126,6 @@
 			grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
 			justify-content: center;
 			gap: 2rem;
-		}
-		.footer-collections {
-			flex-direction: initial;
-			gap: 4rem;
 		}
 		.bottom {
 			flex-direction: initial;

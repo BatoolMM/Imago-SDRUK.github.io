@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { Title } from '@imago/ui'
 	import BaseSection from './base_section.svelte'
-	import Title from '$lib/ui/blog/title.svelte'
 	import type { Snippet } from 'svelte'
 	let {
 		title,
@@ -12,7 +12,7 @@
 <BaseSection>
 	<div class="cards-section">
 		{#if title}
-			<Title size="large" {title}></Title>
+			<Title size="lg" text={title}></Title>
 		{/if}
 		{@render sectionNav?.()}
 		<div class="cards-content">

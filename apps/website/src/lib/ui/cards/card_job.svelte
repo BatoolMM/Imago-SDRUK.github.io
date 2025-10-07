@@ -1,18 +1,16 @@
 <script lang="ts">
 	import { DateTime } from 'luxon'
-	import Title from '../blog/title.svelte'
-	import Anchor from '../buttons/anchor.svelte'
-	import BaseCard from './base_card.svelte'
 	import { dateAvailable, dateExpired } from '$lib/utils/data'
 	import type { Career } from '$lib/types/directus'
+	import { BaseCard, Title, Button } from '@imago/ui'
 	let { career }: { career: Career } = $props()
 	const { title, url, closing_date, contract, slug, salary, posted_on, location, hours } = career
 </script>
 
-<BaseCard border>
+<BaseCard rounded border>
 	<div class="job-card">
 		<div class="card-title">
-			<Title {title}></Title>
+			<Title text={title}></Title>
 		</div>
 		<div class="facts">
 			<h3 class="fact">Location: {location}</h3>
@@ -37,8 +35,8 @@
 			</h3>
 		</div>
 		<div class="buttons">
-			<Anchor href="/careers/{slug}" label="See more"></Anchor>
-			<Anchor href={url} label="Apply"></Anchor>
+			<Button href="/careers/{slug}">See more</Button>
+			<Button href={url}>Apply</Button>
 		</div>
 	</div>
 </BaseCard>
@@ -50,7 +48,7 @@
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, max-content) minmax(0, 1fr) minmax(0, max-content);
 		position: relative;
-		background-color: color-mix(in oklab, var(--theme-colour-text) 3%, transparent 97%);
+		background-color: color-mix(in oklab, var(--background-accent) 3%, transparent 97%);
 		padding: 1rem;
 		transition: all 0.3s ease-in-out;
 		z-index: 1;
@@ -63,7 +61,7 @@
 		content: '';
 		height: 100%;
 		width: 100%;
-		background-color: color-mix(in oklab, var(--theme-colour-text) 8%, transparent 92%);
+		background-color: color-mix(in oklab, var(--background-accent) 8%, transparent 92%);
 		position: absolute;
 		top: 0.5rem;
 		left: -0.5rem;
@@ -72,29 +70,29 @@
 	}
 	.card-title {
 		margin-bottom: 0.35rem;
-		border-bottom: 2px solid var(--theme-colour-text);
+		border-bottom: 1px solid var(--border);
 		padding: 0 0 0.35rem 0;
 	}
 	.facts {
 		margin: 1rem 0;
-		color: var(--theme-colour-text);
+		color: var(--text);
 		font-weight: 500;
 		display: flex;
 		flex-direction: column;
 		gap: 0.35rem;
 	}
 	.fact {
-		font-family: var(--theme-font-subtitle);
+		font-family: var(--subtitle);
 		font-size: clamp(0.8rem, 0.742rem + 0.292vw, 0.975rem);
 	}
 
 	.available {
-		color: var(--theme-colour-highlight);
+		color: var(--positive);
 		font-weight: 600;
 	}
 
 	.expired {
-		color: red;
+		color: var(--negative);
 	}
 
 	.buttons {
@@ -102,6 +100,6 @@
 		padding: 1rem 0rem 0 0rem;
 		gap: 0.5rem;
 		justify-content: flex-end;
-		font-family: var(--theme-font-subtitle);
+		font-family: var(--subtitle);
 	}
 </style>

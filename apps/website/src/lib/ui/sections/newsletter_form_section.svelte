@@ -42,7 +42,7 @@
 	}
 	.form-col[data-background]::before {
 		content: '';
-		background: color-mix(in oklab, var(--theme-colour-background) 80%, transparent 20%);
+		background: color-mix(in oklab, var(--background) 80%, transparent 20%);
 		position: absolute;
 		height: 100%;
 		width: 100%;

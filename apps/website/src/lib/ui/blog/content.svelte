@@ -8,8 +8,8 @@
 
 <style>
 	.content {
-		color: var(--theme-colour-text);
-		font-family: var(--theme-font-paragraph);
+		color: var(--text);
+		font-family: var(--paragraph);
 		display: flex;
 		flex-direction: column;
 		font-weight: 200;

@@ -1,12 +1,8 @@
 <script lang="ts">
 	import { INSTITUTIONS, ROLES, SOCIAL_MEDIA } from '$lib/globals/data.js'
 	import { NAV_HEIGHT } from '$lib/globals/style'
-	import Content from '$lib/ui/blog/content.svelte'
-	import Title from '$lib/ui/blog/title.svelte'
-	import Anchor from '$lib/ui/buttons/anchor.svelte'
 	import IconButton from '$lib/ui/buttons/icon_button.svelte'
 	import BaseSection from '$lib/ui/sections/base_section.svelte'
-	import Subtitle from '$lib/ui/text/subtitle.svelte'
 	import { Picture } from '@arturoguzman/art-ui'
 	import {
 		IconBrandInstagram,
@@ -15,8 +11,8 @@
 		IconBrandTwitter
 	} from '@tabler/icons-svelte'
 	import { page } from '$app/state'
-	import Fact from '$lib/ui/text/fact.svelte'
 	import Seo from '$lib/ui/utils/seo.svelte'
+	import { Button, Title, Subtitle, Fact, Paragraph } from '@imago/ui'
 	let { data } = $props()
 </script>
 
@@ -33,11 +29,10 @@
 				<Picture image={data.team_member.picture}></Picture>
 			</div>
 			<div class="profile-metadata">
-				<Title size="large" title="{data.team_member.first_name} {data.team_member.last_name}"
-				></Title>
+				<Title size="lg" text="{data.team_member.first_name} {data.team_member.last_name}"></Title>
 				<div class="role">
-					<Subtitle subtitle={ROLES[data.team_member.role]}></Subtitle>
-					<Subtitle subtitle={INSTITUTIONS[data.team_member.institution]}></Subtitle>
+					<Subtitle text={ROLES[data.team_member.role]}></Subtitle>
+					<Subtitle text={INSTITUTIONS[data.team_member.institution]}></Subtitle>
 					{#if data.team_member.facts}
 						{#each data.team_member.facts as facts}
 							<Fact text={facts.fact}></Fact>
@@ -69,12 +64,12 @@
 			</div>
 		</div>
 		<div class="right-col">
-			<Content>
+			<Paragraph>
 				{@html data.team_member.content}
-			</Content>
+			</Paragraph>
 			<div class="external-links">
 				{#each data.team_member.url.filter((url) => !SOCIAL_MEDIA.includes(url.title)) as url}
-					<Anchor label={url.title} href={url.url}></Anchor>
+					<Button href={url.url}>{url.title}</Button>
 				{/each}
 			</div>
 		</div>
@@ -85,7 +80,7 @@
 	.team-member-section {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
-		color: var(--theme-colour-text);
+		color: var(--text);
 		gap: 3rem;
 	}
 
@@ -97,7 +92,7 @@
 		grid-template-rows: minmax(0, max-content) minmax(0, 1fr);
 		gap: 2rem;
 		padding: 0 1rem;
-		border-bottom: 1px solid var(--theme-colour-text);
+		border-bottom: 1px solid var(--border);
 	}
 	.profile-picture {
 		height: 100%;
@@ -138,7 +133,7 @@
 		.left-col {
 			padding: 0 2rem;
 			border-bottom: initial;
-			border-right: 1px solid var(--theme-colour-text);
+			border-right: 1px solid var(--border);
 		}
 	}
 	@media (min-width: 1280px) {

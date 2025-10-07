@@ -1,0 +1,77 @@
+{
+	"name": "@imago/ui",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "svelte-kit sync && svelte-package --watch --input=src/lib",
+		"build": "vite build && npm run prepack",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"prepack": "svelte-kit sync && svelte-package && publint",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"test:unit": "vitest",
+		"test": "npm run test:unit -- --run && npm run test:e2e",
+		"test:e2e": "playwright test"
+	},
+	"files": [
+		"dist",
+		"!dist/**/*.test.*",
+		"!dist/**/*.spec.*"
+	],
+	"sideEffects": [
+		"**/*.css"
+	],
+	"svelte": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./src/lib/index.ts",
+			"svelte": "./dist/index.js"
+		},
+		"./css/reset": "./dist/css/reset.css",
+		"./css/theme": "./dist/css/theme.css"
+	},
+	"peerDependencies": {
+		"svelte": "^5.0.0"
+	},
+	"devDependencies": {
+		"@arturoguzman/art-ui": "^1.0.2",
+		"@imago/config": "workspace:*",
+		"@eslint/compat": "^1.4.0",
+		"@eslint/js": "^9.36.0",
+		"@playwright/test": "^1.55.1",
+		"@fontsource/cousine": "^5.2.7",
+		"@fontsource-variable/figtree": "^5.2.10",
+		"@fontsource-variable/noto-sans": "^5.2.10",
+		"@fontsource-variable/quicksand": "^5.2.10",
+		"@fontsource-variable/space-grotesk": "^5.2.10",
+		"@sveltejs/adapter-auto": "^6.1.0",
+		"@sveltejs/kit": "^2.43.2",
+		"@sveltejs/package": "^2.5.4",
+		"@sveltejs/vite-plugin-svelte": "^6.2.0",
+		"@types/node": "^22",
+		"@vitest/browser": "^3.2.4",
+		"eslint": "^9.36.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-svelte": "^3.12.4",
+		"globals": "^16.4.0",
+		"playwright": "^1.55.1",
+		"prettier": "^3.6.2",
+		"prettier-plugin-svelte": "^3.4.0",
+		"publint": "^0.3.13",
+		"svelte": "^5.39.5",
+		"svelte-check": "^4.3.2",
+		"typescript": "^5.9.2",
+		"typescript-eslint": "^8.44.1",
+		"typescript-svelte-plugin": "^0.3.50",
+		"vite": "^7.1.7",
+		"vitest": "^3.2.4",
+		"vitest-browser-svelte": "^1.1.0"
+	},
+	"keywords": [
+		"svelte"
+	]
+}

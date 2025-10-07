@@ -74,9 +74,9 @@
 		position: fixed;
 		left: var(--left);
 		top: var(--top);
-		background-color: var(--theme-colour-background);
+		background-color: var(--background);
 		padding: 0.75rem 1rem;
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 		border-radius: 0.35rem;
 	}
 </style>

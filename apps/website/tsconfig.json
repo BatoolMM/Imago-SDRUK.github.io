@@ -1,5 +1,5 @@
 {
-	"extends": ["@imago/config/ts/svelte.json", "./.svelte-kit/tsconfig.json"],
+	"extends": ["@imago/config/ts", "./.svelte-kit/tsconfig.json"],
 	"compilerOptions": {
 		"plugins": [
 			{

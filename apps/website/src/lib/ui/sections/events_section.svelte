@@ -1,12 +1,8 @@
 <script lang="ts">
+	import { Title, Fact, Button, Subtitle, Paragraph } from '@imago/ui'
 	import type { Event } from '$lib/types/directus'
 	import BaseSection from './base_section.svelte'
-	import Content from '$lib/ui/blog/content.svelte'
-	import Title from '$lib/ui/blog/title.svelte'
 	import { DateTime } from 'luxon'
-	import Fact from '../text/fact.svelte'
-	import Subtitle from '../text/subtitle.svelte'
-	import Anchor from '../buttons/anchor.svelte'
 	let { event }: { event: Event } = $props()
 	const { title, content, location, date_start, date_end, media, type, subtitle, id, agenda, url } =
 		event
@@ -14,15 +10,19 @@
 
 <BaseSection>
 	<div class="career-section">
-		<Title size="large" {title}></Title>
+		<Title size="lg">
+			{title}</Title
+		>
 		{#if subtitle}
-			<Subtitle size="small" {subtitle}></Subtitle>
+			<Subtitle size="sm">
+				{subtitle}
+			</Subtitle>
 		{/if}
 		<div class="career-content-grid">
 			<div class="meta-container">
 				<div class="facts">
 					{#if url}
-						<Anchor label="Tickets" href={url}></Anchor>
+						<Button href={url}>Tickets</Button>
 					{/if}
 					<Fact title="Location" text={location}></Fact>
 					<Fact
@@ -45,7 +45,7 @@
 					></Fact>
 					{#if agenda}
 						<div class="fact">
-							<Subtitle subtitle="Agenda"></Subtitle>
+							<Subtitle text="Agenda"></Subtitle>
 							<div class="agenda-elements">
 								{#each agenda as _agenda}
 									<div class="agenda-element">
@@ -64,9 +64,9 @@
 					{/if}
 				</div>
 			</div>
-			<Content>
+			<Paragraph>
 				{@html content}
-			</Content>
+			</Paragraph>
 		</div>
 	</div>
 </BaseSection>

@@ -93,6 +93,8 @@
 <style>
 	.carousel {
 		position: relative;
+		--theme-colour-text: var(--text);
+		--theme-font-paragraph: var(--paragraph);
 	}
 	.assets {
 		display: flex;

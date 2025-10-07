@@ -16,16 +16,11 @@
 		</div>
 	{/each}
 	<!-- <AboutSection team_members={data.team_members}></AboutSection> -->
-
 	<NewsletterFormSection></NewsletterFormSection>
 </div>
 
 <style>
 	.page-sections {
-		background: linear-gradient(
-			var(--theme-colour-quarternary),
-			var(--theme-colour-background),
-			var(--theme-colour-quarternary)
-		);
+		background: linear-gradient(var(--secondary), var(--background), var(--secondary));
 	}
 </style>

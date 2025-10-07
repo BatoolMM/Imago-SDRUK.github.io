@@ -39,7 +39,7 @@
 // )
 //
 
-import { config } from '@imago/config/eslint/index.js'
+import { config } from '@imago/config/eslint'
 
 export default [
 	...config,

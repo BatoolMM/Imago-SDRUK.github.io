@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { IconArrowLeft, IconMenu2 } from '@tabler/icons-svelte'
 	import { page } from '$app/state'
-	import Logos from '../cards/logos.svelte'
-	import NavButton from '../buttons/nav_button.svelte'
-	import { NAV_HEIGHT } from '$lib/globals/style'
-	import Menu from '../menus/menu.svelte'
-	import Anchor from '../buttons/anchor.svelte'
 	import { ROUTES } from '$lib/globals/routes'
+	import { NAV_HEIGHT } from '$lib/globals/style'
 	import { window_height, window_width } from '$lib/stores/layout.svelte'
+	import { IconArrowLeft, IconMenu2 } from '@tabler/icons-svelte'
+	// import Anchor from '../buttons/anchor.svelte'
+	// import NavButton from '../buttons/nav_button.svelte'
+	import Logos from '../cards/logos.svelte'
+	import Menu from '../menus/menu.svelte'
+	import { Button } from '@imago/ui'
 	let scroll = $state(0)
 	let desktop = $derived($window_width > 768)
 	let menu_open = $state(false)
@@ -73,13 +74,13 @@
 					<Menu>
 						{#snippet trigger({ toggleMenu })}
 							{#if desktop}
-								<NavButton onpointerdown={() => toggleMenu(false)} {href} {label}></NavButton>
+								<Button onpointerdown={() => toggleMenu(false)} {href}>{label}</Button>
 							{/if}
 						{/snippet}
 						{#snippet children()}
 							<div class="subpaths">
 								{#each subpaths as { href, label }}
-									<Anchor {href} {label}></Anchor>
+									<Button {href}>{label}</Button>
 								{/each}
 							</div>
 						{/snippet}
@@ -125,7 +126,7 @@
 
 <style>
 	nav {
-		background: color-mix(in oklab, white 0%, var(--theme-colour-background) var(--bg-percentage));
+		background: color-mix(in oklab, white 0%, var(--background) var(--bg-percentage));
 		color: var(--theme-colour-highlight);
 		border: 1px solid transparent;
 		width: 100%;
@@ -143,13 +144,14 @@
 	}
 	.compact-nav {
 		top: 1rem;
-		background-color: var(--theme-colour-background);
+		background-color: var(--background);
 		width: min(100% - 2rem, 600px);
 		margin-inline: auto;
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 	}
 	.button-link {
 		transition: all 0.3s ease-in-out;
+		color: var(--text);
 	}
 	.button-link:target {
 		background-color: red;
@@ -174,9 +176,9 @@
 		justify-content: flex-end;
 		align-items: center;
 		transform: translate(200%, 4rem);
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 		border-radius: 0.35rem;
-		background-color: var(--theme-colour-quarternary);
+		background-color: var(--quarternary);
 		transition: all 0.3s ease-in-out;
 		padding: 2rem;
 		width: calc(100% - 2rem);
@@ -205,7 +207,7 @@
 	.mobile-menu-tabs {
 		display: flex;
 		justify-content: space-around;
-		border-bottom: 1px solid var(--theme-colour-secondary);
+		border-bottom: 1px solid var(--secondary);
 	}
 	.mobile-menu-routes {
 		display: flex;

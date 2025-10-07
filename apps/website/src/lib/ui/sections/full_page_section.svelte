@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { NAV_HEIGHT } from '$lib/globals/style'
 	import type { Section } from '$lib/types/directus'
-	import Content from '../blog/content.svelte'
-	import Title from '../blog/title.svelte'
+	import { Paragraph, Subtitle, Title } from '@imago/ui'
 	import PageBlock from '../cards/page_block.svelte'
-	import Subtitle from '../text/subtitle.svelte'
 	import BaseSection from './base_section.svelte'
 
 	let { section }: { section: Section } = $props()
@@ -20,13 +18,15 @@
 	<div class="full-page-section" style:--nav-height={NAV_HEIGHT}>
 		<div class="header">
 			{#if section.title}
-				<Title size="large" title={section.title}></Title>
+				<Title size="lg" text={section.title}></Title>
 			{/if}
 			{#if section.subtitle}
-				<Subtitle size="small" subtitle={section.subtitle}></Subtitle>
+				<Subtitle size="sm" text={section.subtitle}></Subtitle>
 			{/if}
 			{#if section.description}
-				<Content>{@html section.description}</Content>
+				<Paragraph>
+					{@html section.description}
+				</Paragraph>
 			{/if}
 		</div>
 		<div class="blocks">

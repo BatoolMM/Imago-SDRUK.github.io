@@ -2,20 +2,16 @@
 	import { enhance } from '$app/forms'
 	import { window_width } from '$lib/stores/layout.svelte'
 	import { notify } from '$lib/stores/notify'
-	import Title from '$lib/ui/blog/title.svelte'
-	import Button from '$lib/ui/buttons/button.svelte'
-	import Email from '$lib/ui/inputs/email.svelte'
-	import Input from '$lib/ui/inputs/input.svelte'
 	import OneColumnSection from '$lib/ui/sections/one_column_section.svelte'
 	import TwoColumnsSection from '$lib/ui/sections/two_columns_section.svelte'
-	import Paragraph from '$lib/ui/text/paragraph.svelte'
+	import { Title, Paragraph, Input, Email, Button } from '@imago/ui'
 </script>
 
 {#snippet form(background?: string)}
 	<div class="form-col" data-background={background} style:--background-url="url({background})">
 		<div class="newsletter-form">
 			<div class="title">
-				<Title title="Page in construction" size="large"></Title>
+				<Title text="Page in construction" size="lg"></Title>
 				<Paragraph
 					text="Subscribe to the newsletter to keep updated on Imago news and data products."
 				></Paragraph>
@@ -27,15 +23,15 @@
 				use:enhance={() => {
 					return async ({ result, update }) => {
 						notify.send({
-							value:
+							message:
 								'data' in result
 									? String(result.data?.message)
 									: `There's been an error submitting this request, please try again`
 						})
-						if (result.type === 'failure') notify.send({ value: String(result.data?.message) })
+						if (result.type === 'failure') notify.send({ message: String(result.data?.message) })
 						if (result.type === 'error')
 							notify.send({
-								value: `There's been an error submitting this request, please try again`
+								message: `There's been an error submitting this request, please try again`
 							})
 						if (result.type === 'success') update({ reset: true, invalidateAll: true })
 					}
@@ -85,7 +81,7 @@
 	}
 	.form-col[data-background]::before {
 		content: '';
-		background: color-mix(in oklab, var(--theme-colour-background) 80%, transparent 20%);
+		background: color-mix(in oklab, var(--background) 80%, transparent 20%);
 		position: absolute;
 		height: 100%;
 		width: 100%;
@@ -108,6 +104,7 @@
 		z-index: 1;
 		background: color-mix(in oklab, var(--theme-colour-background) 80%, transparent 20%);
 		padding: 2rem;
+		border: 1px solid var(--border);
 		border-radius: 1rem;
 		box-shadow: var(--glass);
 	}

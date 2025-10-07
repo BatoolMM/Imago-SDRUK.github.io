@@ -1,13 +1,10 @@
 <script lang="ts">
-	import Title from '$lib/ui/blog/title.svelte'
 	import NewsletterCard from '$lib/ui/cards/newsletter_card.svelte'
 	import Carousel from '$lib/ui/components/carousel.svelte'
-	import Fact from '$lib/ui/text/fact.svelte'
-	import Paragraph from '$lib/ui/text/paragraph.svelte'
-	import Subtitle from '$lib/ui/text/subtitle.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles.js'
 	import { jstr } from '@arturoguzman/art-ui'
 	import { DateTime } from 'luxon'
+	import { Subtitle, Title, Fact, Paragraph } from '@imago/ui'
 	let { data } = $props()
 </script>
 
@@ -17,7 +14,7 @@
 		<div class="article">
 			<div class="header">
 				<div class="left-col">
-					<Title size="extra-large" title={article.title}></Title>
+					<Title size="xl" text={article.title}></Title>
 				</div>
 				<div class="right-col">
 					{#if article.user_created && typeof article.user_created !== 'string' && article.user_created.first_name}
@@ -44,10 +41,10 @@
 					<div class="section">
 						<div class="section-header">
 							{#if section.title}
-								<Subtitle subtitle={section.title}></Subtitle>
+								<Subtitle text={section.title}></Subtitle>
 							{/if}
 							{#if section.subtitle}
-								<Subtitle subtitle={section.subtitle}></Subtitle>
+								<Subtitle text={section.subtitle}></Subtitle>
 							{/if}
 						</div>
 						<div class="section-blocks">
@@ -55,7 +52,7 @@
 								{#if block.type === 'text'}
 									{#if block.content}
 										<div class="content prose">
-											<Paragraph text={block.content}></Paragraph>
+											<Paragraph>{@html block.content}</Paragraph>
 										</div>
 									{/if}
 								{/if}
