@@ -1,18 +1,11 @@
 <script lang="ts">
 	import { INSTITUTIONS, ROLES, SOCIAL_MEDIA } from '$lib/globals/data.js'
 	import { NAV_HEIGHT } from '$lib/globals/style'
-	import IconButton from '$lib/ui/buttons/icon_button.svelte'
-	import BaseSection from '$lib/ui/sections/base_section.svelte'
+	import { BaseSection } from '@imago/ui'
 	import { Picture } from '@arturoguzman/art-ui'
-	import {
-		IconBrandInstagram,
-		IconBrandLinkedin,
-		IconBrandMastodon,
-		IconBrandTwitter
-	} from '@tabler/icons-svelte'
 	import { page } from '$app/state'
 	import Seo from '$lib/ui/utils/seo.svelte'
-	import { Button, Title, Subtitle, Fact, Paragraph } from '@imago/ui'
+	import { Button, Title, Subtitle, Fact, Paragraph, Icon } from '@imago/ui'
 	let { data } = $props()
 </script>
 
@@ -41,24 +34,25 @@
 				</div>
 				<div class="social-media">
 					{#each data.team_member.url.filter((url) => SOCIAL_MEDIA.includes(url.title)) as url}
-						<IconButton
+						<Button
+							style="clean"
 							onclick={() => {
 								window.location = url.url
 							}}
 						>
 							{#if url.title.toLowerCase().includes('linkedin')}
-								<IconBrandLinkedin></IconBrandLinkedin>
+								<Icon icon={{ icon: 'brand-linkedin', set: 'tabler' }}></Icon>
 							{/if}
 							{#if url.title.toLowerCase().includes('mastodon')}
-								<IconBrandMastodon></IconBrandMastodon>
+								<Icon icon={{ icon: 'brand-mastodon', set: 'tabler' }}></Icon>
 							{/if}
 							{#if url.title.toLowerCase().includes('twitter')}
-								<IconBrandTwitter></IconBrandTwitter>
+								<Icon icon={{ icon: 'brand-twitter', set: 'tabler' }}></Icon>
 							{/if}
 							{#if url.title.toLowerCase().includes('instagram')}
-								<IconBrandInstagram></IconBrandInstagram>
+								<Icon icon={{ icon: 'brand-instagram', set: 'tabler' }}></Icon>
 							{/if}
-						</IconButton>
+						</Button>
 					{/each}
 				</div>
 			</div>

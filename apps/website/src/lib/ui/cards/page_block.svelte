@@ -1,9 +1,8 @@
 <script lang="ts" generics="T extends Block">
 	import type { Block } from '$lib/types/directus'
-	import { IconArrowRight, IconArrowUpRight } from '@tabler/icons-svelte'
 	import Carousel from '../components/carousel.svelte'
 	import { Picture } from '@arturoguzman/art-ui'
-	import { Subtitle, Title, Paragraph, Button } from '@imago/ui'
+	import { Subtitle, Title, Paragraph, Button, Icon } from '@imago/ui'
 	type Action = {
 		label: string
 		href?: string
@@ -44,7 +43,7 @@
 
 				{#if block.actions}
 					{@const actions = block.actions as Action[]}
-					{#each actions as { alternative, href, label }}
+					{#each actions as { href, label }}
 						<div class="actions">
 							<Button {href}>
 								{#snippet leftCol()}
@@ -52,9 +51,9 @@
 								{/snippet}
 								{#snippet rightCol()}
 									{#if href?.startsWith('/')}
-										<IconArrowRight></IconArrowRight>
+										<Icon icon={{ icon: 'arrow-right-01', set: 'hugeicons' }}></Icon>
 									{:else}
-										<IconArrowUpRight></IconArrowUpRight>
+										<Icon icon={{ icon: 'arrow-up-right-01', set: 'hugeicons' }}></Icon>
 									{/if}
 								{/snippet}
 							</Button>
@@ -95,7 +94,7 @@
 			{#if block.actions}
 				<div class="icon">
 					<a href={block.actions[0].href}>
-						<IconArrowRight size={48}></IconArrowRight>
+						<Icon icon={{ icon: 'arrow-right-01', set: 'hugeicons', size: 'lg' }}></Icon>
 					</a>
 				</div>
 			{/if}

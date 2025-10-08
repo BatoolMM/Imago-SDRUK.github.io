@@ -1,11 +1,10 @@
 <script lang="ts">
 	import type { Career } from '$lib/types/directus'
-	import BaseSection from './base_section.svelte'
 	import { dateAvailable, dateExpired } from '$lib/utils/data.js'
 	import { DateTime } from 'luxon'
 	let { career }: { career: Career } = $props()
 	const { title, url, salary, closing_date, location, hours, contract, content, posted_on } = career
-	import { Title, Paragraph, Fact, Button } from '@imago/ui'
+	import { Title, Paragraph, Fact, Button, BaseSection } from '@imago/ui'
 </script>
 
 <BaseSection>

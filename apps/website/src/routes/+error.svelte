@@ -3,9 +3,8 @@
 	import Nav from '$lib/ui/nav/nav.svelte'
 	import { page } from '$app/state'
 	import { NAV_HEIGHT } from '$lib/globals/style'
-	import { Button, Title } from '@imago/ui'
+	import { Button, Icon, Title } from '@imago/ui'
 	import { goto } from '$app/navigation'
-	import Home from '@tabler/icons-svelte/icons/home'
 </script>
 
 <Nav></Nav>
@@ -22,7 +21,7 @@
 					<p>Head home?</p>
 				{/snippet}
 				{#snippet rightCol()}
-					<Home></Home>
+					<Icon icon={{ icon: 'home-13', set: 'hugeicons' }}></Icon>
 				{/snippet}
 			</Button>
 		</div>

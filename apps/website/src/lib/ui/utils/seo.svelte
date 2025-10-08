@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { page } from '$app/state'
-
 	import SvelteSeo from 'svelte-seo'
 	let {
 		title,

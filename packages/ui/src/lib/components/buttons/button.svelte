@@ -23,7 +23,7 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean'
+		style?: 'base' | 'alt' | null | 'clean' | 'anchor'
 		type?: 'button' | 'submit' | 'reset' | null
 	} = $props()
 </script>
@@ -91,21 +91,25 @@
 	.btn[data-style='base'].active {
 		outline: 0.15rem solid var(--quarternary);
 		outline-offset: 0.2rem;
+		background-color: var(--highlight-accent);
+		color: var(--background-muted);
 	}
 
-	/**/
-	/* .btn[data-style='alt'] { */
-	/* 	background-color: transparent; */
-	/* 	border: 1px solid var(--highlight); */
-	/* 	color: var(--highlight); */
-	/* } */
-	/**/
-	/* .btn[data-style='alt']:hover { */
-	/* 	background-color: color-mix( */
-	/* 		in oklab, */
-	/* 		var(--theme-colour-highlight) 10%, */
-	/* 		var(--theme-colour-quarternary) 90% */
-	/* 	); */
-	/* 	color: var(--theme-colour-highlight); */
-	/* } */
+	.btn[data-style='anchor'] {
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		transition: all var(--animation-time) ease-in-out;
+	}
+
+	.btn[data-style='anchor']:hover {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		color: var(--highlight-accent);
+	}
+
+	.btn[data-style='anchor'].active {
+		outline: 0.15rem solid var(--quarternary);
+		outline-offset: 0.2rem;
+	}
 </style>

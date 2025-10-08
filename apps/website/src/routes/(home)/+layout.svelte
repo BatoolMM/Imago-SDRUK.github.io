@@ -1,8 +1,9 @@
 <script lang="ts">
-	import Notification from '$lib/ui/cards/notification.svelte'
+	import { notify } from '$lib/stores/notify'
 	import Footer from '$lib/ui/footer/footer.svelte'
 	import Nav from '$lib/ui/nav/nav.svelte'
 	import { observeRoot } from '$lib/utils/observer.svelte'
+	import { Notification } from '@imago/ui'
 	let { children } = $props()
 </script>
 
@@ -12,7 +13,7 @@
 	{@render children()}
 </main>
 <Footer></Footer>
-<Notification></Notification>
+<Notification {notify}></Notification>
 
 <style>
 </style>

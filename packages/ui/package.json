@@ -32,22 +32,26 @@
 			"svelte": "./dist/index.js"
 		},
 		"./css/reset": "./dist/css/reset.css",
-		"./css/theme": "./dist/css/theme.css"
+		"./css/theme": "./dist/css/theme.css",
+		"./css/icons": "./dist/icons/style.css"
 	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
 	},
 	"devDependencies": {
 		"@arturoguzman/art-ui": "^1.0.2",
-		"@imago/config": "workspace:*",
 		"@eslint/compat": "^1.4.0",
 		"@eslint/js": "^9.36.0",
-		"@playwright/test": "^1.55.1",
-		"@fontsource/cousine": "^5.2.7",
 		"@fontsource-variable/figtree": "^5.2.10",
 		"@fontsource-variable/noto-sans": "^5.2.10",
 		"@fontsource-variable/quicksand": "^5.2.10",
 		"@fontsource-variable/space-grotesk": "^5.2.10",
+		"@fontsource/cousine": "^5.2.7",
+		"@iconify/json": "^2.2.392",
+		"@iconify/types": "^2.0.0",
+		"@iconify/utils": "^3.0.2",
+		"@imago/config": "workspace:*",
+		"@playwright/test": "^1.55.1",
 		"@sveltejs/adapter-auto": "^6.1.0",
 		"@sveltejs/kit": "^2.43.2",
 		"@sveltejs/package": "^2.5.4",

@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { DateTime } from 'luxon'
 	import Logos from '../cards/logos.svelte'
-	import { IconBrandGithub, IconBrandLinkedin, IconMail } from '@tabler/icons-svelte'
-	import IconButton from '../buttons/icon_button.svelte'
-	import { Button, Subtitle, Title } from '@imago/ui'
+	import { Button, Icon, Subtitle, Title } from '@imago/ui'
 	const platform_collection = [1, 2, 3].map((x) => ({
 		href: '/',
 		label: `Data product ${x}`
@@ -57,7 +55,7 @@
 						window.location = 'mailto:imago@liverpool.ac.uk'
 					}}
 				>
-					<IconMail></IconMail>
+					<Icon icon={{ icon: 'mail', set: 'tabler' }}></Icon>
 				</Button>
 				<Button
 					style="clean"
@@ -65,7 +63,7 @@
 						window.location = 'https://www.linkedin.com/company/sdr-imago'
 					}}
 				>
-					<IconBrandLinkedin></IconBrandLinkedin>
+					<Icon icon={{ icon: 'brand-linkedin', set: 'tabler' }}></Icon>
 				</Button>
 				<Button
 					style="clean"
@@ -73,7 +71,7 @@
 						window.location = 'https://github.com/Imago-SDRUK/'
 					}}
 				>
-					<IconBrandGithub></IconBrandGithub>
+					<Icon icon={{ icon: 'brand-github', set: 'tabler' }}></Icon>
 				</Button>
 			</div>
 		</div>

@@ -2,8 +2,8 @@
 	import type { Section } from '$lib/types/directus'
 	import { Paragraph, Subtitle, Title } from '@imago/ui'
 	import PageBlock from '../cards/page_block.svelte'
-	import BaseSection from './base_section.svelte'
 
+	import { BaseSection } from '@imago/ui'
 	let { section }: { section: Section } = $props()
 
 	function getBasis(num?: number) {

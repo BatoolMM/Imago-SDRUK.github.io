@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Title } from '@imago/ui'
-	import BaseSection from './base_section.svelte'
+	import { BaseSection } from '@imago/ui'
 	import type { Snippet } from 'svelte'
 	let {
 		title,
