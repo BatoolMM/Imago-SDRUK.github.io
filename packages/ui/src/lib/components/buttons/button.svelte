@@ -15,7 +15,7 @@
 		type
 	}: {
 		href?: string
-		download?: string
+		download?: string | boolean
 		leftCol?: Snippet
 		rightCol?: Snippet
 		children?: Snippet
