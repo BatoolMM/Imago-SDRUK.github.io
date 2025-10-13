@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>%sveltekit.error.message%</title>
+	</head>
+	<body>
+		<div class="error-container">
+			<div class="error-logo">
+				<img src="/favicon.png" alt="" />
+				<h1>Error</h1>
+			</div>
+			<!-- <p>Status: %sveltekit.status%</p> -->
+			<p>%sveltekit.error.message%</p>
+		</div>
+	</body>
+</html>
+
+<style>
+	* {
+		box-sizing: border-box;
+	}
+	html {
+		background-color: #4a4a49;
+		background: url('/static/ui/terrain_1.png');
+		padding: 0;
+		margin: 0;
+	}
+	body {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		grid-template-rows: minmax(0, 1fr);
+		color: #ffffff;
+		font-family: sans-serif;
+		justify-items: center;
+		align-items: center;
+		height: 100lvh;
+		padding: 0;
+		margin: 0;
+	}
+	.error-container {
+		background-color: #24226f;
+		width: min(100% - 2rem, 600px);
+		border-radius: 0.35rem;
+		padding: 2rem;
+		box-shadow:
+			4px 5px 8px -7px color-mix(in oklab, white 10%, transparent 90%),
+			-4px -5px 2px -4px color-mix(in oklab, white 20%, transparent 80%),
+			0px 0px 32px -3px color-mix(in oklab, white 5%, transparent 95%);
+	}
+	.error-logo {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		justify-content: center;
+	}
+	img {
+		height: 3rem;
+	}
+</style>
