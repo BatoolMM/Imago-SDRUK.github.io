@@ -1,5 +1,10 @@
 # website
 
+## 2.0.14
+### Patch Changes
+
+- 1eee973: remove icon package references
+
 ## 2.0.13
 ### Patch Changes
 
