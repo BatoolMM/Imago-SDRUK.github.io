@@ -1,5 +1,7 @@
+export * from './components/accordion/index.js'
 export * from './components/buttons/index.js'
 export * from './components/cards/index.js'
+export * from './components/footer/index.js'
 export * from './components/inputs/index.js'
 // export * from './components/media/index.js'
 export * from './components/menus/index.js'
