@@ -55,7 +55,7 @@
 						window.location = 'mailto:imago@liverpool.ac.uk'
 					}}
 				>
-					<Icon icon={{ icon: 'mail', set: 'tabler' }}></Icon>
+					<Icon icon={{ icon: 'mail', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
 					style="clean"
@@ -63,7 +63,7 @@
 						window.location = 'https://www.linkedin.com/company/sdr-imago'
 					}}
 				>
-					<Icon icon={{ icon: 'brand-linkedin', set: 'tabler' }}></Icon>
+					<Icon icon={{ icon: 'brand-linkedin', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
 					style="clean"
@@ -71,7 +71,7 @@
 						window.location = 'https://github.com/Imago-SDRUK/'
 					}}
 				>
-					<Icon icon={{ icon: 'brand-github', set: 'tabler' }}></Icon>
+					<Icon icon={{ icon: 'brand-github', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 			</div>
 		</div>
@@ -112,6 +112,7 @@
 		color: white;
 		display: flex;
 		gap: 1rem;
+		align-items: center;
 	}
 
 	@media (min-width: 1024px) {

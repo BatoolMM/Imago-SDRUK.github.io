@@ -1,13 +1,17 @@
 <script lang="ts">
-	import Footer from '$lib/ui/footer/footer.svelte'
-	import Nav from '$lib/ui/nav/nav.svelte'
 	import { page } from '$app/state'
 	import { NAV_HEIGHT } from '$lib/globals/style'
-	import { Button, Icon, Title } from '@imago/ui'
+	import { Button, Icon, Title, Footer, DynamicNav } from '@imago/ui'
 	import { goto } from '$app/navigation'
+	import { ROUTES } from '$lib/globals/routes'
+	import Logos from '$lib/ui/cards/logos.svelte'
 </script>
 
-<Nav></Nav>
+<DynamicNav routes={ROUTES} nav_height={NAV_HEIGHT}>
+	{#snippet children({ scroll })}
+		<Logos {scroll}></Logos>
+	{/snippet}
+</DynamicNav>
 <div class="error-section" style:--nav-height={NAV_HEIGHT}>
 	<div class="error-message">
 		<Title text={`${page.status} ${page.error?.message}`}></Title>

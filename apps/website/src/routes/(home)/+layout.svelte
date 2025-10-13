@@ -3,9 +3,8 @@
 	import { NAV_HEIGHT } from '$lib/globals/style'
 	import { notify } from '$lib/stores/notify'
 	import Logos from '$lib/ui/cards/logos.svelte'
-	import Footer from '$lib/ui/footer/footer.svelte'
 	import { observeRoot } from '$lib/utils/observer.svelte'
-	import { Notification, DynamicNav } from '@imago/ui'
+	import { Notification, DynamicNav, Footer } from '@imago/ui'
 	let { children } = $props()
 </script>
 
