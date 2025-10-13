@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { TeamMember } from '$lib/types/directus'
 	import { Picture } from '@arturoguzman/art-ui'
-	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
 	import { ROLES } from '$lib/globals/data'
 	import { Subtitle, Title } from '@imago/ui'
 	let { team_member }: { team_member: TeamMember } = $props()
@@ -16,7 +15,6 @@
 	<div class="card-title">
 		<div class="title">
 			<Title size="sm" text="{team_member.first_name} {team_member.last_name}"></Title>
-			<ArrowRight></ArrowRight>
 		</div>
 		<Subtitle size="xs" text={ROLES[team_member.role]}></Subtitle>
 	</div>

@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { Article, ArticleSectionBlocksFile } from '$lib/types/directus'
-	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
 	import { DateTime } from 'luxon'
 	import { getArticleSections } from '$lib/utils/directus/articles'
 	import { Picture } from '@arturoguzman/art-ui'
-	import { Paragraph, BaseCard, Title, Fact, Button } from '@imago/ui'
+	import { Paragraph, BaseCard, Title, Fact, Button, Icon } from '@imago/ui'
 	import Carousel from '../components/carousel.svelte'
 	let { article }: { article: Article } = $props()
 	const sections = getArticleSections(article)
@@ -84,7 +83,7 @@
 				{/if}
 				<Button href="/news/{article.slug}">
 					{#snippet rightCol()}
-						<ArrowRight></ArrowRight>
+						<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
 					{/snippet}</Button
 				>
 			</div>
