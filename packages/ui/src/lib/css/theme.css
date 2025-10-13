@@ -25,7 +25,7 @@
 	--text-muted: color-mix(in oklab, var(--text) 80%, black 20%);
 	--border: var(--quinary);
 	--border-accent: color-mix(in oklab, var(--border) 80%, white 20%);
-	--border-muted: color-mix(in oklab, var(--border) 80%, black 20%);
+	--border-muted: color-mix(in oklab, var(--border) 70%, black 30%);
 	--background: var(--primary);
 	--background-accent: color-mix(in oklab, var(--background) 80%, white 20%);
 	--background-muted: color-mix(in oklab, var(--background) 80%, black 20%);
