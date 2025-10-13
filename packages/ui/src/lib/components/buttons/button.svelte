@@ -23,7 +23,7 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean' | 'anchor'
+		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full'
 		type?: 'button' | 'submit' | 'reset' | null
 	} = $props()
 </script>
@@ -88,6 +88,10 @@
 		background-color: var(--background-accent);
 	}
 
+	.btn[data-style='base']:visited {
+		border: 1px solid var(--border-muted);
+	}
+
 	.btn[data-style='base'].active {
 		outline: 0.15rem solid var(--quarternary);
 		outline-offset: 0.2rem;
@@ -111,5 +115,15 @@
 	.btn[data-style='anchor'].active {
 		outline: 0.15rem solid var(--quarternary);
 		outline-offset: 0.2rem;
+	}
+
+	.btn[data-style='clean'] {
+		justify-content: space-between;
+		align-items: center;
+	}
+	.btn[data-style='clean-full'] {
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
 	}
 </style>
