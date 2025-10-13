@@ -1,14 +1,13 @@
 <script lang="ts">
 	import type { PagesSection } from '$lib/types/directus'
-	import Title from '../blog/title.svelte'
 	import PageBlock from '../cards/page_block.svelte'
-	import Subtitle from '../text/subtitle.svelte'
 	import BannerSection from './banner_section.svelte'
 	import CardsSection from './cards_section.svelte'
 	import MulticolumnsSection from './multicolumns_section.svelte'
 	import StacksSection from './stacks_section.svelte'
 	import GeneralSection from './general_section.svelte'
 	import FullPageSection from './full_page_section.svelte'
+	import { Title, Subtitle } from '@imago/ui'
 
 	let { sections }: { sections: PagesSection[] | null } = $props()
 </script>
@@ -21,10 +20,10 @@
 			<MulticolumnsSection columns={section.columns ?? 0}>
 				{#snippet title()}
 					{#if section.title}
-						<Title size="huge" title={section.title}></Title>
+						<Title size="2xl" text={section.title}></Title>
 					{/if}
 					{#if section.subtitle}
-						<Subtitle size="small" subtitle={section.subtitle}></Subtitle>
+						<Subtitle size="sm" text={section.subtitle}></Subtitle>
 					{/if}
 				{/snippet}
 				{#if section.columns === 2}

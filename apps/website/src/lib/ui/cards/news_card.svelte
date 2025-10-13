@@ -1,14 +1,10 @@
 <script lang="ts">
 	import type { Article, ArticleSectionBlocksFile } from '$lib/types/directus'
-	import Title from '$lib/ui/blog/title.svelte'
-	import Button from '$lib/ui/buttons/button.svelte'
-	import BaseCard from '$lib/ui/cards/base_card.svelte'
 	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
 	import { DateTime } from 'luxon'
-	import Paragraph from '../text/paragraph.svelte'
-	import Fact from '../text/fact.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles'
 	import { Picture } from '@arturoguzman/art-ui'
+	import { Paragraph, BaseCard, Title, Fact, Button } from '@imago/ui'
 	import Carousel from '../components/carousel.svelte'
 	let { article }: { article: Article } = $props()
 	const sections = getArticleSections(article)
@@ -49,7 +45,7 @@
 		</div>
 		<div class="right-col">
 			<div class="title">
-				<Title size="large" title={article.title}></Title>
+				<Title size="lg" text={article.title}></Title>
 				<!-- <div class="tags"> -->
 				<!-- 	<Button alt -->
 				<!-- 		>{#snippet leftCol()} -->
@@ -71,7 +67,7 @@
 
 			{#if article.description}
 				<div class="content">
-					<Paragraph text={article.description}></Paragraph>
+					<Paragraph>{@html article.description}</Paragraph>
 				</div>
 			{/if}
 			<div class="footer">
@@ -86,7 +82,7 @@
 						)}"
 					></Fact>
 				{/if}
-				<Button anchor href="/news/{article.slug}">
+				<Button href="/news/{article.slug}">
 					{#snippet rightCol()}
 						<ArrowRight></ArrowRight>
 					{/snippet}</Button

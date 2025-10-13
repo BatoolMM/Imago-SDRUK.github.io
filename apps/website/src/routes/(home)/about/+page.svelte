@@ -1,9 +1,8 @@
 <script lang="ts">
-	import Title from '$lib/ui/blog/title.svelte'
 	import CardTeam from '$lib/ui/cards/card_team.svelte'
 	import MulticolumnsSection from '$lib/ui/sections/multicolumns_section.svelte'
 	import PageSections from '$lib/ui/sections/page_sections.svelte'
-	import Paragraph from '$lib/ui/text/paragraph.svelte'
+	import { Title, Paragraph } from '@imago/ui'
 	const services = [
 		{
 			image: `/static/network/logos/financial.png`,
@@ -29,7 +28,7 @@
 {/each}
 <MulticolumnsSection columns={4}>
 	{#snippet title()}
-		<Title size="large" title="Meet the team"></Title>
+		<Title size="lg" text="Meet the team"></Title>
 	{/snippet}
 	{#each data.team_members as team_member}
 		<CardTeam {team_member}></CardTeam>
@@ -37,7 +36,7 @@
 </MulticolumnsSection>
 <MulticolumnsSection columns={3} gap="2rem">
 	{#snippet title()}
-		<Title size="large" title="Our network"></Title>
+		<Title size="lg" text="Our network"></Title>
 		<Paragraph
 			text="Imago Data Service for Imagery is part of Smart Data Research UK, the UK’s national programme for smart data research. We are one of six data services in the SDR UK family."
 		></Paragraph>

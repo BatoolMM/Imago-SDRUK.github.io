@@ -1,0 +1,32 @@
+{
+	// "extends": "./.svelte-kit/tsconfig.json",
+	"extends": ["@imago/config/ts", "./.svelte-kit/tsconfig.json"],
+	"compilerOptions": {
+		"plugins": [
+			{
+				"name": "typescript-svelte-plugin",
+				// the following options can be set additionally; they are optional; their default values are listed here
+				"enabled": true, // enables this plugin
+				"assumeIsSvelteProject": true // if true, skip detection and always assume it's a Svelte project
+			}
+		],
+		"declaration": true,
+		"declarationMap": true,
+		"allowArbitraryExtensions": true
+	},
+	"include": ["dist", "./src/**/*.svelte", "./src/**/*.ts"],
+	"exclude": ["node_modules", ".svelte-kit"]
+
+	// "compilerOptions": {
+	// 	"allowJs": true,
+	// 	"checkJs": true,
+	// 	"esModuleInterop": true,
+	// 	"forceConsistentCasingInFileNames": true,
+	// 	"resolveJsonModule": true,
+	// 	"skipLibCheck": true,
+	// 	"sourceMap": true,
+	// 	"strict": true,
+	// 	"module": "NodeNext",
+	// 	"moduleResolution": "NodeNext"
+	// }
+}

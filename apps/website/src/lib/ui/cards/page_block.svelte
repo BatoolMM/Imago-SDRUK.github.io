@@ -1,12 +1,8 @@
 <script lang="ts" generics="T extends Block">
 	import type { Block } from '$lib/types/directus'
-	import Button from '../buttons/button.svelte'
-	import Title from '../blog/title.svelte'
-	import { IconArrowRight, IconArrowUpRight } from '@tabler/icons-svelte'
-	import Content from '../blog/content.svelte'
-	import Subtitle from '../text/subtitle.svelte'
 	import Carousel from '../components/carousel.svelte'
 	import { Picture } from '@arturoguzman/art-ui'
+	import { Subtitle, Title, Paragraph, Button, Icon } from '@imago/ui'
 	type Action = {
 		label: string
 		href?: string
@@ -32,32 +28,32 @@
 				<div class="copy">
 					<div class="header">
 						{#if block.title}
-							<Title title={block.title}></Title>
+							<Title text={block.title}></Title>
 						{/if}
 						{#if block.subtitle}
-							<Subtitle subtitle={block.subtitle}></Subtitle>
+							<Subtitle text={block.subtitle}></Subtitle>
 						{/if}
 					</div>
 					{#if block.content}
-						<Content>
+						<Paragraph>
 							{@html block.content}
-						</Content>
+						</Paragraph>
 					{/if}
 				</div>
 
 				{#if block.actions}
 					{@const actions = block.actions as Action[]}
-					{#each actions as { alternative, href, label }}
+					{#each actions as { href, label }}
 						<div class="actions">
-							<Button style={alternative ? 'alt' : 'base'} {href} anchor>
+							<Button {href}>
 								{#snippet leftCol()}
 									{label}
 								{/snippet}
 								{#snippet rightCol()}
 									{#if href?.startsWith('/')}
-										<IconArrowRight></IconArrowRight>
+										<Icon icon={{ icon: 'arrow-right-01', set: 'hugeicons' }}></Icon>
 									{:else}
-										<IconArrowUpRight></IconArrowUpRight>
+										<Icon icon={{ icon: 'arrow-up-right-01', set: 'hugeicons' }}></Icon>
 									{/if}
 								{/snippet}
 							</Button>
@@ -71,7 +67,7 @@
 		<div class="card">
 			<div class="card-title">
 				{#if block.title}
-					<Title size="large" title={block.title}></Title>
+					<Title size="lg" text={block.title}></Title>
 				{/if}
 			</div>
 			<div class="card-content">
@@ -98,7 +94,7 @@
 			{#if block.actions}
 				<div class="icon">
 					<a href={block.actions[0].href}>
-						<IconArrowRight size={48}></IconArrowRight>
+						<Icon icon={{ icon: 'arrow-right-01', set: 'hugeicons', size: 'lg' }}></Icon>
 					</a>
 				</div>
 			{/if}
@@ -135,29 +131,29 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, max-content) minmax(0, 1fr);
-		border: 1px solid var(--theme-colour-highlight);
-		background-color: var(--theme-colour-background);
+		border: 1px solid var(--highlight);
+		background-color: var(--background);
 		border-radius: 0.35rem;
 	}
 	.card-title {
-		border-bottom: 1px solid var(--theme-colour-highlight);
+		border-bottom: 1px solid var(--highlight);
 		padding: 1rem;
 	}
 	.card-image {
 		width: 100%;
 		aspect-ratio: 1 / 1;
-		background-color: var(--theme-colour-tertiary);
+		background-color: var(--positive);
 		padding: 4rem;
 		/* background-color: white; */
 	}
 	.cta-card {
 		aspect-ratio: 1 / 1;
 		background: color-mix(in oklab, var(--card-colour) 20%, transparent 80%);
-		border: 1px solid var(--theme-colour-text);
+		border: 1px solid var(--text);
 		border-radius: 0.35rem;
-		color: var(--theme-colour-text);
+		color: var(--text);
 		padding: 1rem;
-		font-family: var(--theme-font-title);
+		font-family: var(--title);
 		font-weight: 700;
 		font-size: clamp(2rem, 1.5rem + 2.5vw, 3.5rem);
 		flex-shrink: 0;
@@ -174,6 +170,9 @@
 	.icon {
 		display: flex;
 		justify-content: flex-end;
+	}
+	a {
+		color: var(--text);
 	}
 	@media (min-width: 768px) {
 		.cta-text {

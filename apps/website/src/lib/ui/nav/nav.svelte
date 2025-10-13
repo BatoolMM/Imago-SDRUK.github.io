@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { IconArrowLeft, IconMenu2 } from '@tabler/icons-svelte'
 	import { page } from '$app/state'
-	import Logos from '../cards/logos.svelte'
-	import NavButton from '../buttons/nav_button.svelte'
-	import { NAV_HEIGHT } from '$lib/globals/style'
-	import Menu from '../menus/menu.svelte'
-	import Anchor from '../buttons/anchor.svelte'
 	import { ROUTES } from '$lib/globals/routes'
+	import { NAV_HEIGHT } from '$lib/globals/style'
 	import { window_height, window_width } from '$lib/stores/layout.svelte'
+	import { Button, Icon } from '@imago/ui'
+	import Logos from '../cards/logos.svelte'
+	import Menu from '../menus/menu.svelte'
 	let scroll = $state(0)
 	let desktop = $derived($window_width > 768)
 	let menu_open = $state(false)
@@ -38,7 +36,7 @@
 					history.back()
 				}}
 			>
-				<IconArrowLeft size={32} stroke-width={2}></IconArrowLeft>
+				<Icon icon={{ icon: 'arrow-narrow-left', set: 'tabler', size: 'lg' }}></Icon>
 			</button>
 		{/if}
 		{#if desktop}
@@ -64,7 +62,7 @@
 					menu_open = !menu_open
 				}}
 			>
-				<IconMenu2></IconMenu2>
+				<Icon icon={{ icon: 'menu', set: 'tabler', size: 'lg' }}></Icon>
 			</button>
 		{/if}
 		<div class="routes" data-menu={menu_open ? true : undefined}>
@@ -73,13 +71,15 @@
 					<Menu>
 						{#snippet trigger({ toggleMenu })}
 							{#if desktop}
-								<NavButton onpointerdown={() => toggleMenu(false)} {href} {label}></NavButton>
+								<Button style="anchor" onpointerdown={() => toggleMenu(false)} {href}
+									>{label}</Button
+								>
 							{/if}
 						{/snippet}
 						{#snippet children()}
 							<div class="subpaths">
 								{#each subpaths as { href, label }}
-									<Anchor {href} {label}></Anchor>
+									<Button style="anchor" {href}>{label}</Button>
 								{/each}
 							</div>
 						{/snippet}
@@ -90,17 +90,19 @@
 					<div class="mobile-menu-tabs">
 						{#each ROUTES as { href, label }}
 							{#if href === mobile_menu_selection}
-								<a
+								<Button
+									style="anchor"
 									onclick={() => {
 										menu_open = false
 									}}
-									{href}><p>{label}</p></a
+									{href}>{label}</Button
 								>
 							{:else}
-								<button
+								<Button
+									style="anchor"
 									onclick={() => {
 										mobile_menu_selection = href
-									}}><p>{label}</p></button
+									}}><p>{label}</p></Button
 								>
 							{/if}
 						{/each}
@@ -108,11 +110,12 @@
 					<div class="mobile-menu-routes">
 						{#each ROUTES.filter((route) => route.href === mobile_menu_selection) as { subpaths }}
 							{#each subpaths as { href, label }}
-								<a
+								<Button
+									style="anchor"
 									onclick={() => {
 										menu_open = false
 									}}
-									{href}><p>{label}</p></a
+									{href}><p>{label}</p></Button
 								>
 							{/each}
 						{/each}
@@ -125,7 +128,7 @@
 
 <style>
 	nav {
-		background: color-mix(in oklab, white 0%, var(--theme-colour-background) var(--bg-percentage));
+		background: color-mix(in oklab, white 0%, var(--background) var(--bg-percentage));
 		color: var(--theme-colour-highlight);
 		border: 1px solid transparent;
 		width: 100%;
@@ -143,13 +146,14 @@
 	}
 	.compact-nav {
 		top: 1rem;
-		background-color: var(--theme-colour-background);
+		background-color: var(--background);
 		width: min(100% - 2rem, 600px);
 		margin-inline: auto;
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 	}
 	.button-link {
 		transition: all 0.3s ease-in-out;
+		color: var(--text);
 	}
 	.button-link:target {
 		background-color: red;
@@ -174,9 +178,9 @@
 		justify-content: flex-end;
 		align-items: center;
 		transform: translate(200%, 4rem);
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 		border-radius: 0.35rem;
-		background-color: var(--theme-colour-quarternary);
+		background-color: var(--background);
 		transition: all 0.3s ease-in-out;
 		padding: 2rem;
 		width: calc(100% - 2rem);
@@ -205,7 +209,7 @@
 	.mobile-menu-tabs {
 		display: flex;
 		justify-content: space-around;
-		border-bottom: 1px solid var(--theme-colour-secondary);
+		border-bottom: 1px solid var(--secondary);
 	}
 	.mobile-menu-routes {
 		display: flex;

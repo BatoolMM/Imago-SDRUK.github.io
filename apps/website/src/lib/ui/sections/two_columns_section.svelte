@@ -39,7 +39,7 @@ A two column structure to create sections
 		grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
 	}
 	.left-col {
-		border-right: 1px solid var(--theme-colour-tertiary);
+		border-right: 1px solid var(--border);
 	}
 	@media (min-width: 768px) {
 		.section {
@@ -48,7 +48,7 @@ A two column structure to create sections
 			grid-template-rows: minmax(0, 1fr);
 		}
 		.left-col {
-			border-right: 1px solid var(--theme-colour-tertiary);
+			border-right: 1px solid var(--border);
 		}
 	}
 </style>

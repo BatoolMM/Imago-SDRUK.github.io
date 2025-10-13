@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte'
-	import BaseSection from './base_section.svelte'
+	import { BaseSection } from '@imago/ui'
 	let {
 		columns = 1,
 		gap = '1rem',

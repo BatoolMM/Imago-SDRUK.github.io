@@ -8,11 +8,8 @@
 	}
 	import { getId, Picture } from '@arturoguzman/art-ui'
 	import LottiePlayer from '../players/lottie_player.svelte'
-	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
-	import ArrowLeft from '@tabler/icons-svelte/icons/arrow-left'
 	import type { DirectusFile } from '$lib/types/directus'
-	import { IconCircleFilled } from '@tabler/icons-svelte'
-	import Paragraph from '../text/paragraph.svelte'
+	import { Paragraph, Icon } from '@imago/ui'
 	let { media }: Props = $props()
 	const id = getId()
 	let current = $state(0)
@@ -52,8 +49,10 @@
 						document
 							.getElementById(`carousel-${id}-${current}`)
 							?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })
-					}}><ArrowLeft></ArrowLeft></button
+					}}
 				>
+					<Icon icon={{ icon: 'arrow-left-01', set: 'hugeicons', size: 'lg' }}></Icon>
+				</button>
 			{/if}
 			{#if media.length - 1 > current}
 				<button
@@ -63,8 +62,10 @@
 							.getElementById(`carousel-${id}-${current}`)
 							?.scrollIntoView({ behavior: 'smooth', inline: 'nearest', block: 'nearest' })
 					}}
-					class="right-button"><ArrowRight></ArrowRight></button
+					class="right-button"
 				>
+					<Icon icon={{ icon: 'arrow-right-01', set: 'hugeicons', size: 'lg' }}></Icon>
+				</button>
 			{/if}
 
 			<div class="carousel-nav-buttons">
@@ -81,7 +82,13 @@
 								current = index
 							}}
 						>
-							<IconCircleFilled size={current === index ? 12 : 9}></IconCircleFilled>
+							<Icon
+								icon={{
+									icon: 'circle-filled',
+									set: 'tabler',
+									size: current === index ? 'lg' : 'md'
+								}}
+							></Icon>
 						</button>
 					{/if}
 				{/each}
@@ -93,6 +100,8 @@
 <style>
 	.carousel {
 		position: relative;
+		--theme-colour-text: var(--text);
+		--theme-font-paragraph: var(--paragraph);
 	}
 	.assets {
 		display: flex;
@@ -103,18 +112,20 @@
 	}
 	button {
 		height: 100%;
-		color: var(--theme-colour-background);
+		color: var(--background);
 		cursor: pointer;
 	}
 	.left-button {
 		position: absolute;
 		left: 0;
 		top: 0;
+		color: var(--highlight);
 	}
 	.right-button {
 		position: absolute;
 		right: 0;
 		top: 0;
+		color: var(--highlight);
 	}
 	.assets > * {
 		scroll-snap-align: start;
@@ -132,18 +143,18 @@
 		align-items: center;
 		justify-content: center;
 		background-color: white;
-		border: 1px solid var(--theme-colour-highlight);
+		border: 1px solid var(--highlight);
 		border-radius: 999px;
 		padding: 0.05rem 0.35rem;
 		transform: translate(-50%, 0);
 	}
 	.circle-button {
 		display: flex;
-		color: var(--theme-colour-quarternary);
+		color: var(--quarternary);
 	}
 	.circle-button[data-active] {
 		display: flex;
-		color: var(--theme-colour-secondary);
+		color: var(--highlight);
 	}
 	.description {
 		text-align: right;

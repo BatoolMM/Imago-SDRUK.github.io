@@ -13,7 +13,7 @@
 		gap: 1rem;
 		z-index: 1;
 		padding: 4rem 0;
-		background: linear-gradient(var(--theme-colour-q), var(--theme-colour-background));
+		/* background: linear-gradient(var(--theme-colour-q), var(--theme-colour-background)); */
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;

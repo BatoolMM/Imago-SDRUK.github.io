@@ -1,19 +1,15 @@
 <script lang="ts">
 	import type { Career } from '$lib/types/directus'
-	import BaseSection from './base_section.svelte'
-	import Content from '$lib/ui/blog/content.svelte'
-	import Title from '$lib/ui/blog/title.svelte'
-	import Anchor from '$lib/ui/buttons/anchor.svelte'
 	import { dateAvailable, dateExpired } from '$lib/utils/data.js'
 	import { DateTime } from 'luxon'
-	import Fact from '../text/fact.svelte'
 	let { career }: { career: Career } = $props()
 	const { title, url, salary, closing_date, location, hours, contract, content, posted_on } = career
+	import { Title, Paragraph, Fact, Button, BaseSection } from '@imago/ui'
 </script>
 
 <BaseSection>
 	<div class="career-section">
-		<Title size="large" {title}></Title>
+		<Title size="lg" text={title}></Title>
 		<div class="career-content-grid">
 			<div class="meta-container">
 				<div class="facts">
@@ -37,12 +33,12 @@
 							.setLocale('en-gb')
 							.toLocaleString(DateTime.DATE_FULL)}
 					></Fact>
-					<Anchor href={url} label="Apply"></Anchor>
+					<Button href={url}>Apply</Button>
 				</div>
 			</div>
-			<Content>
+			<Paragraph>
 				{@html content}
-			</Content>
+			</Paragraph>
 		</div>
 	</div>
 </BaseSection>

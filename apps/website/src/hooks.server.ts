@@ -1,6 +1,7 @@
 // import { directus } from '$lib/directus'
 // import { verifyCookie } from '$lib/utils/cookies'
 import { env } from '$env/dynamic/private'
+import { ERRORS } from '$lib/globals/errors'
 import { jstr } from '$lib/utils/data'
 import { directusSDK, directusSDKWithToken } from '$lib/utils/directus'
 import { ping } from '$lib/utils/network'
@@ -21,7 +22,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 	event.locals.startTimer = Date.now()
 	const backend_status = await ping(env.BACKEND_URL)
 	if (backend_status === -1) {
-		error(503, { id: 'unavailable', message: `Backend is not accessible at the moment.` })
+		error(503, ERRORS.no_backend)
 	}
 	event.locals.directus =
 		env.NODE_ENV === 'development'

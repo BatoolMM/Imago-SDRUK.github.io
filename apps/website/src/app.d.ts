@@ -1,6 +1,7 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 
 import type { Collections } from '$lib/types/directus'
+// import type { CkanClient } from '$lib/utils/ckan'
 import type { DirectusClient, RestClient, StaticTokenClient } from '@directus/sdk'
 
 // for information about these interfaces
@@ -14,6 +15,7 @@ declare global {
 			// session: {}
 			// startTimer: number
 			//    bot: boolean
+			// ckan: CkanClient
 		}
 		interface Error {
 			id: string

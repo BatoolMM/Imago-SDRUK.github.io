@@ -1,6 +1,9 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+/* @import 'tailwindcss/base'; */
+/* @import 'tailwindcss/components'; */
+/* @import 'tailwindcss/utilities'; */
+@import '@imago/ui/css/reset';
+@import '@imago/ui/css/theme';
+@import '@imago/ui/css/icons';
 
 :root {
 	--glass:

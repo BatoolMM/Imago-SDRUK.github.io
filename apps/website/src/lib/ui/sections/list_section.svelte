@@ -1,13 +1,13 @@
 <script lang="ts">
-	import BaseSection from './base_section.svelte'
-	import Title from '$lib/ui/blog/title.svelte'
+	import { Title } from '@imago/ui'
+	import { BaseSection } from '@imago/ui'
 	import type { Snippet } from 'svelte'
 	let { title, children }: { title: string; children?: Snippet } = $props()
 </script>
 
 <BaseSection>
 	<div class="list-section">
-		<Title size="large" {title}></Title>
+		<Title size="lg">{title}</Title>
 		<ul class="list-content">
 			{@render children?.()}
 		</ul>

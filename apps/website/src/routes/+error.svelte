@@ -1,18 +1,20 @@
 <script lang="ts">
-	import Footer from '$lib/ui/footer/footer.svelte'
-	import Nav from '$lib/ui/nav/nav.svelte'
 	import { page } from '$app/state'
 	import { NAV_HEIGHT } from '$lib/globals/style'
-	import Title from '$lib/ui/blog/title.svelte'
-	import Button from '$lib/ui/buttons/button.svelte'
+	import { Button, Icon, Title, Footer, DynamicNav } from '@imago/ui'
 	import { goto } from '$app/navigation'
-	import Home from '@tabler/icons-svelte/icons/home'
+	import { ROUTES } from '$lib/globals/routes'
+	import Logos from '$lib/ui/cards/logos.svelte'
 </script>
 
-<Nav></Nav>
+<DynamicNav routes={ROUTES} nav_height={NAV_HEIGHT}>
+	{#snippet children({ scroll })}
+		<Logos {scroll}></Logos>
+	{/snippet}
+</DynamicNav>
 <div class="error-section" style:--nav-height={NAV_HEIGHT}>
 	<div class="error-message">
-		<Title title={`${page.status} ${page.error?.message}`}></Title>
+		<Title text={`${page.status} ${page.error?.message}`}></Title>
 		<div class="button-container">
 			<Button
 				onclick={() => {
@@ -23,7 +25,7 @@
 					<p>Head home?</p>
 				{/snippet}
 				{#snippet rightCol()}
-					<Home></Home>
+					<Icon icon={{ icon: 'home-13', set: 'hugeicons' }}></Icon>
 				{/snippet}
 			</Button>
 		</div>

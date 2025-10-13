@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { TeamMember } from '$lib/types/directus'
 	import { Picture } from '@arturoguzman/art-ui'
-	import Title from '../blog/title.svelte'
-	import Subtitle from '../text/subtitle.svelte'
 	import ArrowRight from '@tabler/icons-svelte/icons/arrow-right'
 	import { ROLES } from '$lib/globals/data'
+	import { Subtitle, Title } from '@imago/ui'
 	let { team_member }: { team_member: TeamMember } = $props()
 </script>
 
@@ -16,10 +15,10 @@
 	</div>
 	<div class="card-title">
 		<div class="title">
-			<Title size="small" title="{team_member.first_name} {team_member.last_name}"></Title>
+			<Title size="sm" text="{team_member.first_name} {team_member.last_name}"></Title>
 			<ArrowRight></ArrowRight>
 		</div>
-		<Subtitle size="micro" subtitle={ROLES[team_member.role]}></Subtitle>
+		<Subtitle size="xs" text={ROLES[team_member.role]}></Subtitle>
 	</div>
 </a>
 
@@ -30,10 +29,10 @@
 		grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
 		border-radius: 1rem;
 		overflow: hidden;
-		border: 1px solid var(--theme-colour-tertiary);
+		border: 1px solid var(--border);
 	}
 	.title {
-		color: var(--theme-colour-text);
+		color: var(--text);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;

@@ -1,19 +1,14 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { notify } from '$lib/stores/notify'
-	import Title from '../blog/title.svelte'
-	import Button from '../buttons/button.svelte'
-	import BaseCard from '../cards/base_card.svelte'
+	import { BaseCard, Title, Paragraph, Input, Text, Button } from '@imago/ui'
 	import Email from '../inputs/email.svelte'
-	import Input from '../inputs/input.svelte'
-	import Text from '../inputs/text.svelte'
-	import Paragraph from '../text/paragraph.svelte'
 </script>
 
 <BaseCard border rounded shadow style="padded" size="md">
 	<div class="newsletter-form">
 		<div class="title">
-			<Title title="Newsletter" size="large"></Title>
+			<Title text="Newsletter" size="lg"></Title>
 			<Paragraph text="Subscribe to the newsletter to keep updated on Imago news and data products."
 			></Paragraph>
 		</div>
@@ -62,7 +57,6 @@
 		/* width: min(100% - 1rem, 400px); */
 		margin-inline: auto;
 		z-index: 1;
-		background: color-mix(in oklab, var(--theme-colour-background) 80%, transparent 20%);
 		/* border: 1px solid var(--theme-colour-text); */
 		/* padding: 2rem; */
 		/* border-radius: 1rem; */
