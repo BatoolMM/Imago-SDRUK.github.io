@@ -115,7 +115,20 @@ export enum TablerIconsEnum {
 	'brand-twitter',
 	'brand-instagram',
 	'mail',
-	'circle-filled'
+	'circle-filled',
+	'cloud-download',
+	'file-download',
+	'file-type-jpg',
+	'file-type-pdf',
+	'file-type-png',
+	'file-type-sql',
+	'file-type-svg',
+	'file-type-xml',
+	'file-type-zip',
+	'file-type-csv',
+	'file-type-doc',
+	'file-type-docx',
+	'file-type-html'
 }
 
 export type HugeIconsSet = keyof typeof HugeIconsEnum
