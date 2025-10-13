@@ -30,7 +30,7 @@ jobs:
 
           if [[ "$package" = '' ]] || [[ "$version" = '' ]]; then
             echo "This workflow was triggered without a package reference (git.ref_name). Please make sure it is triggered by a pac"
-            exit 0
+            exit 1
           fi
 
       - name: Log in to the Container registry
