@@ -32,7 +32,7 @@
 	--highlight: var(--quinary);
 	--highlight-accent: color-mix(in oklab, var(--highlight) 80%, white 20%);
 	--highlight-muted: color-mix(in oklab, var(--highlight) 80%, black 20%);
-	--positive: #4584a5;
+	--positive: #b2ffa9;
 	--positive-accent: color-mix(in oklab, var(--positive) 80%, white 20%);
 	--positive-muted: color-mix(in oklab, var(--positive) 80%, black 20%);
 	--negative: #8d2113;
