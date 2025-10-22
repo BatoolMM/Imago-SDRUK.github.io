@@ -1,98 +1,97 @@
 <script lang="ts">
-	import { page } from '$app/state'
+	import { DateTime } from 'luxon'
 	import { debug } from '$lib/globals/dev.svelte'
-	import { jstr } from '@arturoguzman/art-ui'
-	import { BaseSection, Button, Fact, Icon, Paragraph, Subtitle, Title } from '@imago/ui'
+	import { capitalise, jstr } from '@arturoguzman/art-ui'
+	import { Accordion, BaseSection, Button, Fact, Icon, Paragraph, Subtitle } from '@imago/ui'
+	import Product from '$lib/ui/products/product.svelte'
 	let { data } = $props()
-	let result = $derived(data.data.result)
-	const file_format_icons = [
-		'file-download',
-		'file-type-jpg',
-		'file-type-pdf',
-		'file-type-png',
-		'file-type-sql',
-		'file-type-svg',
-		'file-type-xml',
-		'file-type-zip',
-		'file-type-csv',
-		'file-type-doc',
-		'file-type-docx',
-		'file-type-html'
-	]
-	const getFileFormatIcon = (format?: string) => {
-		if (!format) {
-			return {
-				icon: file_format_icons[0],
-				set: 'tabler'
-			}
-		}
-		return {
-			icon:
-				file_format_icons.find((icons) => icons.includes(format.toLowerCase())) ??
-				file_format_icons[0],
-			set: 'tabler'
-		}
-	}
+	let result = $derived(data.result)
 </script>
 
 <div class="page">
-	{#if Array.isArray(result) === false}
+	{#if result}
 		<BaseSection style="base">
 			<div class="dataset-section">
 				<div class="left-col">
-					{#if 'resources' in result && Array.isArray(result.resources)}
-						{#each Object.entries(result) as [key, value]}
-							<Fact title={key} text={String(value)}></Fact>
-						{/each}
-					{/if}
+					<Accordion default_open>
+						{#snippet title({ open, toggleOpen })}
+							<button
+								class="trigger-button"
+								onclick={() => {
+									toggleOpen()
+								}}
+							>
+								<Subtitle>Author</Subtitle>
+								<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}
+								></Icon>
+							</button>
+						{/snippet}
+
+						{#if result.author}
+							<Fact size="xs" text={String(result.author)}></Fact>
+						{/if}
+						<!-- <Fact text={String(jstr(result.organization))}></Fact> -->
+						{#if result.organization}
+							<Fact size="xs" title="Organisation" text={result.organization.title}></Fact>
+							<!-- <Fact size="xs" text={result.organization.description}></Fact> -->
+						{/if}
+					</Accordion>
+					<Accordion default_open>
+						{#snippet title({ open, toggleOpen })}
+							<button
+								class="trigger-button"
+								onclick={() => {
+									toggleOpen()
+								}}
+							>
+								<Subtitle>License</Subtitle>
+								<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}
+								></Icon>
+							</button>
+						{/snippet}
+						{#if result.license_url}
+							<Button style="clean" href={String(result.license_url)}>{result.license_title}</Button
+							>
+						{:else}
+							<Paragraph>{result.license_title}</Paragraph>
+						{/if}
+					</Accordion>
+					<Accordion default_open>
+						{#snippet title({ open, toggleOpen })}
+							<button
+								class="trigger-button"
+								onclick={() => {
+									toggleOpen()
+								}}
+							>
+								<Subtitle>Metadata</Subtitle>
+								<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}
+								></Icon>
+							</button>
+						{/snippet}
+						<Fact size="xs" title="Type" text={capitalise(String(result.type))}></Fact>
+						<Fact
+							size="xs"
+							title="Created"
+							text={DateTime.fromISO(String(result.metadata_created)).toLocaleString(
+								DateTime.DATETIME_FULL
+							)}
+						></Fact>
+						<Fact
+							size="xs"
+							title="Modified"
+							text={DateTime.fromISO(String(result.metadata_modified)).toLocaleString(
+								DateTime.DATETIME_FULL
+							)}
+						></Fact>
+						<Fact size="xs" title="Resources" text={String(result.num_resources)}></Fact>
+					</Accordion>
+					<!-- {#each Object.entries(result) as [key, value]} -->
+					<!-- 	<Fact title={key} text={String(value)}></Fact> -->
+					<!-- {/each} -->
 				</div>
 				<div class="right-col">
-					<Title size="lg" text={String(result.title)}></Title>
-					{#if 'notes' in result}
-						<Paragraph>{@html result.notes}</Paragraph>
-					{/if}
-
-					<div class="resources">
-						<Subtitle size="md" text="Resources"></Subtitle>
-						<div class="pills">
-							{#if 'resources' in result && Array.isArray(result.resources)}
-								{#each result.resources as resource}
-									<div class="pill">
-										<Subtitle size="xs">{resource.name ?? resource.description}</Subtitle>
-										<div class="pill-buttons">
-											<Button href="/datasets/{page.params.id}/resources/{resource.id}"
-												>{#snippet leftCol()}
-													<span>Details</span>
-												{/snippet}
-												{#snippet rightCol()}
-													<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
-												{/snippet}
-											</Button>
-											{#if resource.format.toLowerCase() === 'html'}
-												<Button href={resource.url}
-													>{#snippet leftCol()}
-														<span>Visit</span>
-													{/snippet}
-													{#snippet rightCol()}
-														<Icon icon={{ icon: 'arrow-up-right-01', set: 'hugeicons' }}></Icon>
-													{/snippet}
-												</Button>
-											{:else}
-												<Button href={resource.url} download
-													>{#snippet leftCol()}
-														<span>Download</span>
-													{/snippet}
-													{#snippet rightCol()}
-														<Icon icon={getFileFormatIcon(resource.format)}></Icon>
-													{/snippet}
-												</Button>
-											{/if}
-										</div>
-									</div>
-								{/each}
-							{/if}
-						</div>
-					</div>
+					<Product result={data.result}></Product>
 				</div>
 			</div>
 		</BaseSection>
@@ -105,7 +104,7 @@
 
 <style>
 	.page {
-		color: var(--theme-colour-text);
+		color: var(--text);
 	}
 	.dataset-section {
 		display: grid;
@@ -118,26 +117,12 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-	.resources {
+
+	.trigger-button {
 		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.pills {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.pill {
-		display: grid;
-		width: 100%;
-		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
-	}
-	.pill-buttons {
-		display: flex;
-		width: 100%;
-		justify-content: flex-end;
+		justify-content: space-between;
 		align-items: center;
-		gap: 1rem;
+		color: var(--text);
+		width: 100%;
 	}
 </style>

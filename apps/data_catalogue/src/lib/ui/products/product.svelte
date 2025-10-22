@@ -1,0 +1,145 @@
+<script lang="ts" generics="T extends Record<PropertyKey, unknown>">
+	import { page } from '$app/state'
+	import Notes from '$lib/ui/text/notes.svelte'
+	import { Button, Icon, Subtitle, Title } from '@imago/ui'
+	let { result }: { result: T } = $props()
+	const file_format_icons = [
+		'file-download',
+		'file-type-jpg',
+		'file-type-pdf',
+		'file-type-png',
+		'file-type-sql',
+		'file-type-svg',
+		'file-type-xml',
+		'file-type-zip',
+		'file-type-csv',
+		'file-type-doc',
+		'file-type-docx',
+		'file-type-html'
+	]
+	const getFileFormatIcon = (format?: string) => {
+		if (!format) {
+			return {
+				icon: file_format_icons[0],
+				set: 'tabler'
+			}
+		}
+		return {
+			icon:
+				file_format_icons.find((icons) => icons.includes(format.toLowerCase())) ??
+				file_format_icons[0],
+			set: 'tabler'
+		}
+	}
+</script>
+
+<div class="product">
+	<div class="header">
+		<Title size="lg" text={String(result.title)}></Title>
+		{#if 'notes' in result}
+			<Notes note={String(result.notes)}></Notes>
+		{/if}
+	</div>
+
+	{#if 'resources' in result && Array.isArray(result.resources)}
+		<div class="resources">
+			<Subtitle size="md" text="Resources"></Subtitle>
+			<div class="content">
+				<div class="pills">
+					{#each result.resources as resource}
+						<div class="pill">
+							<Subtitle size="xs">{resource.name ?? resource.description}</Subtitle>
+							<div class="pill-buttons">
+								<Button href="/datasets/{page.params.id}/resources/{resource.id}"
+									>{#snippet leftCol()}
+										<span>Details</span>
+									{/snippet}
+									{#snippet rightCol()}
+										<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
+									{/snippet}
+								</Button>
+								{#if resource.format.toLowerCase() === 'html'}
+									<Button href={resource.url}
+										>{#snippet leftCol()}
+											<span>Visit</span>
+										{/snippet}
+										{#snippet rightCol()}
+											<Icon icon={{ icon: 'arrow-up-right-01', set: 'hugeicons' }}></Icon>
+										{/snippet}
+									</Button>
+								{:else}
+									<Button href={resource.url} download
+										>{#snippet leftCol()}
+											<span>Download</span>
+										{/snippet}
+										{#snippet rightCol()}
+											<Icon icon={getFileFormatIcon(resource.format)}></Icon>
+										{/snippet}
+									</Button>
+								{/if}
+							</div>
+						</div>
+					{/each}
+				</div>
+			</div>
+		</div>
+	{/if}
+	{#if Array.isArray(result.extras)}
+		<div class="resources">
+			<Subtitle size="md" text="Extras"></Subtitle>
+			<div class="content">
+				<div class="pills">
+					{#each result.extras as extra}
+						<div class="pill">
+							<Subtitle size="xs">{extra.key}</Subtitle>
+							<div class="pill-buttons">
+								<pre>{extra.value}</pre>
+							</div>
+						</div>
+					{/each}
+				</div>
+			</div>
+		</div>
+	{/if}
+</div>
+
+<style>
+	.product {
+		display: flex;
+		flex-direction: column;
+		gap: 3rem;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.resources {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.resources .content {
+		padding: 1rem;
+	}
+	.pills {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.pill {
+		display: grid;
+		width: 100%;
+		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
+		gap: 1rem;
+	}
+	.pill-buttons {
+		display: flex;
+		width: 100%;
+		justify-content: flex-end;
+		align-items: center;
+		gap: 1rem;
+		overflow: hidden;
+	}
+</style>

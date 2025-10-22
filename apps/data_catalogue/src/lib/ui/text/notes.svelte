@@ -4,10 +4,15 @@
 	import DOMPurify from 'dompurify'
 	import { marked } from 'marked'
 	import { onMount } from 'svelte'
-	let { str }: { str: string } = $props()
+	let { note, trim }: { note: string; trim?: number } = $props()
 	let sanitised = $state('')
 	onMount(async () => {
-		const parsed = await marked.parse(str)
+		let _note = note
+		if (typeof trim === 'number') {
+			_note = trim >= note.length ? note : `${note.slice(0, trim)}...`
+		}
+		let parsed = await marked.parse(_note.trim())
+
 		sanitised = DOMPurify.sanitize(parsed)
 	})
 </script>
