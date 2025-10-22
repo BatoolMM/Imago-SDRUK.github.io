@@ -12,7 +12,8 @@
 		onpointerdown,
 		active,
 		style = 'base',
-		type
+		type,
+		line_clamp
 	}: {
 		href?: string
 		download?: string | boolean
@@ -25,12 +26,14 @@
 		active?: boolean
 		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full'
 		type?: 'button' | 'submit' | 'reset' | null
+		line_clamp?: boolean
 	} = $props()
 </script>
 
 {#if href}
 	<a
 		class="btn"
+		class:line-clamp={line_clamp}
 		class:active
 		{onclick}
 		data-style={style}
@@ -48,6 +51,7 @@
 	<button
 		class="btn"
 		class:active
+		class:line-clamp={line_clamp}
 		{onclick}
 		data-style={style}
 		{type}
@@ -70,7 +74,13 @@
 		transition: all var(--animation-time) ease-in-out;
 		text-decoration: none;
 	}
-
+	.line-clamp {
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-line-clamp: 2; /* number of lines to show */
+		line-clamp: 2;
+		text-align: left;
+	}
 	.btn[data-style='base'] {
 		justify-content: space-between;
 		align-items: center;
