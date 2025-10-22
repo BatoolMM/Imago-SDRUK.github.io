@@ -3,11 +3,11 @@
 	import { NAV_HEIGHT } from '$lib/globals/style'
 	import { Button, DynamicNav, Footer, Icon, Title } from '@imago/ui'
 	import { goto } from '$app/navigation'
-	import { ROUTES } from '$lib/globals/routes'
 	import Logos from '$lib/ui/cards/logos.svelte'
+	let { data } = $props()
 </script>
 
-<DynamicNav routes={ROUTES} nav_height="4rem">
+<DynamicNav routes={data.routes} nav_height="4rem">
 	{#snippet children({ scroll })}
 		<Logos {scroll}></Logos>
 	{/snippet}

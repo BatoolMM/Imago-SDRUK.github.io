@@ -32,7 +32,7 @@ export const ROUTES: Routes = [
 	},
 	{
 		label: 'Login',
-		href: '/login',
+		href: '/auth/login',
 		subpaths: []
 	}
 ]
