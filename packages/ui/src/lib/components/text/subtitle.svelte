@@ -4,15 +4,19 @@
 	let {
 		children,
 		text,
-		size = 'sm'
+		size = 'sm',
+		current_colour,
+		weight = 400
 	}: {
 		text?: string
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+		weight?: number
 		children?: Snippet
+		current_colour?: boolean
 	} = $props()
 </script>
 
-<h3 class="title" data-size={size}>
+<h3 class="title" data-size={size} data-current-colour={current_colour} style:--weight={weight}>
 	{#if children}
 		{@render children()}
 	{/if}
@@ -25,7 +29,7 @@
 	h3 {
 		color: var(--text);
 		font-family: var(--subtitle);
-		font-weight: 400;
+		font-weight: var(--weight);
 	}
 	h3[data-size='xs'] {
 		font-size: clamp(0.875rem, 0.858rem + 0.083vw, 0.925rem);
@@ -44,5 +48,8 @@
 	}
 	h3[data-size='2xl'] {
 		font-size: clamp(2rem, 1.667rem + 1.667vw, 3rem);
+	}
+	h3[data-current-colour] {
+		color: currentColor;
 	}
 </style>

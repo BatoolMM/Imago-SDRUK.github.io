@@ -4,21 +4,33 @@
 	let {
 		children,
 		text,
-		size = 'md'
+		size = 'md',
+		current_colour
 	}: {
 		text?: string
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 		children?: Snippet
+		current_colour?: boolean
 	} = $props()
 </script>
 
 {#if children}
-	<span class="paragraph prose" data-size={size}>
+	<span
+		class="paragraph prose"
+		data-size={size}
+		data-current-colour={current_colour ? current_colour : undefined}
+	>
 		{@render children()}
 	</span>
 {/if}
 {#if text}
-	<p class="paragraph prose" data-size={size}>{text}</p>
+	<p
+		class="paragraph prose"
+		data-size={size}
+		data-current-colour={current_colour ? current_colour : undefined}
+	>
+		{text}
+	</p>
 {/if}
 
 <style>
@@ -57,5 +69,8 @@
 	}
 	:global(span.prose *:not(:last-child)) {
 		margin-bottom: 1rem;
+	}
+	.paragraph[data-current-colour] {
+		color: currentColor;
 	}
 </style>

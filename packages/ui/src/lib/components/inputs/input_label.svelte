@@ -25,6 +25,7 @@
 	.input-label {
 		font-size: clamp(0.9rem, 0.875rem + 0.125vw, 0.975rem);
 		font-family: var(--subtitle);
+		color: var(--text);
 	}
 
 	.input-label[data-size='lg'] {
