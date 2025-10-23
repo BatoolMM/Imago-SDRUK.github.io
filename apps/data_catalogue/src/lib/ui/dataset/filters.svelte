@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { page } from '$app/state'
 	import type { CkanResult, CkanTextError } from '$lib/utils/ckan/actions'
-	import { Accordion, Button, Icon, Subtitle } from '@imago/ui'
+	import { jstr } from '@arturoguzman/art-ui'
+	import { Accordion, Button, handleSearchParams, Icon, Subtitle } from '@imago/ui'
 	let {
 		organisations,
 		groups,
@@ -18,6 +20,7 @@
 		{
 			title: 'Organisations',
 			filters: organisations,
+			query: 'organization',
 			limit: 10,
 			transform: (id: string) => {
 				return { label: id, href: `?organization=${id}` }
@@ -26,6 +29,7 @@
 		{
 			title: 'Groups',
 			filters: groups,
+			query: 'groups',
 			limit: 10,
 			transform: (id: string) => {
 				return { label: id, href: `?groups=${id}` }
@@ -34,6 +38,7 @@
 		{
 			title: 'Tags',
 			filters: tags,
+			query: 'tags',
 			limit: 10,
 			transform: (id: string) => {
 				return { label: id, href: `?tags=${id}` }
@@ -42,6 +47,7 @@
 		{
 			title: 'Resources',
 			filters: resources,
+			query: 'res_format',
 			limit: 10,
 			transform: (id: string) => {
 				console.log(id)
@@ -51,6 +57,7 @@
 		{
 			title: 'Licenses',
 			filters: licenses,
+			query: 'license_id',
 			limit: 10,
 			transform: (id: string) => {
 				return { label: id, href: `?license_id=${id}` }
@@ -99,15 +106,33 @@
 			{#if Array.isArray(filter.filters.result)}
 				<div class="accordion-buttons">
 					{#each filter.filters.result as result}
-						<!-- {#each filter.filters.result.slice(0, filter.limit) as result} -->
-						{#if typeof result === 'string'}
-							<Button line_clamp>{result}</Button>
-						{/if}
-						{#if typeof result === 'object'}
-							{#if result && 'title' in result}
-								<Button line_clamp>{result.title}</Button>
+						<div class="button-wrapper">
+							<!-- {#each filter.filters.result.slice(0, filter.limit) as result} -->
+							{#if typeof result === 'string'}
+								{@const active = page.url.searchParams.getAll(filter.query).includes(result)}
+								<Button
+									{active}
+									line_clamp
+									href={handleSearchParams({
+										add: [{ key: filter.query, value: result }],
+										remove: active ? [{ key: filter.query, value: result }] : undefined
+									})}>{result}</Button
+								>
 							{/if}
-						{/if}
+							{#if typeof result === 'object'}
+								{#if result && 'title' in result}
+									{@const active = page.url.searchParams.getAll(filter.query).includes(result.id)}
+									<Button
+										{active}
+										line_clamp
+										href={handleSearchParams({
+											add: [{ key: filter.query, value: result.id }],
+											remove: active ? [{ key: filter.query, value: result.id }] : undefined
+										})}>{result.title}</Button
+									>
+								{/if}
+							{/if}
+						</div>
 					{/each}
 				</div>
 			{/if}
@@ -133,9 +158,10 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-auto-flow: row;
-		gap: 1rem;
+		gap: 0.5rem;
 		max-height: 50lvh;
 		overflow-y: scroll;
 		scrollbar-width: none;
+		padding: 1rem;
 	}
 </style>

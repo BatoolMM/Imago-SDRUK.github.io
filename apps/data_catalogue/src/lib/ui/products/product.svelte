@@ -108,6 +108,9 @@
 		display: flex;
 		flex-direction: column;
 		gap: 3rem;
+		padding: 2rem;
+		background-color: var(--background-muted);
+		border-radius: 0.35rem;
 	}
 
 	.header {
@@ -129,10 +132,15 @@
 		gap: 1rem;
 	}
 	.pill {
+		background-color: var(--background);
 		display: grid;
+		/* justify-items: center; */
+		align-items: center;
 		width: 100%;
 		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
 		gap: 1rem;
+		padding: 1rem;
+		border-radius: 0.5rem;
 	}
 	.pill-buttons {
 		display: flex;

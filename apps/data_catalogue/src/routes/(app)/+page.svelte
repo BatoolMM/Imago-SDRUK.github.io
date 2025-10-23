@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { BaseCard, Input, Title, Text, type IconsSets, PlayerLottie, Button } from '@imago/ui'
 	let { data } = $props()
+	let search = $state()
 	const search_icon: IconsSets = { icon: 'search', set: 'tabler' }
 	const stats: { label: string; count: number }[] = [
 		{ label: 'Datasets', count: Number(data.package_count) },
@@ -17,13 +19,22 @@
 		<PlayerLottie play src="/lottie/city/data.json"></PlayerLottie>
 	</div>
 	<div class="content">
-		<div class="header">
+		<div class="hcader">
 			<Title size="2xl">Search Imago datasets</Title>
 			<div class="search-bar">
 				<Input>
-					<Text icon={search_icon} name="search"></Text>
+					<Text
+						icon={search_icon}
+						name="search"
+						bind:value={search}
+						onkeydown={(e) => {
+							if (e.key === 'Enter') {
+								goto(`/datasets?search=${search}`)
+							}
+						}}
+					></Text>
 				</Input>
-				<Button href="/search">Search</Button>
+				<Button href="/datasets?search={search}">Search</Button>
 			</div>
 		</div>
 		<div class="body">
