@@ -24,42 +24,7 @@
 		<div class="right-col">
 			{#if Array.isArray(datasets)}
 				{#each datasets as dataset}
-					<BaseCard>
-						<div class="product-card">
-							<a href={`/datasets/${dataset.name}`} class="title">
-								<Subtitle weight={600} current_colour size="md">{dataset.title}</Subtitle>
-							</a>
-							<div class="metadata">
-								<div class="notes">
-									{#if dataset.notes}
-										<Notes note={String(dataset.notes)} trim={200}></Notes>
-									{/if}
-								</div>
-								<div class="footer">
-									<div class="facts">
-										{#if dataset.resources && Array.isArray(dataset.resources)}
-											{@const formats = Array.from(
-												new Set(dataset.resources.map((resource) => resource.format))
-											)}
-
-											<Paragraph size="xs"
-												>{formats.length === 1 ? 'Format' : 'Formats'}: {String(
-													formats.join(', ')
-												)}</Paragraph
-											>
-										{/if}
-										{#if dataset.license_title}
-											<Paragraph size="xs">License: {String(dataset.license_title)}</Paragraph>
-										{/if}
-									</div>
-									<Button href={`/datasets/${dataset.name}`}>
-										See more
-										<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
-									</Button>
-								</div>
-							</div>
-						</div>
-					</BaseCard>
+					<CardProduct {dataset}></CardProduct>
 				{/each}
 			{/if}
 			<div class="footer">
