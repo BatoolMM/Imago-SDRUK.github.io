@@ -44,7 +44,9 @@ const processURL = (url: string | URL, path: string, params?: Record<PropertyKey
 	_url.pathname = path
 	if (params) {
 		Object.entries(params).forEach(([name, value]) => {
-			_url.searchParams.append(String(name), String(value))
+			if (value !== '' && value !== null && value !== undefined) {
+				_url.searchParams.append(String(name), String(value))
+			}
 		})
 	}
 	return _url.toString()
