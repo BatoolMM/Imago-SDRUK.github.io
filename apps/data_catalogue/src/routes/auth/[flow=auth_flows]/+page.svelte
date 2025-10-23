@@ -8,7 +8,7 @@
 </script>
 
 <BaseSection style="bleed">
-	<div class="register-section">
+	<div class="auth-section">
 		<div class="left-col">
 			<!-- <pre>{jstr(data)}</pre> -->
 			<img src="/imago_logo.png" alt="" />
@@ -24,9 +24,11 @@
 </BaseSection>
 
 <style>
-	.register-section {
+	.auth-section {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
+		border-top: 1px solid var(--border);
+		max-width: 100lvw;
 		/* gap: 2rem; */
 	}
 	.left-col {
@@ -34,11 +36,11 @@
 		display: none;
 		/* background-color: var(--secondary); */
 	}
-	.left-col pre {
-		overflow: scroll;
-		height: 90lvh;
-		font-size: 0.8rem;
-	}
+	/* .left-col pre { */
+	/* 	overflow: scroll; */
+	/* 	height: 90lvh; */
+	/* 	font-size: 0.8rem; */
+	/* } */
 	.right-col {
 		padding: 2rem;
 		background-color: var(--background-muted);
@@ -47,7 +49,7 @@
 		align-items: center;
 	}
 	@media (min-width: 768px) {
-		.register-section {
+		.auth-section {
 			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 		}
 		.left-col {
