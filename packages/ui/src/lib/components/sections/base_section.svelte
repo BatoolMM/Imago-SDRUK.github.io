@@ -57,7 +57,8 @@
 	}
 
 	section[data-style='bleed'] {
-		width: 100lvw;
+		/* max-width: 100lvw; */
+		width: 100%;
 		min-height: 100lvh;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);

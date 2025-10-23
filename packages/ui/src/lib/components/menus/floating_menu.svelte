@@ -47,15 +47,15 @@
 	<div class="menu-button" bind:this={menu_button_ref}>
 		{@render trigger({ toggleMenu, open })}
 	</div>
-	{#if open}
+	{#if open && children}
 		<menu
 			bind:clientWidth={menu_element_width}
 			transition:slide
-			class:with-children={children ? true : false}
+			class:with-children={true}
 			style:--left="{getLeftPosition(location?.left ?? 0)}px"
 			style:--top="{location?.bottom ?? 0}px"
 		>
-			{@render children?.()}
+			{@render children()}
 		</menu>
 	{/if}
 </div>

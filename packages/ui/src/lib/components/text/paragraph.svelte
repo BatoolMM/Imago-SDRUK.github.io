@@ -5,10 +5,12 @@
 		children,
 		text,
 		size = 'md',
-		current_colour
+		current_colour,
+		align = 'left'
 	}: {
 		text?: string
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
+		align?: 'left' | 'centre' | 'right'
 		children?: Snippet
 		current_colour?: boolean
 	} = $props()
@@ -19,6 +21,7 @@
 		class="paragraph prose"
 		data-size={size}
 		data-current-colour={current_colour ? current_colour : undefined}
+		data-align={align ? align : undefined}
 	>
 		{@render children()}
 	</span>
@@ -28,6 +31,7 @@
 		class="paragraph prose"
 		data-size={size}
 		data-current-colour={current_colour ? current_colour : undefined}
+		data-align={align ? align : undefined}
 	>
 		{text}
 	</p>
@@ -72,5 +76,14 @@
 	}
 	.paragraph[data-current-colour] {
 		color: currentColor;
+	}
+	.paragraph[data-align='left'] {
+		text-align: left;
+	}
+	.paragraph[data-align='centre'] {
+		text-align: center;
+	}
+	.paragraph[data-align='right'] {
+		text-align: right;
 	}
 </style>

@@ -79,25 +79,40 @@
 		<div class="routes" data-menu={menu_open ? true : undefined}>
 			{#if desktop}
 				{#each routes as { href, label, subpaths }}
-					<Menu>
-						{#snippet trigger({ toggleMenu })}
-							{#if desktop}
-								<Button
-									active={page.url.pathname.startsWith(href) && href !== '/'}
-									style="anchor"
-									onpointerdown={() => toggleMenu(false)}
-									{href}>{label}</Button
-								>
-							{/if}
-						{/snippet}
-						{#snippet children()}
-							<div class="subpaths">
-								{#each subpaths as { href, label }}
-									<Button style="anchor" {href}>{label}</Button>
-								{/each}
-							</div>
-						{/snippet}
-					</Menu>
+					{#if subpaths.length > 0}
+						<Menu>
+							{#snippet trigger({ toggleMenu })}
+								{#if desktop}
+									<Button
+										active={page.url.pathname.startsWith(href) && href !== '/'}
+										style="anchor"
+										onpointerdown={() => toggleMenu(false)}
+										{href}>{label}</Button
+									>
+								{/if}
+							{/snippet}
+							{#snippet children()}
+								<div class="subpaths">
+									{#each subpaths as { href, label }}
+										<Button style="anchor" {href}>{label}</Button>
+									{/each}
+								</div>
+							{/snippet}
+						</Menu>
+					{:else}
+						<Menu>
+							{#snippet trigger({ toggleMenu })}
+								{#if desktop}
+									<Button
+										active={page.url.pathname.startsWith(href) && href !== '/'}
+										style="anchor"
+										onpointerdown={() => toggleMenu(false)}
+										{href}>{label}</Button
+									>
+								{/if}
+							{/snippet}
+						</Menu>
+					{/if}
 				{/each}
 			{:else}
 				<div class="mobile-menu">

@@ -41,6 +41,7 @@
 		{download}
 		{onpointerdown}
 		{onpointerup}
+		target={download ? '_blank' : undefined}
 	>
 		{@render leftCol?.()}
 		{@render children?.()}
@@ -77,7 +78,7 @@
 	.line-clamp {
 		overflow: hidden;
 		display: -webkit-box;
-		-webkit-line-clamp: 2; /* number of lines to show */
+		-webkit-line-clamp: 2;
 		line-clamp: 2;
 		text-align: left;
 	}
@@ -103,6 +104,36 @@
 	}
 
 	.btn[data-style='base'].active {
+		outline: 0.15rem solid var(--quarternary);
+		outline-offset: 0.2rem;
+		background-color: var(--highlight-accent);
+		color: var(--background-muted);
+	}
+
+	.btn[data-style='alt'] {
+		font-weight: 400;
+		color: var(--tertiary-muted);
+		justify-content: space-between;
+		align-items: center;
+		border: 1px solid var(--tertiary-muted);
+		background-color: var(--quarternary);
+		gap: 1rem;
+		padding: clamp(0.15rem, 0.117rem + 0.167vw, 0.25rem) clamp(1rem, 0.667rem + 1.667vw, 2rem);
+		border-radius: 999px;
+	}
+
+	.btn[data-style='alt']:hover {
+		/* border: 1px solid var(--theme-colour-text); */
+		box-shadow: 0px 0px 10px
+			color-mix(in oklab, var(--theme-colour-text) 20%, var(--theme-colour-background) 80%);
+		background-color: var(--border);
+	}
+
+	.btn[data-style='alt']:visited {
+		/* border: 1px solid var(--border-muted); */
+	}
+
+	.btn[data-style='alt'].active {
 		outline: 0.15rem solid var(--quarternary);
 		outline-offset: 0.2rem;
 		background-color: var(--highlight-accent);
