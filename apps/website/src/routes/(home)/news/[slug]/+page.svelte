@@ -49,23 +49,25 @@
 						</div>
 						<div class="section-blocks">
 							{#each section.content as block}
-								{#if block.type === 'text'}
-									{#if block.content}
-										<div class="content prose">
-											<Paragraph>{@html block.content}</Paragraph>
-										</div>
+								<div class="block" data-size={block.size}>
+									{#if block.type === 'text'}
+										{#if block.content}
+											<div class="content prose">
+												<Paragraph>{@html block.content}</Paragraph>
+											</div>
+										{/if}
 									{/if}
-								{/if}
-								{#if block.type === 'image'}
-									{#if block.media}
-										<Carousel media={block.media}></Carousel>
+									{#if block.type === 'image'}
+										{#if block.media}
+											<Carousel media={block.media}></Carousel>
+										{/if}
 									{/if}
-								{/if}
-								{#if block.type === 'cta'}
-									{#if block.action === 'newsletter'}
-										<NewsletterCard></NewsletterCard>
+									{#if block.type === 'cta'}
+										{#if block.action === 'newsletter'}
+											<NewsletterCard></NewsletterCard>
+										{/if}
 									{/if}
-								{/if}
+								</div>
 							{/each}
 						</div>
 					</div>
@@ -125,6 +127,12 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+	}
+	.block[data-size='small'] {
+		width: min(100% - 2rem, 400px);
+	}
+	.block[data-size='medium'] {
+		width: min(100% - 2rem, 800px);
 	}
 	.content {
 		width: min(100% - 2rem, 600px);

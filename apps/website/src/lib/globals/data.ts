@@ -2,6 +2,7 @@ import type { TeamMember } from '$lib/types/directus'
 
 export const ROLES: Record<TeamMember['role'], string> = {
 	rse: 'Research Software Engineer',
+	srse: 'Senior Research Software Engineer',
 	researcher: 'Researcher',
 	postdoc: 'Postdoctoral Research Associate',
 	administrator: 'Administrator',

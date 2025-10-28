@@ -7,7 +7,8 @@
 		onfocusin,
 		onfocusout,
 		onkeypress,
-		onblur
+		onblur,
+		current_colour
 	}: {
 		key: string
 		design: 1 | 2 | 3 | 4
@@ -16,6 +17,7 @@
 		onfocusout?: FocusEventHandler<HTMLInputElement>
 		onkeypress?: KeyboardEventHandler<HTMLInputElement>
 		onblur?: FocusEventHandler<HTMLInputElement>
+		current_colour?: boolean
 	} = $props()
 </script>
 
@@ -24,6 +26,7 @@
 	id={key}
 	type="text"
 	class="text-{design}"
+	data-current-colour={current_colour ? current_colour : undefined}
 	bind:value
 	{onfocusin}
 	{onfocusout}
@@ -40,6 +43,9 @@
 		transition: background 0.3s ease-in-out;
 		/* padding: 0 0.25rem; */
 		width: 100%;
+	}
+	input[data-current-colour] {
+		color: currentColor;
 	}
 	input:focus {
 		outline: none !important;
