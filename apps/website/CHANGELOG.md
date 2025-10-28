@@ -1,5 +1,10 @@
 # website
 
+## 2.0.15
+### Patch Changes
+
+- da0133c: add sizing to article blocks, add new role
+
 ## 2.0.14
 ### Patch Changes
 
