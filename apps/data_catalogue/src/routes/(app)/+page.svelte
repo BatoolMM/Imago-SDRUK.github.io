@@ -19,7 +19,7 @@
 		<PlayerLottie play src="/lottie/city/data.json"></PlayerLottie>
 	</div>
 	<div class="content">
-		<div class="hcader">
+		<div class="header">
 			<Title size="2xl">Search Imago datasets</Title>
 			<div class="search-bar">
 				<Input>

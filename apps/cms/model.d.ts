@@ -59,6 +59,14 @@ export interface ArticleSectionBlock {
   /**
    * No description.
    *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   size: 'small' | 'medium' | 'large' | null;
+
+  /**
+   * No description.
+   *
    * Type in directus: integer
    * Type in database: integer
    */
@@ -4361,7 +4369,7 @@ export interface TeamMember {
    * Type in directus: string
    * Type in database: character varying
    */
-   role: 'rse' | 'researcher' | 'postdoc' | 'administrator' | 'co_director' | 'data_service_manager' | 'outreach_officer';
+   role: 'rse' | 'researcher' | 'postdoc' | 'administrator' | 'co_director' | 'data_service_manager' | 'outreach_officer' | 'srse';
 
   /**
    * This will be generated automatically
