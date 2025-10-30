@@ -2,15 +2,17 @@
 	import { enhance } from '$app/forms'
 	import { notify } from '$lib/stores/notify'
 	import { BaseCard, Title, Paragraph, Input, Text, Button } from '@imago/ui'
-	import Email from '../inputs/email.svelte'
+	let {
+		title = 'Newsletter',
+		paragraph = 'Subscribe to the newsletter to keep updated on Imago news and data products.'
+	}: { title?: string; paragraph?: string } = $props()
 </script>
 
 <BaseCard border rounded shadow style="padded" size="md">
 	<div class="newsletter-form">
 		<div class="title">
-			<Title text="Newsletter" size="lg"></Title>
-			<Paragraph text="Subscribe to the newsletter to keep updated on Imago news and data products."
-			></Paragraph>
+			<Title text={title} size="lg"></Title>
+			<Paragraph text={paragraph}></Paragraph>
 		</div>
 		<form
 			class="form-content"
@@ -23,15 +25,18 @@
 						notify.send({
 							message: `There's been an error submitting this request, please try again`
 						})
-					if (result.type === 'success') update({ reset: true, invalidateAll: true })
+					if (result.type === 'success') {
+						notify.send({ message: `Thank you, you've been successfully added to the newsletter` })
+						update({ reset: true, invalidateAll: true })
+					}
 				}
 			}}
 		>
-			<Input label_text="Name" layout={1} label_design={1}>
-				<Text key="name" design={1}></Text>
+			<Input label="Name">
+				<Text name="name"></Text>
 			</Input>
-			<Input label_text="Email" layout={1} label_design={1}>
-				<Email key="email" design={1}></Email>
+			<Input label="Email">
+				<Text type="email" name="email"></Text>
 			</Input>
 			<div class="button-container">
 				<Button

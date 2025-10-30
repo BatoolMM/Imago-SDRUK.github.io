@@ -2,7 +2,6 @@
 	import NewsletterCard from '$lib/ui/cards/newsletter_card.svelte'
 	import Carousel from '$lib/ui/components/carousel.svelte'
 	import { getArticleSections } from '$lib/utils/directus/articles.js'
-	import { jstr } from '@arturoguzman/art-ui'
 	import { DateTime } from 'luxon'
 	import { Subtitle, Title, Fact, Paragraph } from '@imago/ui'
 	let { data } = $props()
@@ -89,10 +88,10 @@
 		width: min(100% - 2rem, 1280px);
 		margin-inline: auto;
 	}
-	.tags {
-		display: flex;
-		gap: 0.5rem;
-	}
+	/* .tags { */
+	/* 	display: flex; */
+	/* 	gap: 0.5rem; */
+	/* } */
 	.header {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
