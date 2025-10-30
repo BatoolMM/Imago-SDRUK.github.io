@@ -1,5 +1,11 @@
 # website
 
+## 2.0.16
+### Patch Changes
+
+- 1c19a8f: Fix newsletter input.
+  Fix notification stye.
+
 ## 2.0.15
 ### Patch Changes
 

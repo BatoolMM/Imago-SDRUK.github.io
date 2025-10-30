@@ -1,5 +1,11 @@
 # @imago/ui
 
+## 1.0.2
+### Patch Changes
+
+- 1c19a8f: Fix newsletter input.
+  Fix notification stye.
+
 ## 1.0.1
 ### Patch Changes
 
