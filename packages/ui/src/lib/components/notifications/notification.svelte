@@ -2,6 +2,7 @@
 	import type { Subscriber, Unsubscriber, Updater } from 'svelte/store'
 	import { slide } from 'svelte/transition'
 	import type { Notification } from './types'
+	import { Paragraph } from '@imago/ui'
 	let {
 		notify
 	}: {
@@ -30,7 +31,9 @@
 			class="notification"
 			style:--duration={`${notification.duration}ms`}
 		>
-			<p>{notification.status ? `${notification.status}: ` : ''}{notification.message}</p>
+			<Paragraph
+				>{notification.status ? `${notification.status}: ` : ''}{notification.message}</Paragraph
+			>
 		</button>
 	{/each}
 </div>
@@ -39,14 +42,14 @@
 	.notification {
 		border: 1px solid var(--highlight);
 		color: var(text);
-		background-color: var(background);
+		background-color: var(--background);
 		padding: 1rem;
 		border-radius: 0.35rem;
 		cursor: pointer;
 		/* box-shadow: 2px 2px var(text); */
 		position: relative;
 		overflow: hidden;
-		font-family: var(title);
+		font-family: var(--title);
 		flex-shrink: 0;
 	}
 	.notification::after {
@@ -56,7 +59,7 @@
 		left: 0rem;
 		width: 0%;
 		height: 0.35rem;
-		background-color: var(highlight);
+		background-color: var(--highlight);
 		animation: progress var(--duration) forwards linear;
 		flex-shrink: 0;
 	}
