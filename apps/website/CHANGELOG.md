@@ -1,5 +1,10 @@
 # website
 
+## 2.0.17
+### Patch Changes
+
+- ffa4dd8: Fix and update UI
+
 ## 2.0.16
 ### Patch Changes
 
