@@ -4,7 +4,8 @@
 	import Loading from '$lib/ui/loading.svelte'
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
 	import { APP_STATE } from '$lib/globals/state.svelte'
-	import { debug } from '$lib/globals/dev.svelte'
+	import { Notification } from '@imago/ui'
+	import { notify } from '$lib/stores/notify'
 	let { children } = $props()
 	beforeNavigate(() => {
 		APP_STATE.loading = true
@@ -17,8 +18,6 @@
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
-{#if debug.status}
-	<pre>loading: {APP_STATE.loading}</pre>
-{/if}
 {@render children?.()}
 <Loading></Loading>
+<Notification {notify} />
