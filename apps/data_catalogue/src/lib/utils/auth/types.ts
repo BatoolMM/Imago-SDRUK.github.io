@@ -128,6 +128,22 @@ export type IdentityNode = {
 	}
 }
 
+// export type IdentityFlow = {
+// 	id: string
+// 	type: 'browser' | 'api'
+// 	expires_at: string
+// 	issued_at: string
+// 	request_url: string
+// 	ui: {
+// 		action: string
+// 		method: 'POST'
+// 		nodes: IdentityNode[]
+// 		messages: IdentityMessage[]
+// 	}
+// 	organization_id?: null
+// 	state?: string
+// }
+
 export type IdentityFlow = {
 	id: string
 	type: 'browser' | 'api'
