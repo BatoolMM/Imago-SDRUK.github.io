@@ -58,7 +58,6 @@ export const handleNotifications = () => {
 			remove(id)
 		}, _duration)
 		update((store) => {
-			console.log(_notification)
 			store.push(_notification)
 			return store
 		})
