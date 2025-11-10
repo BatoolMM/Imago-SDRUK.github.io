@@ -25,9 +25,12 @@
 
 						<Paragraph size="xs"
 							>{#each formats as format}
-								<span data-format={format ? String(format).toLowerCase() : undefined} class="format"
-									>{format}</span
-								>
+								{#if format && format !== ''}
+									<span
+										data-format={format ? String(format).toLowerCase() : undefined}
+										class="format">{format}</span
+									>
+								{/if}
 							{/each}</Paragraph
 						>
 					{/if}
@@ -87,6 +90,7 @@
 		padding: 0 0.25rem;
 		border-radius: 0.15rem;
 		font-weight: 500;
+		background-color: var(--secondary-muted);
 	}
 	.format[data-format='csv'] {
 		background-color: var(--secondary);

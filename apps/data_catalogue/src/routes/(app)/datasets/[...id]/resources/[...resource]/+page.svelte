@@ -23,14 +23,20 @@
 				</div>
 				<div class="metadata">
 					<Subtitle>Metadata</Subtitle>
-					{#if 'format' in result}
+					{#if result.format !== null}
 						<div class="metadata-field">
 							<Subtitle>Format</Subtitle>
 							<Notes note={String(result.format)}></Notes>
 						</div>
 					{/if}
 
-					{#if 'created' in result}
+					{#if result.mimetype !== null}
+						<div class="metadata-field">
+							<Subtitle>MIME Type</Subtitle>
+							<Notes note={String(result.mimetype)}></Notes>
+						</div>
+					{/if}
+					{#if result.created !== null}
 						<div class="metadata-field">
 							<Subtitle>Created</Subtitle>
 							<Paragraph
@@ -40,7 +46,7 @@
 							>
 						</div>
 					{/if}
-					{#if 'last_modified' in result}
+					{#if result.last_modified !== null}
 						<div class="metadata-field">
 							<Subtitle>Modified</Subtitle>
 							<Paragraph
@@ -50,7 +56,7 @@
 							>
 						</div>
 					{/if}
-					{#if 'size' in result}
+					{#if result.size}
 						<div class="metadata-field">
 							<Subtitle>Size</Subtitle>
 							<Paragraph>{formatBytes(Number(result.size))}</Paragraph>
