@@ -128,7 +128,10 @@ export enum TablerIconsEnum {
 	'file-type-csv',
 	'file-type-doc',
 	'file-type-docx',
-	'file-type-html'
+	'file-type-html',
+	'minus',
+	'plus',
+	'upload'
 }
 
 export type HugeIconsSet = keyof typeof HugeIconsEnum
