@@ -68,3 +68,12 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          secrets: |
+            "TURBO_API=${{ secrets.TURBO_API}}"
+            "TURBO_TOKEN=${{ secrets.TURBO_TOKEN}}"
+            "TURBO_TEAM=${{ secrets.TURBO_TEAM}}"
+            "SENTRY_ORG=${{ secrets.SENTRY_ORG}}"
+            "SENTRY_PROJECT=${{ secrets.SENTRY_PROJECT}}"
+            "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN}}"
+            "BRANCH=main"
+            "SENTRY_RELEASE=${{ steps.get-tags.outputs.version }}"
