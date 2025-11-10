@@ -66,7 +66,7 @@ RUN adduser --system --uid 1001 svelte
 USER svelte
 
 # NOTE: Uncomment this if you add a dependency, as this only works with devDependencies only
-# COPY --from=installer /app/node_modules /app/node_modules
+COPY --from=installer /app/node_modules /app/node_modules
 COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/build /app/build
 # COPY --from=installer /app/build /app/build
 # RUN apt-get update && apt-get install -y ca-certificates curl
