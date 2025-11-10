@@ -1,19 +1,23 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte'
 	import Subtitle from './subtitle.svelte'
 	let {
+		href,
 		title,
 		text,
 		active,
 		inactive,
 		size,
-		description
+		description,
+		children
 	}: {
 		title?: string
-		text: string
+		text?: string
 		active?: boolean
 		inactive?: boolean
 		description?: string
-
+		href?: string | null
+		children?: Snippet
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 	} = $props()
 </script>
@@ -22,9 +26,20 @@
 	{#if title}
 		<Subtitle {size} text={title}></Subtitle>
 	{/if}
-	<p class="paragraph" class:active class:inactive data-description={description}>
-		{text}
-	</p>
+	{#if text}
+		{#if href}
+			<a {href} class="paragraph" class:active class:inactive data-description={description}>
+				{text}
+			</a>
+		{:else}
+			<p class="paragraph" class:active class:inactive data-description={description}>
+				{text}
+			</p>
+		{/if}
+	{/if}
+	{#if children}
+		{@render children()}
+	{/if}
 </div>
 
 <style>

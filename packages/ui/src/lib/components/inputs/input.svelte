@@ -75,7 +75,7 @@
 		position: relative;
 	}
 	.information-icon {
-		color: var(--tertiary);
+		color: var(--text-muted);
 		display: flex;
 		align-items: center;
 		gap: 0.25rem;
@@ -88,7 +88,9 @@
 	}
 	.information-icon:hover::after {
 		content: attr(data-information);
-		font-size: 0.85rem;
+		color: var(--text);
+		font-family: var(--paragraph);
+		font-size: 0.75rem;
 		position: absolute;
 		top: 50%;
 		left: calc(100% + 0.35rem);

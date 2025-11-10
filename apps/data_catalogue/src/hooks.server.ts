@@ -1,16 +1,12 @@
-// import { directus } from '$lib/directus'
-// import { verifyCookie } from '$lib/utils/cookies'
-// import { env } from '$env/dynamic/private'
-// import { ERRORS } from '$lib/globals/errors'
-// import { directusSDK, directusSDKWithToken } from '$lib/utils/directus'
-// import { ping } from '$lib/utils/network'
+import * as Sentry from '@sentry/sveltekit'
 import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
 import { getId, jstr, log } from '@arturoguzman/art-ui'
 // import { error } from '@sveltejs/kit'
-import { redirect, type Handle } from '@sveltejs/kit'
+import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
+import { COOKIES } from '$lib/globals/server'
 
 // export const crawlers = [
 // 	'Googlebot',
@@ -20,6 +16,52 @@ import { sequence } from '@sveltejs/kit/hooks'
 // 	'Google-InspectionTool',
 // 	'GoogleOther'
 // ]
+
+export const init = async () => {
+	if (process.env.BUILD) {
+		console.log('building - skip')
+		return
+	}
+	if (!env.ACCESS_MODE) {
+		error(500, {
+			id: 'server-error',
+			message: `Sorry, you need to specify an access mode before deploying this website.`
+		})
+	}
+}
+
+const handleAccessMode: Handle = async ({ event, resolve }) => {
+	event.locals.access = false
+	const access_mode = env.ACCESS_MODE
+	if (access_mode === 'invite_only') {
+		const cookie = event.cookies.get(COOKIES.access_token)
+		if (cookie === env.ACESSS_INVITE_ONLY_TOKEN) {
+			event.locals.access = true
+		}
+	}
+	if (access_mode === 'authentication') {
+		event.locals.access = true
+	}
+	if (access_mode === 'development') {
+		event.locals.access = true
+	}
+	if (access_mode === 'build') {
+		event.locals.access = true
+	}
+	if (!event.locals.access && event.url.pathname !== '/access') {
+		return new Response(null, {
+			status: 307,
+			headers: { location: '/access' }
+		})
+	}
+	if (event.locals.access && event.url.pathname === '/access') {
+		return new Response(null, {
+			status: 307,
+			headers: { location: '/' }
+		})
+	}
+	return resolve(event)
+}
 
 const handleCkan: Handle = async ({ event, resolve }) => {
 	// event.locals.startTimer = Date.now()
@@ -31,7 +73,10 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	// 	env.NODE_ENV === 'development'
 	// 		? directusSDKWithToken(env.BACKEND_TOKEN, event.fetch)
 	// 		: directusSDK(event.fetch)
-	event.locals.ckan = createCkanClient({ url: env.CKAN_URL })
+	event.locals.ckan = createCkanClient({
+		url: env.CKAN_URL,
+		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+	})
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
 		log({ response: response, event: event, status: response.status })
@@ -63,9 +108,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	return resolve(event)
 }
 
-export const handle: Handle = sequence(handleAuthentication, handleCkan)
-
-export const handleError = async ({ event, status, message, error }) => {
+export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
 	console.log(error)
 	if (status !== 404) {
 		console.log(jstr(error))
@@ -77,3 +120,12 @@ export const handleError = async ({ event, status, message, error }) => {
 		// errorId
 	}
 }
+
+export const handle =
+	process.env.NODE_ENV === 'production'
+		? sequence(handleAccessMode, Sentry.sentryHandle(), handleAuthentication, handleCkan)
+		: sequence(handleAccessMode, handleAuthentication, handleCkan)
+export const handleError =
+	process.env.NODE_ENV === 'production'
+		? Sentry.handleErrorWithSentry(hooksErrorHandler)
+		: hooksErrorHandler

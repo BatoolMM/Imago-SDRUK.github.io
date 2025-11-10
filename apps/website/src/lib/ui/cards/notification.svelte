@@ -32,6 +32,7 @@
 		overflow: hidden;
 		font-family: var(--theme-font-title);
 		flex-shrink: 0;
+		pointer-events: all;
 	}
 	.notification::after {
 		content: '';
@@ -67,9 +68,10 @@
 		.notifications {
 			top: 2rem;
 			right: 2rem;
-			height: calc(100lvh - 4rem);
+			max-height: calc(100lvh - 4rem);
 			overflow-y: scroll;
 			scrollbar-width: none;
+			pointer-events: none;
 		}
 	}
 </style>

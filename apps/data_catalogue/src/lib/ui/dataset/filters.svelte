@@ -38,6 +38,7 @@
 		{
 			title: 'Tags',
 			filters: tags,
+			// query: 'vocab_Topics',
 			query: 'tags',
 			limit: 10,
 			transform: (id: string) => {

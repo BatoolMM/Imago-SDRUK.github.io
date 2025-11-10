@@ -57,12 +57,12 @@
 
 <style>
 	select {
-		background-color: var(--theme-colour-background);
-		color: var(--theme-colour-text);
-		border: 1px solid var(--theme-colour-text);
+		background-color: var(--background);
+		color: var(--text);
+		border: 1px solid var(--text);
 		border-radius: 0.25rem;
 		font-size: clamp(0.85rem, 0.625rem + 0.4688vw, 1rem);
-		font-family: var(--theme-font-title);
+		font-family: var(--title);
 	}
 	.select-1 {
 		padding: 0.25rem 0.5rem;

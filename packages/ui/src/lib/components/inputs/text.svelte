@@ -49,7 +49,14 @@
 		</div>
 	{/if}
 	{#if type !== 'password'}
-		<input data-icon={icon ? true : undefined} {id} bind:value {...attrs} data-style={style} />
+		<input
+			data-icon={icon ? true : undefined}
+			{id}
+			bind:value
+			{...attrs}
+			data-style={style}
+			{type}
+		/>
 	{/if}
 	{#if icon}
 		<div class="icon-wrapper">

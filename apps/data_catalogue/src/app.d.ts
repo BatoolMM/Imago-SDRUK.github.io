@@ -8,8 +8,10 @@ declare global {
 	namespace App {
 		interface Error {
 			id: string
+			message: string
 		}
 		interface Locals {
+			access: boolean
 			ckan: CkanClient
 			session?: IdentitySession
 		}

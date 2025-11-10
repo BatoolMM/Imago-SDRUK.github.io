@@ -1,27 +1,18 @@
-import type {
-	CkanCreateActions,
-	CkanDeleteActions,
-	CkanGetActions,
-	CkanPatchActions,
-	CkanResult,
-	CkanTextError,
-	CkanUpdateActions
-} from './actions'
+import type { CkanResult, CkanTextError } from './actions'
 import type { CkanClient, CkanClientParams } from '.'
+import type { CkanGetActions } from '$lib/utils/ckan/actions/read'
+import type { CkanCreateActions } from '$lib/utils/ckan/actions/create'
+import type { CkanDeleteActions } from '$lib/utils/ckan/actions/delete'
+import type { CkanPatchActions, CkanUpdateActions } from '$lib/utils/ckan/actions/update'
+import { jstr } from '@arturoguzman/art-ui'
 
-// interface CkanClient extends CkanClientParams {
-// 	request: <T extends Record<PropertyKey, unknown>>(
-// 		data: (client: CkanClient) => Promise<T>
-// 	) => this & Promise<T>
-// }
-
-const handleResponse = async (response: Response) => {
+const handleResponse = async <T>(response: Response) => {
 	const contentType = response.headers.get('content-type')
 	if (contentType && contentType.indexOf('application/json') !== -1) {
-		return response.json() as Promise<CkanResult>
+		return response.json() as Promise<CkanResult<T>>
 	} else {
 		return response.text().then((text) => ({
-			message: text,
+			message: response.statusText ?? text,
 			status: response.status,
 			success: false,
 			result: []
@@ -53,66 +44,127 @@ const processURL = (url: string | URL, path: string, params?: Record<PropertyKey
 }
 
 export const get =
-	(action: CkanGetActions[0], query?: CkanGetActions[1]) => async (client: CkanClient) => {
+	<T extends CkanGetActions[0]>(
+		action: T,
+		query?: Extract<CkanGetActions, [T, unknown, unknown]>[1]
+	) =>
+	async (client: CkanClient) => {
 		const url = processURL(client.url, `/api/3/action/${action}`, query)
 		const headers = new Headers()
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		console.log(url)
 		const res = await fetch(url, { method: 'GET', headers })
-		const data = await handleResponse(res)
+		const data = await handleResponse<Extract<CkanGetActions, [T, unknown, unknown]>[2]>(res)
 		return data
 	}
 
 export const create =
-	(...action: CkanCreateActions) =>
+	<T extends CkanCreateActions[0]>(action: T, body: Extract<CkanCreateActions, [T, unknown]>[1]) =>
 	async (client: CkanClient) => {
-		const url = processURL(client.url, `/api/3/action/${action}`, action[1])
+		const url = processURL(client.url, `/api/3/action/${action}`)
+
 		const headers = new Headers()
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		const res = await fetch(url, { method: 'POST', headers })
+		let _body: FormData | string = ''
+		if (body instanceof FormData) {
+			headers.set('Content-Type', 'application/x-www-form-urlencoded')
+			_body = body
+		} else {
+			headers.set('Content-Type', 'application/json')
+			_body = JSON.stringify(body)
+		}
+		console.log(_body)
+		const res = await fetch(url, { method: 'POST', headers, body: _body })
 		const data = await handleResponse(res)
 		return data
 	}
 
 export const remove =
-	(...action: CkanDeleteActions) =>
+	<T extends CkanDeleteActions[0]>(action: T, body?: Extract<CkanDeleteActions, [T, unknown]>[1]) =>
 	async (client: CkanClient) => {
-		const url = processURL(client.url, `/api/3/action/${action}`, action[1])
+		const url = processURL(client.url, `/api/3/action/${action}`, body)
 		const headers = new Headers()
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		const res = await fetch(url, { method: 'DELETE', headers })
+
+		let _body: FormData | string = ''
+		if (body instanceof FormData) {
+			headers.set('Content-Type', 'application/x-www-form-urlencoded')
+			_body = body
+		} else {
+			headers.set('Content-Type', 'application/json')
+			_body = JSON.stringify(body)
+		}
+
+		console.log(jstr({ method: 'POST', headers, body: _body, url }))
+		const res = await fetch(url, { method: 'POST', headers, body: _body })
 		const data = await handleResponse(res)
 		return data
 	}
 
 export const patch =
-	(...action: CkanPatchActions) =>
+	<T extends CkanPatchActions[0]>(
+		action: T,
+		query: Extract<CkanPatchActions, [T, unknown]>[1],
+		body: Record<PropertyKey, unknown>
+	) =>
 	async (client: CkanClient) => {
-		const url = processURL(client.url, `/api/3/action/${action}`, action[1])
+		const url = processURL(client.url, `/api/3/action/${action}`, query)
 		const headers = new Headers()
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		const res = await fetch(url, { method: 'PATCH', headers })
+		let _body: FormData | string = ''
+		if (body instanceof FormData) {
+			headers.set('Content-Type', 'application/x-www-form-urlencoded')
+			_body = body
+		} else {
+			headers.set('Content-Type', 'application/json')
+			_body = JSON.stringify(body)
+		}
+		const res = await fetch(url, { method: 'POST', headers, body: _body })
 		const data = await handleResponse(res)
 		return data
 	}
 
 export const update =
-	(...action: CkanUpdateActions) =>
+	<T extends CkanUpdateActions[0]>(
+		action: T,
+		query: Extract<CkanUpdateActions, [T, unknown]>[1],
+		body: Record<PropertyKey, unknown>
+	) =>
 	async (client: CkanClient) => {
-		const url = processURL(client.url, `/api/3/action/${action}`, action[1])
+		const url = processURL(client.url, `/api/3/action/${action}`, query)
 		const headers = new Headers()
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		const res = await fetch(url, { method: 'PUT', headers })
+		let _body: FormData | string = ''
+		if (body instanceof FormData) {
+			headers.set('Content-Type', 'application/x-www-form-urlencoded')
+			_body = body
+		} else {
+			headers.set('Content-Type', 'application/json')
+			_body = JSON.stringify(body)
+		}
+		const res = await fetch(url, { method: 'PATCH', headers, body: _body })
 		const data = await handleResponse(res)
 		return data
 	}
+
+// export const update =
+// 	(...action: CkanUpdateActions) =>
+// 	async (client: CkanClient) => {
+// 		const url = processURL(client.url, `/api/3/action/${action}`, action[1])
+// 		const headers = new Headers()
+// 		if (client.token) {
+// 			headers.set('Authorization', client.token)
+// 		}
+// 		const res = await fetch(url, { method: 'PUT', headers })
+// 		const data = await handleResponse(res)
+// 		return data
+// 	}

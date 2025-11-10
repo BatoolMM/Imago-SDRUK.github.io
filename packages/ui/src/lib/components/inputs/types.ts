@@ -13,6 +13,9 @@ export type InputComponentProps = {
 	message?: Snippet
 	icon?: IconsSets
 }
+
+export type InputTextareaProps = Omit<HTMLTextareaAttributes, 'popover'> & InputComponentProps
+
 export type InputTextProps = {
 	type?: 'text' | 'email' | 'password'
 } & Omit<HTMLInputAttributes, 'popover'> &
@@ -31,8 +34,10 @@ export type InputDateProps = {
 	InputComponentProps
 
 export type InputSelectProps = {
+	children?: Snippet
 	options?: { label: string; value: string }[]
 	disabled?: boolean
 	placeholder?: string
+	design_type?: 'dropdown' | 'list'
 } & Omit<HTMLInputAttributes, 'popover'> &
 	InputComponentProps

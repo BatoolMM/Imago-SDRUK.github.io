@@ -36,12 +36,12 @@
 <div class="product">
 	<div class="header">
 		<Title size="lg" text={String(result.title)}></Title>
-		{#if 'notes' in result}
+		{#if 'notes' in result && result.notes !== null}
 			<Notes note={String(result.notes)}></Notes>
 		{/if}
 	</div>
 
-	{#if 'resources' in result && Array.isArray(result.resources)}
+	{#if 'resources' in result && Array.isArray(result.resources) && result.resources.length > 0}
 		<div class="resources">
 			<Subtitle size="md" text="Resources"></Subtitle>
 			<div class="content">
@@ -84,23 +84,23 @@
 			</div>
 		</div>
 	{/if}
-	{#if Array.isArray(result.extras)}
-		<div class="resources">
-			<Subtitle size="md" text="Extras"></Subtitle>
-			<div class="content">
-				<div class="pills">
-					{#each result.extras as extra}
-						<div class="pill">
-							<Subtitle size="xs">{extra.key}</Subtitle>
-							<div class="pill-buttons">
-								<pre>{extra.value}</pre>
-							</div>
-						</div>
-					{/each}
-				</div>
-			</div>
-		</div>
-	{/if}
+	<!-- {#if Array.isArray(result.extras) && result.extras.length > 0} -->
+	<!-- 	<div class="resources"> -->
+	<!-- 		<Subtitle size="md" text="Extras"></Subtitle> -->
+	<!-- 		<div class="content"> -->
+	<!-- 			<div class="pills"> -->
+	<!-- 				{#each result.extras as extra} -->
+	<!-- 					<div class="pill"> -->
+	<!-- 						<Subtitle size="xs">{extra.key}</Subtitle> -->
+	<!-- 						<div class="pill-buttons"> -->
+	<!-- 							<pre>{extra.value}</pre> -->
+	<!-- 						</div> -->
+	<!-- 					</div> -->
+	<!-- 				{/each} -->
+	<!-- 			</div> -->
+	<!-- 		</div> -->
+	<!-- 	</div> -->
+	<!-- {/if} -->
 </div>
 
 <style>
