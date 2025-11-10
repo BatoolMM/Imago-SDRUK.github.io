@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.5
+### Patch Changes
+
+- 544829c: fix build
+
 ## 1.1.4
 ### Patch Changes
 
