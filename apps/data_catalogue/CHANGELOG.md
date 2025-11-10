@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.2
+### Patch Changes
+
+- cffbad2: This will install sentry as a devdependency. Image will build but it wont build locally. To build locally it needs sentry as dependency but building the docker image as dependency will increase the image from 342MB to 1.4GB
+
 ## 1.1.1
 ### Patch Changes
 
