@@ -86,7 +86,7 @@
 		.notifications {
 			top: 2rem;
 			right: 2rem;
-			height: calc(100lvh - 4rem);
+			max-height: calc(100lvh - 4rem);
 			overflow-y: scroll;
 			scrollbar-width: none;
 		}
