@@ -1,16 +1,27 @@
 <script lang="ts">
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import { jstr } from '@arturoguzman/art-ui'
-	import { BaseSection, Button, handleSearchParams, Icon, Paragraph, Subtitle } from '@imago/ui'
+	import {
+		Banner,
+		BaseSection,
+		Button,
+		handleSearchParams,
+		Icon,
+		Paragraph,
+		Subtitle
+	} from '@imago/ui'
 	import { page } from '$app/state'
 	import Filters from '$lib/ui/dataset/filters.svelte'
 	import CardProduct from '$lib/ui/cards/card_product.svelte'
+	import { onMount } from 'svelte'
 
 	let { data } = $props()
 	let datasets = $derived(data.datasets)
+	debug.data = data
 </script>
 
 <BaseSection>
+	<!-- <Banner text="There are no datasets available."></Banner> -->
 	<div class="datasets-section">
 		<div class="left-col">
 			<Filters
@@ -62,14 +73,18 @@
 							<div class="page-count">
 								<Paragraph>
 									Page 1 of
-									{(Number(data.datasets_count) / 10).toFixed(0)}
+									{(Number(data.datasets_count) / 10).toFixed(0) === '0'
+										? 1
+										: (Number(data.datasets_count) / 10).toFixed(0)}
 								</Paragraph>
 							</div>
-							<div class="button-wrapper">
-								<Button href={handleSearchParams({ add: [{ key: 'offset', value: 10 }] })}>
-									<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
-								</Button>
-							</div>
+							{#if datasets.length > 10}
+								<div class="button-wrapper">
+									<Button href={handleSearchParams({ add: [{ key: 'offset', value: 10 }] })}>
+										<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
+									</Button>
+								</div>
+							{/if}
 						{/if}
 					{/if}
 				</div>
@@ -77,10 +92,6 @@
 		</div>
 	</div>
 </BaseSection>
-
-{#if debug.status}
-	<pre>{jstr(data)}</pre>
-{/if}
 
 <style>
 	.datasets-section {
