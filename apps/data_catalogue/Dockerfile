@@ -45,7 +45,7 @@ RUN --mount=type=secret,id=TURBO_API \
   --mount=type=secret,id=SENTRY_RELEASE \
   export TURBO_API=$(cat /run/secrets/TURBO_API) && \
   export TURBO_TEAM=$(cat /run/secrets/TURBO_TEAM) && \
-  export TURBO_TOKEN=$(cat /run/secrets/TURBO_TOKEN && \
+  export TURBO_TOKEN=$(cat /run/secrets/TURBO_TOKEN) && \
   export SENTRY_ORG=$(cat /run/secrets/SENTRY_ORG) && \
   export SENTRY_PROJECT=$(cat /run/secrets/SENTRY_PROJECT) && \
   export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) && \
@@ -66,7 +66,7 @@ RUN adduser --system --uid 1001 svelte
 USER svelte
 
 # NOTE: Uncomment this if you add a dependency, as this only works with devDependencies only
-COPY --from=installer /app/node_modules /app/node_modules
+# COPY --from=installer /app/node_modules /app/node_modules
 COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/build /app/build
 # COPY --from=installer /app/build /app/build
 # RUN apt-get update && apt-get install -y ca-certificates curl
