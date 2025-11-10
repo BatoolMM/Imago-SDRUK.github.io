@@ -24,7 +24,7 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full'
+		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square'
 		type?: 'button' | 'submit' | 'reset' | null
 		line_clamp?: boolean
 	} = $props()
@@ -74,13 +74,6 @@
 		font-weight: 300;
 		transition: all var(--animation-time) ease-in-out;
 		text-decoration: none;
-	}
-	.line-clamp {
-		overflow: hidden;
-		display: -webkit-box;
-		-webkit-line-clamp: 2;
-		line-clamp: 2;
-		text-align: left;
 	}
 	.btn[data-style='base'] {
 		justify-content: space-between;
@@ -145,6 +138,7 @@
 		align-items: center;
 		gap: 1rem;
 		transition: all var(--animation-time) ease-in-out;
+		background-color: var(--background);
 	}
 
 	.btn[data-style='anchor']:hover {
@@ -161,10 +155,49 @@
 	.btn[data-style='clean'] {
 		justify-content: space-between;
 		align-items: center;
+		border-radius: var(--radius);
+	}
+	.btn[data-style='clean'].active {
+		color: var(--background);
+		background-color: var(--quarternary);
 	}
 	.btn[data-style='clean-full'] {
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
+	}
+	.btn[data-style='square'] {
+		border: 1px solid var(--background-accent);
+		padding: 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: var(--radius);
+		width: 100%;
+		aspect-ratio: 1 / 1;
+	}
+	.btn[data-style='square']:hover {
+		border: 1px solid var(--border-muted);
+		padding: 0.5rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: var(--radius);
+		width: 100%;
+		aspect-ratio: 1 / 1;
+	}
+	.btn[data-style='square'].active {
+		color: var(--background-muted);
+		background-color: var(--border);
+		border: 1px solid var(--border);
+	}
+	.line-clamp {
+		overflow: hidden;
+		display: -webkit-box;
+
+		-webkit-box-orient: vertical;
+		line-clamp: 2;
+		-webkit-line-clamp: 2;
+		text-align: left;
 	}
 </style>
