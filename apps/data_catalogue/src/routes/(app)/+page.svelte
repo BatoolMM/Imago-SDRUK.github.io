@@ -6,7 +6,6 @@
 	const search_icon: IconsSets = { icon: 'search', set: 'tabler' }
 	const stats: { label: string; count: number }[] = [
 		{ label: 'Datasets', count: Number(data.package_count) },
-		{ label: 'Organisations', count: Number(data.organisation_count) },
 		{ label: 'Topics', count: Number(data.tag_count) }
 	]
 </script>
@@ -37,16 +36,14 @@
 				<Button href="/datasets?search={search}">Search</Button>
 			</div>
 		</div>
-		<div class="body">
-			{#each stats as stat}
-				<BaseCard rounded border>
-					<button class="cta-card">
-						<Title size="2xl" text={String(stat.count)}></Title>
-						<Title size="lg" text={stat.label}></Title>
-					</button>
-				</BaseCard>
-			{/each}
-		</div>
+		<!-- <div class="body"> -->
+		<!-- 	{#each stats as stat} -->
+		<!-- 		<button class="cta-card"> -->
+		<!-- 			<Title size="2xl" text={String(stat.count)}></Title> -->
+		<!-- 			<Title size="lg" text={stat.label}></Title> -->
+		<!-- 		</button> -->
+		<!-- 	{/each} -->
+		<!-- </div> -->
 	</div>
 </div>
 
@@ -92,7 +89,7 @@
 		text-align: center;
 		display: flex;
 		flex-direction: column;
-		gap: 2rem;
+		gap: 4rem;
 	}
 	.search-bar {
 		display: flex;
@@ -119,21 +116,24 @@
 	}
 	.body {
 		display: flex;
+		justify-content: center;
 		gap: 1rem;
 		flex-direction: column;
 		padding: 2rem 0;
 		width: min(100%, 1024px);
 	}
 	.cta-card {
-		width: 100%;
-		height: 100%;
-		background-color: color-mix(in oklab, var(--quarternary) 60%, transparent 40%);
+		width: min(100%, 200px);
+		aspect-ratio: 1 / 1;
+		background-color: var(--quarternary);
 		padding: 1rem;
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
 		grid-template-rows: minmax(0, 3fr) minmax(0, 1fr);
 		justify-items: center;
 		align-items: center;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
 	}
 	@media (min-width: 768px) {
 		.hero-section {
@@ -165,7 +165,7 @@
 			flex-direction: row;
 		}
 		.cta-card {
-			width: 100%;
+			width: min(100%, 300px);
 			aspect-ratio: 1 / 1;
 		}
 	}
