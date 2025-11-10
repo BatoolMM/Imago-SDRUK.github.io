@@ -14,8 +14,6 @@ WORKDIR /app
 COPY . .
 RUN turbo prune data_catalogue --docker
 
-
-
 FROM base AS installer
 WORKDIR /app
 COPY --from=builder /app/out/json/ .
@@ -60,6 +58,7 @@ USER svelte
 # COPY --chown=svelte:nodejs --from=installer /app/node_modules /app/node_modules
 # COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/node_modules ./node_modules
 
+COPY --chown=svelte:nodejs --from=installer /app/node_modules /app/node_modules
 COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/build ./build
 
 EXPOSE 3000
