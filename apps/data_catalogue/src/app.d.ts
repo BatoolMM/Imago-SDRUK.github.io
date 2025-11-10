@@ -10,6 +10,7 @@ declare global {
 			id: string
 		}
 		interface Locals {
+			access: boolean
 			ckan: CkanClient
 			session?: IdentitySession
 		}
