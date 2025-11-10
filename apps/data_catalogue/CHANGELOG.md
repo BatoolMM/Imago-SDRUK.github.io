@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.1
+### Patch Changes
+
+- 31c0407: fix build by copying node modules from builder
+
 ## 1.1.0
 ### Minor Changes
 
