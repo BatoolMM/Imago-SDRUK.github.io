@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.3
+### Patch Changes
+
+- 7a8b314: Trigger build
+
 ## 1.1.2
 ### Patch Changes
 
