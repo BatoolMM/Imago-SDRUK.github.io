@@ -22,6 +22,7 @@
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
+			"@sentry/cli",
 			"argon2",
 			"esbuild",
 			"isolated-vm",
