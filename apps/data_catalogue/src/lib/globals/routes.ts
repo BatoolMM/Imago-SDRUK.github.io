@@ -7,7 +7,7 @@ export const ROUTES: Routes = [
 		subpaths: [
 			{
 				label: 'Imago',
-				href: '/'
+				href: 'http://127.0.0.1:5173'
 			},
 			{
 				label: 'Data catalogue',
@@ -19,20 +19,19 @@ export const ROUTES: Routes = [
 		label: 'Datasets',
 		href: '/datasets',
 		subpaths: []
-	},
-	{
-		label: 'Topics',
-		href: '/topics',
-		subpaths: [
-			{
-				label: 'SRF',
-				href: '/topics/srf'
-			}
-		]
-	},
-	{
-		label: 'Login',
-		href: '/auth/login',
-		subpaths: []
 	}
+	// {
+	// 	label: 'Topics',
+	// 	href: '/topics',
+	// 	subpaths: [
+	// 		{
+	// 			label: 'SRF',
+	// 			href: '/topics/srf'
+	// 		}
+	// 	]
+	// },
+	// { label: 'Login',
+	// 	href: '/auth/login',
+	// 	subpaths: []
+	// }
 ]
