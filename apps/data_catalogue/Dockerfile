@@ -41,7 +41,7 @@ RUN --mount=type=secret,id=TURBO_API \
   export BRANCH=$(cat /run/secrets/BRANCH) && \
   export SENTRY_RELEASE=$(cat /run/secrets/SENTRY_RELEASE) && \
   export SENTRY_LOG_LEVEL=debug && \
-  pnpm run build 
+  pnpm build 
 
 RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
 RUN rm -rf ./**/*/src
@@ -58,7 +58,6 @@ USER svelte
 # COPY --chown=svelte:nodejs --from=installer /app/node_modules /app/node_modules
 # COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/node_modules ./node_modules
 
-COPY --chown=svelte:nodejs --from=installer /app/node_modules /app/node_modules
 COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/build ./build
 
 EXPOSE 3000
