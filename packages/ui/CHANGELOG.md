@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.3
+### Patch Changes
+
+- ffa4dd8: Fix and update UI
+
 ## 1.0.2
 ### Patch Changes
 
