@@ -4,6 +4,7 @@
 // import { ERRORS } from '$lib/globals/errors'
 // import { directusSDK, directusSDKWithToken } from '$lib/utils/directus'
 // import { ping } from '$lib/utils/network'
+import * as Sentry from '@sentry/sveltekit'
 import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
@@ -31,7 +32,10 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	// 	env.NODE_ENV === 'development'
 	// 		? directusSDKWithToken(env.BACKEND_TOKEN, event.fetch)
 	// 		: directusSDK(event.fetch)
-	event.locals.ckan = createCkanClient({ url: env.CKAN_URL })
+	event.locals.ckan = createCkanClient({
+		url: env.CKAN_URL,
+		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+	})
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
 		log({ response: response, event: event, status: response.status })
@@ -63,9 +67,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	return resolve(event)
 }
 
-export const handle: Handle = sequence(handleAuthentication, handleCkan)
-
-export const handleError = async ({ event, status, message, error }) => {
+export const hooksErrorHandler = async ({ event, status, message, error }) => {
 	console.log(error)
 	if (status !== 404) {
 		console.log(jstr(error))
@@ -77,3 +79,12 @@ export const handleError = async ({ event, status, message, error }) => {
 		// errorId
 	}
 }
+
+export const handle =
+	process.env.NODE_ENV === 'production'
+		? sequence(Sentry.sentryHandle(), handleAuthentication, handleCkan)
+		: sequence(handleAuthentication, handleCkan)
+export const handleError =
+	process.env.NODE_ENV === 'production'
+		? Sentry.handleErrorWithSentry(hooksErrorHandler)
+		: hooksErrorHandler
