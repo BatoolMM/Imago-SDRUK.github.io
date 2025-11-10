@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.4
+### Patch Changes
+
+- fd192d7: build issues
+
 ## 1.1.3
 ### Patch Changes
 
