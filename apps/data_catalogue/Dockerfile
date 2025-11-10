@@ -24,6 +24,7 @@ COPY --from=builder /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY --from=builder /app/out/full/ .
+COPY turbo.json turbo.json
 
 RUN --mount=type=secret,id=TURBO_API \
   --mount=type=secret,id=TURBO_TEAM \
