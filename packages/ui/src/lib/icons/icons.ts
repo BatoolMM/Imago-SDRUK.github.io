@@ -62,7 +62,8 @@ export enum HugeIconsEnum {
 	'search-01',
 	'workflow-circle-02',
 	'computer-desk-03',
-	'more-vertical'
+	'more-vertical',
+	'paragraph'
 }
 
 export enum TablerIconsEnum {
@@ -131,7 +132,18 @@ export enum TablerIconsEnum {
 	'file-type-html',
 	'minus',
 	'plus',
-	'upload'
+	'upload',
+	'code',
+	'list',
+	'list-check',
+	'list-details',
+	'list-letters',
+	'list-numbers',
+	'list-tree',
+	'bold',
+	'italic',
+	'strikethrough',
+	'underline'
 }
 
 export type HugeIconsSet = keyof typeof HugeIconsEnum
