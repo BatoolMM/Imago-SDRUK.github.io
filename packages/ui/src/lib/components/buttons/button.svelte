@@ -2,8 +2,10 @@
 	import type { Snippet } from 'svelte'
 	import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements'
 	let {
+		hover_label,
 		href,
 		download,
+		disabled,
 		leftCol,
 		rightCol,
 		children,
@@ -15,8 +17,10 @@
 		type,
 		line_clamp
 	}: {
+		hover_label?: string
 		href?: string
 		download?: string | boolean
+		disabled?: boolean
 		leftCol?: Snippet
 		rightCol?: Snippet
 		children?: Snippet
@@ -24,7 +28,7 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square'
+		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square' | 'tag'
 		type?: 'button' | 'submit' | 'reset' | null
 		line_clamp?: boolean
 	} = $props()
@@ -37,6 +41,7 @@
 		class:active
 		{onclick}
 		data-style={style}
+		data-hover-label={hover_label}
 		{href}
 		{download}
 		{onpointerdown}
@@ -55,6 +60,8 @@
 		class:line-clamp={line_clamp}
 		{onclick}
 		data-style={style}
+		data-hover-label={hover_label}
+		{disabled}
 		{type}
 		{onpointerdown}
 		{onpointerup}
@@ -156,6 +163,7 @@
 		justify-content: space-between;
 		align-items: center;
 		border-radius: var(--radius);
+		padding: 0.25rem;
 	}
 	.btn[data-style='clean'].active {
 		color: var(--background);
@@ -191,10 +199,45 @@
 		background-color: var(--border);
 		border: 1px solid var(--border);
 	}
+	.btn[data-style='tag'] {
+		border: 1px solid var(--background-accent);
+		padding: 0.5rem 1rem;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: var(--radius);
+		width: 100%;
+	}
+	.btn[data-style='tag']:hover {
+		border: 1px solid var(--border-muted);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: var(--radius);
+		width: 100%;
+	}
+	.btn[data-style='tag'].active {
+		color: var(--background-muted);
+		background-color: var(--border);
+		border: 1px solid var(--border);
+	}
+	.btn[data-hover-label] {
+		position: relative;
+	}
+	.btn[data-hover-label]:hover::after {
+		content: attr(data-hover-label);
+		position: absolute;
+		font-size: 0.75rem;
+		background-color: var(--background);
+		color: var(--text);
+		transform: translate(0, -100%);
+		padding: 0.15rem;
+		border-radius: 0.15rem;
+		width: 100%;
+	}
 	.line-clamp {
 		overflow: hidden;
 		display: -webkit-box;
-
 		-webkit-box-orient: vertical;
 		line-clamp: 2;
 		-webkit-line-clamp: 2;
