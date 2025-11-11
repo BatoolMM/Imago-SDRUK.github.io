@@ -5,6 +5,7 @@
 	import { Accordion, BaseSection, Button, Fact, Icon, Paragraph, Subtitle } from '@imago/ui'
 	import Product from '$lib/ui/products/product.svelte'
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
+	import Stream from '$lib/ui/dataset/stream.svelte'
 	let { data } = $props()
 	setDataset(data.result)
 	let ctx = getDataset()
@@ -120,7 +121,7 @@
 				</div>
 				<div class="right-col">
 					<Product result={data.result}></Product>
-					<pre>{jstr(data.activity)}</pre>
+					<Stream activities={data.activities.result}></Stream>
 				</div>
 			</div>
 		</BaseSection>
