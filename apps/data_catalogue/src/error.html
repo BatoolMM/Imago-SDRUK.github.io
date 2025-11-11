@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>%sveltekit.error.message%</title>
+	</head>
+	<body>
+		<div class="notice">
+			<div class="img-wrapper">
+				<img src="/imago_logo.png" alt="logo" />
+			</div>
+			<div class="error-message">
+				<!-- <p>Status: %sveltekit.status%</p> -->
+				<p>%sveltekit.error.message%</p>
+				<p>or head to our <a href="https//imago.ac.uk">website</a>.</p>
+			</div>
+		</div>
+	</body>
+
+	<style>
+		@font-face {
+			font-family: 'Figtree Variable';
+			font-style: normal;
+			font-display: swap;
+			font-weight: 300 900;
+			src: url(https://cdn.jsdelivr.net/fontsource/fonts/figtree:vf@latest/latin-wght-normal.woff2)
+				format('woff2-variations');
+			unicode-range:
+				U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308,
+				U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+		}
+		body {
+			background-color: #4a4a49;
+			color: #ffffff;
+			font-family: 'Figtree Variable', sans-serif;
+		}
+		.notice {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			width: min(100% - 2rem, 600px);
+			display: flex;
+			flex-direction: column;
+			gap: 2rem;
+		}
+		.img-wrapper {
+			display: flex;
+			height: 8rem;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+		}
+		a {
+			color: #03cea3;
+		}
+		img {
+			height: 100%;
+			object-fit: contain;
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: flex-end;
+		}
+		.form-elements {
+			display: flex;
+			flex-direction: column;
+			gap: 1rem;
+		}
+
+		.error-message {
+			text-align: center;
+		}
+	</style>
+</html>

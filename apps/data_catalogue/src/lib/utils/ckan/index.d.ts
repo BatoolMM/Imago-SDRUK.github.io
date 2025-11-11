@@ -5,6 +5,7 @@ export type CkanClientParams = {
 }
 
 export interface CkanClient extends CkanClientParams {
+	ping: () => Promise<{ success: boolean }>
 	request: <T extends Record<PropertyKey, unknown>>(
 		data: (client: CkanClient) => Promise<T>
 	) => Promise<T>

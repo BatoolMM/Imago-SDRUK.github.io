@@ -26,6 +26,25 @@ export const createCkanClient = ({ url, token, fetch }: CkanClientParams): CkanC
 		...config,
 		async request(data) {
 			return data(this)
+		},
+		async ping() {
+			try {
+				const url = processURL(config.url, `/api/action/status_show`)
+				const headers = new Headers()
+				if (token) {
+					headers.set('Authorization', token)
+				}
+				const res = await fetch(url, { method: 'GET', headers })
+				const data = await handleResponse(res)
+				console.log(`ping ${jstr(data)}`)
+				return {
+					success: true
+				}
+			} catch {
+				return {
+					success: false
+				}
+			}
 		}
 	}
 }
