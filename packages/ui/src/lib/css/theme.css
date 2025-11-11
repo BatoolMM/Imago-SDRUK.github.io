@@ -63,3 +63,9 @@
 	--accent: 'Space Grotesk Variable';
 	--animation-time: 300ms;
 }
+
+code {
+	background-color: #1e1e2e;
+	color: #89b4fa;
+	padding: 0.25rem;
+}
