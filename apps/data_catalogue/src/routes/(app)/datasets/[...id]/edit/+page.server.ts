@@ -1,17 +1,11 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
-import {
-	getFiles,
-	getSignedDownloadUrl,
-	getSignedUploadUrl,
-	loadStorageClient
-} from '$lib/utils/files/azure/index.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { error } from '@sveltejs/kit'
 
 export const load = async ({ params, locals }) => {
 	const dataset = await locals.ckan.request(get('package_show', { id: params.id }))
-	const tags = await locals.ckan.request(get('tag_list'))
+	const tags = await locals.ckan.request(get('tag_list', { all_fields: true }))
 	if (Array.isArray(dataset.result)) {
 		error(...SERVER_ERRORS[404])
 	}
@@ -23,101 +17,6 @@ export const load = async ({ params, locals }) => {
 }
 
 type FormField = { name: string; type: 'string' | 'file' | 'boolean' | 'array'; required: boolean }
-
-const keys: FormField[] = [
-	{
-		name: 'name',
-		type: 'string',
-		required: true
-	},
-	{
-		name: 'title',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'private',
-		type: 'boolean',
-		required: false
-	},
-	{
-		name: 'author',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'author_email',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'maintainer',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'maintainer_email',
-		type: 'string',
-		required: false
-	},
-
-	{
-		name: 'license_id',
-		type: 'string',
-		required: false
-	},
-
-	{
-		name: 'notes',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'url',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'version',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'state',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'type',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'resources',
-		type: 'array',
-		required: false
-	},
-	{
-		name: 'tags',
-		type: 'array',
-		required: false
-	},
-	{
-		name: 'extras',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'plugin_data',
-		type: 'string',
-		required: false
-	},
-	{
-		name: 'groups',
-		type: 'string',
-		required: false
-	}
-]
 
 const parseForm = (form: FormData, keys: FormField[]) => {
 	const object: Record<PropertyKey, unknown> = {}
@@ -147,6 +46,17 @@ export const actions = {
 
 		return {
 			message: `Tag created`
+		}
+	},
+	save_tags: async ({ request, locals, params }) => {
+		const form = await request.formData()
+		const tags = String(form.get('tags'))
+		const tag = await locals.ckan.request(
+			patch('package_patch', { id: params.id }, { tags: JSON.parse(tags), id: params.id })
+		)
+		console.log(jstr(tag))
+		return {
+			message: `Tags saved`
 		}
 	},
 	update: async ({ request, locals, params }) => {

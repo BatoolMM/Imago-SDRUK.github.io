@@ -2,11 +2,12 @@ import type { CkanDataset } from '$lib/types/ckan'
 import { getContext, setContext } from 'svelte'
 
 export const setDataset = (dataset: CkanDataset) => {
-	console.log(`Setting context for dataset ${dataset.id}`)
-	const _dataset = $state(dataset)
+	const _dataset = $state({
+		dataset: dataset
+	})
 	setContext('dataset', _dataset)
 }
 
-export const getDataset = (): CkanDataset => {
+export const getDataset = (): { dataset: CkanDataset } => {
 	return getContext('dataset')
 }

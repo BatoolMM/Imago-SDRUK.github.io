@@ -12,7 +12,7 @@
 		file: FilePreUpload
 		handleDelete?: () => void
 	} = $props()
-	const dataset = getDataset()
+	const ctx = getDataset()
 	const handleFileUpload = async () => {
 		const resource = await file.upload?.fn({
 			...file,
@@ -20,7 +20,7 @@
 		})
 		if (resource) {
 			handleDelete?.()
-			dataset.resources.push(resource)
+			ctx.dataset.resources.push(resource)
 			notify.send({ message: `${file.filename} successfully uploaded` })
 		}
 	}

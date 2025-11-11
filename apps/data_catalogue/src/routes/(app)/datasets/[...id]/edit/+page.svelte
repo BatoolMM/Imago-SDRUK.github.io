@@ -17,15 +17,22 @@
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
 	import Extras from '$lib/ui/dataset/extras.svelte'
 	import { debug } from '$lib/globals/dev.svelte.js'
+	import Tags from '$lib/ui/dataset/tags.svelte'
+	import { onMount } from 'svelte'
 
 	let { data } = $props()
 	setDataset(data.dataset.result)
-	const dataset = getDataset()
-	let tags: { display_name: string; id: string }[] = $state([])
-	debug.data = data
+	const ctx = getDataset()
+	onMount(() => {
+		debug.data = data
+	})
+	$effect(() => {
+		console.log(`refreshing data from invalidate`)
+		ctx.dataset = data.dataset.result
+	})
 </script>
 
-{#if dataset && !Array.isArray(dataset)}
+{#if ctx.dataset && !Array.isArray(ctx.dataset)}
 	<BaseSection>
 		<div class="page">
 			<div class="left-col">
@@ -46,14 +53,14 @@
 						<div class="fields">
 							<InputBlock design="row">
 								<Input label="State">
-									<Select name="state" bind:value={dataset.state}>
+									<Select name="state" bind:value={ctx.dataset.state}>
 										<option value="draft">Draft</option>
 										<option value="active">Published</option>
 									</Select>
 								</Input>
 
 								<Input label="Visibility">
-									<Select name="private" bind:value={dataset.private}>
+									<Select name="private" bind:value={ctx.dataset.private}>
 										<option value={true}>Private</option>
 										<option value={false}>Public</option>
 									</Select>
@@ -62,33 +69,37 @@
 
 							<InputBlock>
 								<Input label="Title" required>
-									<Text name="title" bind:value={dataset.title} required></Text>
+									<Text name="title" bind:value={ctx.dataset.title} required></Text>
 								</Input>
 								<Input label="Description">
-									<Textarea name="notes" bind:value={dataset.notes}></Textarea>
+									<Textarea name="notes" bind:value={ctx.dataset.notes}></Textarea>
 								</Input>
 							</InputBlock>
 
 							<InputBlock design="row">
 								<Input label="Author">
-									<Text name="author" bind:value={dataset.author}></Text>
+									<Text name="author" bind:value={ctx.dataset.author}></Text>
 								</Input>
 								<Input label="Author email">
-									<Text name="author_email" type="email" bind:value={dataset.author_email}></Text>
+									<Text name="author_email" type="email" bind:value={ctx.dataset.author_email}
+									></Text>
 								</Input>
 							</InputBlock>
 							<InputBlock design="row">
 								<Input label="Maintainer">
-									<Text name="maintainer" bind:value={dataset.maintainer}></Text>
+									<Text name="maintainer" bind:value={ctx.dataset.maintainer}></Text>
 								</Input>
 								<Input label="Maintainer email">
-									<Text name="maintainer_email" type="email" bind:value={dataset.maintainer_email}
+									<Text
+										name="maintainer_email"
+										type="email"
+										bind:value={ctx.dataset.maintainer_email}
 									></Text>
 								</Input>
 							</InputBlock>
 							<InputBlock design="row">
 								<Input label="License">
-									<Select name="license_id" bind:value={dataset.license_id}>
+									<Select name="license_id" bind:value={ctx.dataset.license_id}>
 										{#each licenses as license}
 											<option value={license.id}>{license.title}</option>
 										{/each}
@@ -96,7 +107,7 @@
 								</Input>
 
 								<Input label="Version">
-									<Text name="version" bind:value={dataset.version}></Text>
+									<Text name="version" bind:value={ctx.dataset.version}></Text>
 								</Input>
 							</InputBlock>
 						</div>
@@ -108,11 +119,14 @@
 				<div class="form">
 					<Extras></Extras>
 				</div>
+				<div class="form">
+					<Tags existing_tags={data.tags.result}></Tags>
+				</div>
 			</div>
 			<div class="right-col">
 				<div class="form">
 					<Subtitle size="lg">Resources</Subtitle>
-					<Resources {dataset}></Resources>
+					<Resources></Resources>
 				</div>
 			</div>
 		</div>
