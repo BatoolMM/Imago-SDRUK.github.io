@@ -6,6 +6,7 @@
 	import {
 		BaseSection,
 		Button,
+		Editor,
 		Input,
 		InputBlock,
 		Select,
@@ -72,7 +73,9 @@
 									<Text name="title" bind:value={ctx.dataset.title} required></Text>
 								</Input>
 								<Input label="Description">
-									<Textarea name="notes" bind:value={ctx.dataset.notes}></Textarea>
+									<textarea name="notes" hidden bind:value={ctx.dataset.notes}></textarea>
+									<Editor bind:content={ctx.dataset.notes}></Editor>
+									<!-- <Textarea name="notes" bind:value={ctx.dataset.notes}></Textarea> -->
 								</Input>
 							</InputBlock>
 
