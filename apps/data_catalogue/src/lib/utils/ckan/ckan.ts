@@ -5,6 +5,7 @@ import type { CkanCreateActions } from '$lib/utils/ckan/actions/create'
 import type { CkanDeleteActions } from '$lib/utils/ckan/actions/delete'
 import type { CkanPatchActions, CkanUpdateActions } from '$lib/utils/ckan/actions/update'
 import { jstr } from '@arturoguzman/art-ui'
+import type { CkanPing } from '$lib/types/ckan'
 
 const handleResponse = async <T>(response: Response) => {
 	const contentType = response.headers.get('content-type')
@@ -35,10 +36,9 @@ export const createCkanClient = ({ url, token, fetch }: CkanClientParams): CkanC
 					headers.set('Authorization', token)
 				}
 				const res = await fetch(url, { method: 'GET', headers })
-				const data = await handleResponse(res)
-				console.log(`ping ${jstr(data)}`)
+				const data = await handleResponse<CkanPing>(res)
 				return {
-					success: true
+					success: data.success
 				}
 			} catch {
 				return {

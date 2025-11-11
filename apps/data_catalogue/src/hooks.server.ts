@@ -3,7 +3,6 @@ import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
 import { getId, jstr, log } from '@arturoguzman/art-ui'
-// import { error } from '@sveltejs/kit'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { COOKIES } from '$lib/globals/server'
@@ -66,7 +65,8 @@ const handleAccessMode: Handle = async ({ event, resolve }) => {
 const handleCkan: Handle = async ({ event, resolve }) => {
 	event.locals.ckan = createCkanClient({
 		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined,
+		fetch: event.fetch
 	})
 	const connection = await event.locals.ckan.ping()
 	if (!connection.success) {
