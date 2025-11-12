@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.11
+### Patch Changes
+
+- a86a03f: trigger release
+
 ## 1.1.10
 ### Patch Changes
 
