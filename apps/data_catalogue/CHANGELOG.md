@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.9
+### Patch Changes
+
+- e3a63c9: trigger build
+
 ## 1.1.8
 ### Patch Changes
 
