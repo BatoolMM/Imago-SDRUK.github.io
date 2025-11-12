@@ -1,5 +1,11 @@
 # data-catalogue
 
+## 1.1.6
+### Patch Changes
+
+- 044c42f: Add ping ckan instance, add tags create and delete, refactor to make context reactive to invalidation, add activity stream, add access expire and make input password
+- e8131fc: adds tiptap as md editor, changes ui, adds new icons, remove heading, org filters and disables links until further notice
+
 ## 1.1.5
 ### Patch Changes
 

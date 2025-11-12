@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.4
+### Patch Changes
+
+- e8131fc: adds tiptap as md editor, changes ui, adds new icons, remove heading, org filters and disables links until further notice
+
 ## 1.0.3
 ### Patch Changes
 
