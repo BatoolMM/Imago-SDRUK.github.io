@@ -5,8 +5,14 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"outputs": [".svelte-kit/**", ".vercel/**"],
-			"passThroughEnv": ["SENTRY_DSN", "SENTRY_PROJECT", "SENTRY_AUTH_TOKEN"]
+			"outputs": [".svelte-kit/**"],
+			"passThroughEnv": [
+				"SENTRY_DSN",
+				"SENTRY_PROJECT",
+				"SENTRY_AUTH_TOKEN",
+				"BRANCH",
+				"SENTRY_RELEASE"
+			]
 		},
 		"lint": {
 			"dependsOn": ["^lint"]
