@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.7
+### Patch Changes
+
+- a86a03f: trigger release
+
 ## 1.0.6
 ### Patch Changes
 
