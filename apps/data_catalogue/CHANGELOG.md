@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.8
+### Patch Changes
+
+- f6f1c6f: pass env variables to build
+
 ## 1.1.7
 ### Patch Changes
 
