@@ -7,7 +7,6 @@
 	import { Notification, Paragraph } from '@imago/ui'
 	import { notify } from '$lib/stores/notify'
 	import { DateTime } from 'luxon'
-	import { onMount } from 'svelte'
 	let { data, children } = $props()
 	beforeNavigate(() => {
 		APP_STATE.loading = true
@@ -20,13 +19,18 @@
 		if (!str) {
 			return null
 		}
-		const minutes = DateTime.fromISO(str).diffNow('minutes').toFormat('mm:ss')
-		remaining_time = `${minutes}`
-		requestAnimationFrame(() => {
-			calcRemaining(str)
-		})
+		const minutes = DateTime.fromISO(str).diffNow('minutes')
+		if (minutes.minutes > 0) {
+			remaining_time = `${minutes.toFormat('mm:ss')}`
+			requestAnimationFrame(() => {
+				calcRemaining(str)
+			})
+		} else {
+			remaining_time = null
+			return
+		}
 	}
-	onMount(() => {
+	$effect(() => {
 		calcRemaining(data.expire)
 	})
 </script>
@@ -38,9 +42,11 @@
 {@render children?.()}
 <Loading></Loading>
 <Notification {notify} />
-<div class="remaining">
-	<Paragraph>Remaining session time: {remaining_time}</Paragraph>
-</div>
+{#if remaining_time}
+	<div class="remaining">
+		<Paragraph>Remaining session time: {remaining_time}</Paragraph>
+	</div>
+{/if}
 
 <style>
 	.remaining {
