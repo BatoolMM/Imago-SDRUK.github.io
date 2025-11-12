@@ -1,6 +1,6 @@
 import { create, get, remove } from '$lib/utils/ckan/ckan.js'
 import type { PageServerLoadEvent } from './$types.js'
-import { error, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -122,6 +122,13 @@ export const actions = {
 		const dataset = await locals.ckan.request(
 			create('package_create', { name, title, owner_org, private: true, state: 'draft' })
 		)
+		if (!dataset.success) {
+			if ('error' in dataset) {
+				return fail(400, { message: dataset.error.message })
+			}
+
+			return fail(400, { message: dataset.message })
+		}
 		return redirect(307, `/datasets/${dataset.result.name}/edit`)
 	},
 

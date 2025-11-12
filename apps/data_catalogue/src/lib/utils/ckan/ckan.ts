@@ -1,4 +1,4 @@
-import type { CkanResult, CkanTextError } from './actions'
+import type { CkanJSONResponse, CkanTextError } from './actions'
 import type { CkanClient, CkanClientParams } from '.'
 import type { CkanGetActions } from '$lib/utils/ckan/actions/read'
 import type { CkanCreateActions } from '$lib/utils/ckan/actions/create'
@@ -10,7 +10,7 @@ import type { CkanextActivityGetActions } from '$lib/utils/ckan/extensions/versi
 const handleResponse = async <T>(response: Response) => {
 	const contentType = response.headers.get('content-type')
 	if (contentType && contentType.indexOf('application/json') !== -1) {
-		return response.json() as Promise<CkanResult<T>>
+		return response.json() as Promise<CkanJSONResponse<T>>
 	} else {
 		return response.text().then((text) => ({
 			message: response.statusText ?? text,

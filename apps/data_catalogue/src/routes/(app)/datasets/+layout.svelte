@@ -84,6 +84,9 @@
 				if (result.type === 'redirect') {
 					notify.send(`Dataset successfully created`)
 				}
+				if ('data' in result) {
+					notify.send(String(result.data?.message))
+				}
 				applyAction(result)
 				toggleDialog('datasets-dialog')
 			}
