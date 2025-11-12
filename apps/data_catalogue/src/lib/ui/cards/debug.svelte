@@ -3,15 +3,17 @@
 	import { jstr } from '@arturoguzman/art-ui'
 </script>
 
-<div class="debug">
-	{#if debug.data}
-		<div class="debug-block">
-			<pre>
+{#if debug.status}
+	<div class="debug">
+		{#if debug.data}
+			<div class="debug-block">
+				<pre>
         {jstr(debug.data)}
       </pre>
-		</div>
-	{/if}
-</div>
+			</div>
+		{/if}
+	</div>
+{/if}
 
 <style>
 	.debug {
