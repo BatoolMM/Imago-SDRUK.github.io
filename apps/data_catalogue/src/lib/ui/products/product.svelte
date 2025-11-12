@@ -125,6 +125,7 @@
 		border-radius: var(--radius);
 	}
 	.product-content {
+		padding: 2rem;
 		background-color: var(--background-muted);
 	}
 
@@ -133,9 +134,9 @@
 		flex-direction: column;
 		gap: 1rem;
 	}
-	.resources .content {
-		padding: 1rem;
-	}
+	/* .resources .content { */
+	/* 	padding: 1rem; */
+	/* } */
 	.pills {
 		display: flex;
 		flex-direction: column;
