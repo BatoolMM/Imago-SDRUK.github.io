@@ -4,10 +4,14 @@
 	import Loading from '$lib/ui/loading.svelte'
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
 	import { APP_STATE } from '$lib/globals/state.svelte'
-	import { Notification, Paragraph } from '@imago/ui'
+	import { Footer, Notification, Paragraph } from '@imago/ui'
 	import { notify } from '$lib/stores/notify'
 	import { DateTime } from 'luxon'
+	import { getId } from '@arturoguzman/art-ui'
+	import { onMount } from 'svelte'
 	let { data, children } = $props()
+	const footer_id = `footer-${getId()}`
+	let footer_height = $state(0)
 	beforeNavigate(() => {
 		APP_STATE.loading = true
 	})
@@ -33,13 +37,20 @@
 	$effect(() => {
 		calcRemaining(data.expire)
 	})
+	onMount(() => {
+		const el = document.getElementById(footer_id)
+		if (el) {
+			footer_height = el.clientHeight
+		}
+	})
 </script>
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
-
-{@render children?.()}
+<main style:--footer-height={`${footer_height}px`}>
+	{@render children?.()}
+</main>
 <Loading></Loading>
 <Notification {notify} />
 {#if remaining_time}
@@ -48,7 +59,12 @@
 	</div>
 {/if}
 
+<Footer id={footer_id}></Footer>
+
 <style>
+	main {
+		min-height: calc(100lvh - var(--footer-height));
+	}
 	.remaining {
 		position: fixed;
 		bottom: 1rem;

@@ -11,9 +11,7 @@
 		<Logos {scroll}></Logos>
 	{/snippet}
 </DynamicNav>
-<main>
-	{@render children?.()}
-</main>
+{@render children?.()}
 <div class="tooltip">
 	<Button
 		onclick={() => {
@@ -21,8 +19,6 @@
 		}}>Debug</Button
 	>
 </div>
-
-<Footer></Footer>
 
 <style>
 	.tooltip {

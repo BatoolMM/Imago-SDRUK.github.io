@@ -3,6 +3,7 @@
 	import SDRUK from '$lib/assets/logos/sdr_logo.png'
 	import UKRI from '$lib/assets/logos/ukri_logo.png'
 	import { Button, Icon, Subtitle, Title } from '@imago/ui'
+	let { id }: { id?: string } = $props()
 	const platform_collection = [1, 2, 3].map((x) => ({
 		href: '/',
 		label: `Data product ${x}`
@@ -40,7 +41,7 @@
 	const now = new Date()
 </script>
 
-<footer>
+<footer {id}>
 	<div class="footer-content">
 		<div class="top">
 			<div class="left-col">

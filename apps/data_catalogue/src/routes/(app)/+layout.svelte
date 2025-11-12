@@ -11,9 +11,7 @@
 		<Logos {scroll}></Logos>
 	{/snippet}
 </DynamicNav>
-<main>
-	{@render children?.()}
-</main>
+{@render children?.()}
 <div class="tooltip">
 	<Button
 		active={debug.status}
@@ -23,7 +21,6 @@
 	>
 </div>
 <Debug></Debug>
-<Footer></Footer>
 
 <style>
 	.tooltip {
