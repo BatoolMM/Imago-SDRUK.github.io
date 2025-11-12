@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/public'
 import type { Routes } from '@imago/ui'
 
 export const ROUTES: Routes = [
@@ -7,11 +8,11 @@ export const ROUTES: Routes = [
 		subpaths: [
 			{
 				label: 'Imago',
-				href: 'http://127.0.0.1:5173'
+				href: env.PUBLIC_IMAGO_URL ?? 'http://127.0.0.1:5173'
 			},
 			{
 				label: 'Data catalogue',
-				href: '/'
+				href: env.PUBLIC_IMAGO_DATA_CATALOGUE_URL ?? 'http://127.0.0.1:5174'
 			}
 		]
 	},

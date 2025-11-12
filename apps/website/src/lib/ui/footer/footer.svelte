@@ -2,6 +2,7 @@
 	import { DateTime } from 'luxon'
 	import Logos from '../cards/logos.svelte'
 	import { Button, Icon, Subtitle, Title } from '@imago/ui'
+	let { id }: { id?: string } = $props()
 	const platform_collection = [1, 2, 3].map((x) => ({
 		href: '/',
 		label: `Data product ${x}`
@@ -37,7 +38,7 @@
 	]
 </script>
 
-<footer>
+<footer {id}>
 	<div class="footer-content">
 		<div class="top">
 			<div class="left-col">

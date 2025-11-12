@@ -17,9 +17,16 @@ export type SolrResponse = {
 	}
 }
 
+export type CkanError = {
+	success: false
+	error: {
+		__type: string
+		message: string
+	}
+}
+
 export type CkanResult<T> = {
-	help: string
-	success: boolean
+	success: true
 	result:
 		| (T extends Record<PropertyKey, unknown> | Record<PropertyKey, unknown>
 				? T & Record<PropertyKey, unknown>
@@ -28,6 +35,10 @@ export type CkanResult<T> = {
 				? T & Record<PropertyKey, unknown>
 				: Record<PropertyKey, unknown>)[]
 }
+
+export type CkanJSONResponse<T> = {
+	help: string
+} & (CkanResult<T> | CkanError)
 
 export type CkanTextError = {
 	success: false
