@@ -1,5 +1,13 @@
 # data-catalogue
 
+## 1.1.7
+### Patch Changes
+
+- f88761b: ready for alpha version 11/12/2025
+  add get url from envs
+  add page title
+  fix resources padding on dataset page
+
 ## 1.1.6
 ### Patch Changes
 
