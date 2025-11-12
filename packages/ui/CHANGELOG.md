@@ -1,5 +1,13 @@
 # @imago/ui
 
+## 1.0.5
+### Patch Changes
+
+- f88761b: ready for alpha version 11/12/2025
+  add get url from envs
+  add page title
+  fix resources padding on dataset page
+
 ## 1.0.4
 ### Patch Changes
 
