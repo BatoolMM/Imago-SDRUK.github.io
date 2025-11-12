@@ -4,7 +4,8 @@
 	import DOMPurify from 'dompurify'
 	import { marked } from 'marked'
 	import { onMount } from 'svelte'
-	let { note, trim }: { note: string; trim?: number } = $props()
+	let { note, trim, current_colour }: { note: string; trim?: number; current_colour?: boolean } =
+		$props()
 	let sanitised = $state('')
 	onMount(async () => {
 		let _note = note
@@ -18,7 +19,7 @@
 </script>
 
 {#if browser}
-	<Paragraph>{@html sanitised}</Paragraph>
+	<Paragraph {current_colour}>{@html sanitised}</Paragraph>
 {/if}
 
 <style>

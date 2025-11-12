@@ -17,15 +17,15 @@
 		licenses: CkanResult | CkanTextError
 	} = $props()
 	let filters = $state([
-		{
-			title: 'Organisations',
-			filters: organisations,
-			query: 'organization',
-			limit: 10,
-			transform: (id: string) => {
-				return { label: id, href: `?organization=${id}` }
-			}
-		},
+		// {
+		// 	title: 'Organisations',
+		// 	filters: organisations,
+		// 	query: 'organization',
+		// 	limit: 10,
+		// 	transform: (id: string) => {
+		// 		return { label: id, href: `?organization=${id}` }
+		// 	}
+		// },
 		{
 			title: 'Groups',
 			filters: groups,
@@ -112,6 +112,7 @@
 							{#if typeof result === 'string'}
 								{@const active = page.url.searchParams.getAll(filter.query).includes(result)}
 								<Button
+									style="tag"
 									{active}
 									line_clamp
 									href={handleSearchParams({
@@ -124,6 +125,7 @@
 								{#if result && 'title' in result}
 									{@const active = page.url.searchParams.getAll(filter.query).includes(result.id)}
 									<Button
+										style="tag"
 										{active}
 										line_clamp
 										href={handleSearchParams({

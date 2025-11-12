@@ -6,13 +6,21 @@ import { error } from '@sveltejs/kit'
 
 export const load = async ({ locals, params }) => {
 	const data = await locals.ckan.request(get('package_show', { id: params.id }))
-	console.log(data)
+	const activities = await locals.ckan.request(get('package_activity_list', { id: params.id }))
 	// console.log(jstr(data))
-	if (Array.isArray(data.result) || !data.result || !data.success) {
+	if (Array.isArray(data.result) || !data.result || !data.success || activities.success === false) {
 		return error(...SERVER_ERRORS[404])
 	}
 	const fields = getFields(data.result, [
 		'author',
+		'isopen',
+		'owner_org',
+		'version',
+		'id',
+		'url',
+		'creator_user_id',
+		'relationships_as_subject',
+		'relationships_as_object',
 		'author_email',
 		'license_id',
 		'license_title',
@@ -49,6 +57,7 @@ export const load = async ({ locals, params }) => {
 	})
 	// }
 	return {
-		result: fields
+		result: fields,
+		activities
 	}
 }

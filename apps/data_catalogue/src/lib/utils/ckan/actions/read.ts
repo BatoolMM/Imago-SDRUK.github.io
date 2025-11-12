@@ -1,4 +1,4 @@
-import type { CkanDataset, CkanResource } from '$lib/types/ckan'
+import type { CkanDataset, CkanResource, CkanTag } from '$lib/types/ckan'
 
 type PackageList = [
 	'package_list',
@@ -194,7 +194,8 @@ type TagList = [
 		query?: string
 		vocabulary_id?: string
 		all_fields?: boolean
-	}
+	},
+	CkanTag[]
 ]
 
 type TagShow = [

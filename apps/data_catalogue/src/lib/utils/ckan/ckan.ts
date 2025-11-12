@@ -5,7 +5,8 @@ import type { CkanCreateActions } from '$lib/utils/ckan/actions/create'
 import type { CkanDeleteActions } from '$lib/utils/ckan/actions/delete'
 import type { CkanPatchActions, CkanUpdateActions } from '$lib/utils/ckan/actions/update'
 import { jstr } from '@arturoguzman/art-ui'
-
+import type { CkanPing } from '$lib/types/ckan'
+import type { CkanextActivityGetActions } from '$lib/utils/ckan/extensions/versions/read'
 const handleResponse = async <T>(response: Response) => {
 	const contentType = response.headers.get('content-type')
 	if (contentType && contentType.indexOf('application/json') !== -1) {
@@ -26,6 +27,24 @@ export const createCkanClient = ({ url, token, fetch }: CkanClientParams): CkanC
 		...config,
 		async request(data) {
 			return data(this)
+		},
+		async ping() {
+			try {
+				const url = processURL(config.url, `/api/action/status_show`)
+				const headers = new Headers()
+				if (token) {
+					headers.set('Authorization', token)
+				}
+				const res = await fetch(url, { method: 'GET', headers })
+				const data = await handleResponse<CkanPing>(res)
+				return {
+					success: data.success
+				}
+			} catch {
+				return {
+					success: false
+				}
+			}
 		}
 	}
 }
@@ -43,10 +62,11 @@ const processURL = (url: string | URL, path: string, params?: Record<PropertyKey
 	return _url.toString()
 }
 
+type CkanAllGetActions = CkanGetActions | CkanextActivityGetActions
 export const get =
-	<T extends CkanGetActions[0]>(
+	<T extends CkanAllGetActions[0]>(
 		action: T,
-		query?: Extract<CkanGetActions, [T, unknown, unknown]>[1]
+		query?: Extract<CkanAllGetActions, [T, unknown, unknown]>[1]
 	) =>
 	async (client: CkanClient) => {
 		const url = processURL(client.url, `/api/3/action/${action}`, query)
@@ -55,7 +75,8 @@ export const get =
 			headers.set('Authorization', client.token)
 		}
 		const res = await fetch(url, { method: 'GET', headers })
-		const data = await handleResponse<Extract<CkanGetActions, [T, unknown, unknown]>[2]>(res)
+		const data =
+			await handleResponse<Extract<CkanextActivityGetActions, [T, unknown, unknown]>[2]>(res)
 		return data
 	}
 

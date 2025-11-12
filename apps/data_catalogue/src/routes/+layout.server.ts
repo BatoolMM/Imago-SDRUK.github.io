@@ -1,5 +1,7 @@
 import { ROUTES } from '$lib/globals/routes'
-export const load = async ({ locals }) => {
+import { COOKIES } from '$lib/globals/server.js'
+export const load = async ({ locals, cookies }) => {
+	const expire = cookies.get(COOKIES.expire)
 	const session = locals.session?.active ?? false
 	const routes = structuredClone(ROUTES)
 	if (session) {
@@ -13,6 +15,7 @@ export const load = async ({ locals }) => {
 	}
 	return {
 		routes,
-		session
+		session,
+		expire
 	}
 }

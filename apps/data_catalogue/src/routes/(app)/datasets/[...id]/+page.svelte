@@ -5,14 +5,15 @@
 	import { Accordion, BaseSection, Button, Fact, Icon, Paragraph, Subtitle } from '@imago/ui'
 	import Product from '$lib/ui/products/product.svelte'
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
+	import Stream from '$lib/ui/dataset/stream.svelte'
 	let { data } = $props()
 	setDataset(data.result)
-	let result = getDataset()
+	let ctx = getDataset()
 	debug.data = data
 </script>
 
 <div class="page">
-	{#if result}
+	{#if ctx.dataset}
 		<BaseSection style="base">
 			<div class="dataset-section">
 				<div class="left-col">
@@ -30,55 +31,57 @@
 							</button>
 						{/snippet}
 						<div class="facts">
-							{#if result.author}
+							{#if ctx.dataset.author}
 								<Fact
 									size="xs"
 									title="Author"
-									href={result.author_email ? `mailto:${result.author_email}` : null}
-									text={String(result.author)}
+									href={ctx.dataset.author_email ? `mailto:${ctx.dataset.author_email}` : null}
+									text={String(ctx.dataset.author)}
 								></Fact>
 							{/if}
-							{#if result.maintainer}
+							{#if ctx.dataset.maintainer}
 								<Fact
 									size="xs"
 									title="Maintainer"
-									href={result.maintainer_email ? `mailto:${result.maintainer_email}` : null}
-									text={String(result.maintainer)}
+									href={ctx.dataset.maintainer_email
+										? `mailto:${ctx.dataset.maintainer_email}`
+										: null}
+									text={String(ctx.dataset.maintainer)}
 								></Fact>
 							{/if}
 
-							{#if result.license_title}
+							{#if ctx.dataset.license_title}
 								<Fact
 									title="License"
-									href={result.license_url}
+									href={ctx.dataset.license_url}
 									size="xs"
-									text={result.license_title}
+									text={ctx.dataset.license_title}
 								></Fact>
 							{/if}
 
-							{#if result.version}
-								<Fact title="Version" size="xs" text={result.version}></Fact>
+							{#if ctx.dataset.version}
+								<Fact title="Version" size="xs" text={ctx.dataset.version}></Fact>
 							{/if}
-							<Fact size="xs" title="Type" text={capitalise(String(result.type))}></Fact>
+							<Fact size="xs" title="Type" text={capitalise(String(ctx.dataset.type))}></Fact>
 							<Fact
 								size="xs"
 								title="Created"
-								text={DateTime.fromISO(String(result.metadata_created)).toLocaleString(
+								text={DateTime.fromISO(String(ctx.dataset.metadata_created)).toLocaleString(
 									DateTime.DATETIME_FULL
 								)}
 							></Fact>
 							<Fact
 								size="xs"
 								title="Modified"
-								text={DateTime.fromISO(String(result.metadata_modified)).toLocaleString(
+								text={DateTime.fromISO(String(ctx.dataset.metadata_modified)).toLocaleString(
 									DateTime.DATETIME_FULL
 								)}
 							></Fact>
-							<Fact size="xs" title="Resources" text={String(result.num_resources)}></Fact>
-							{#if result.tags && result.tags.length > 0}
+							<Fact size="xs" title="Resources" text={String(ctx.dataset.num_resources)}></Fact>
+							{#if ctx.dataset.tags && ctx.dataset.tags.length > 0}
 								<Fact size="xs" title="Tags">
 									<div class="tags">
-										{#each result.tags as tag}
+										{#each ctx.dataset.tags as tag}
 											<div class="button-wapper">
 												<Button href={`/datasets?tags=${tag.name}`} style="clean"
 													>{tag.display_name}</Button
@@ -90,7 +93,7 @@
 							{/if}
 						</div>
 					</Accordion>
-					{#if result.extras.length > 0}
+					{#if ctx.dataset.extras.length > 0}
 						<Accordion default_open>
 							{#snippet title({ open, toggleOpen })}
 								<button
@@ -105,19 +108,20 @@
 								</button>
 							{/snippet}
 							<div class="facts">
-								{#each result.extras as extra}
+								{#each ctx.dataset.extras as extra}
 									<Fact size="xs" title={extra.key} text={extra.value}></Fact>
 								{/each}
 							</div>
 						</Accordion>
 
-						<!-- {#each Object.entries(result) as [key, value]} -->
+						<!-- {#each Object.entries(ctx.dataset) as [key, value]} -->
 						<!-- 	<Fact title={key} text={String(value)}></Fact> -->
 						<!-- {/each} -->
 					{/if}
 				</div>
 				<div class="right-col">
 					<Product result={data.result}></Product>
+					<Stream activities={data.activities.result}></Stream>
 				</div>
 			</div>
 		</BaseSection>

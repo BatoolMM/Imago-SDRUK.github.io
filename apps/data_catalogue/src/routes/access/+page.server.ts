@@ -1,6 +1,7 @@
 import { fail, redirect } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { COOKIES } from '$lib/globals/server.js'
+import { DateTime } from 'luxon'
 
 export const actions = {
 	access: async ({ request, cookies }) => {
@@ -19,6 +20,10 @@ export const actions = {
 		}
 		if (token === env.ACESSS_INVITE_ONLY_TOKEN) {
 			cookies.set(COOKIES.access_token, token, { path: '/', maxAge: 1 * 60 * 60 })
+			cookies.set(COOKIES.expire, DateTime.now().plus({ hour: 1 }).toISO(), {
+				path: '/',
+				maxAge: 1 * 60 * 60
+			})
 			redirect(307, '/')
 		}
 

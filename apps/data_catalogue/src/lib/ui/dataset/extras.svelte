@@ -7,11 +7,11 @@
 	import { getDataset } from '$lib/context/dataset.svelte'
 	import { notify } from '$lib/stores/notify'
 
-	const dataset = getDataset()
+	const ctx = getDataset()
 	let extras: { key: string; value: string; id: string; error: boolean }[] = $state(
-		dataset.extras.length === 0
+		ctx.dataset.extras.length === 0
 			? [{ key: '', value: '', id: getId(), error: false }]
-			: dataset.extras.map((x) => ({ ...x, id: getId(), error: false }))
+			: ctx.dataset.extras.map((x) => ({ ...x, id: getId(), error: false }))
 	)
 	const id = `extras-${getId()}`
 	const handleAddExtra = (index: number) => {

@@ -3,7 +3,6 @@ import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
 import { getId, jstr, log } from '@arturoguzman/art-ui'
-// import { error } from '@sveltejs/kit'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { COOKIES } from '$lib/globals/server'
@@ -64,19 +63,18 @@ const handleAccessMode: Handle = async ({ event, resolve }) => {
 }
 
 const handleCkan: Handle = async ({ event, resolve }) => {
-	// event.locals.startTimer = Date.now()
-	// const backend_status = await ping(env.BACKEND_URL)
-	// if (backend_status === -1) {
-	// 	error(503, ERRORS.no_backend)
-	// }
-	// event.locals.directus =
-	// 	env.NODE_ENV === 'development'
-	// 		? directusSDKWithToken(env.BACKEND_TOKEN, event.fetch)
-	// 		: directusSDK(event.fetch)
 	event.locals.ckan = createCkanClient({
 		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined,
+		fetch: event.fetch
 	})
+	const connection = await event.locals.ckan.ping()
+	if (!connection.success) {
+		error(503, {
+			message: `Imago is currently down, please check back later!`,
+			id: 'service-unavailable'
+		})
+	}
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
 		log({ response: response, event: event, status: response.status })

@@ -24,7 +24,7 @@
 		<div class="form-elements">
 			<div class="fields">
 				<Input label="Invite code">
-					<Text name="token"></Text>
+					<Text type="password" name="token"></Text>
 				</Input>
 			</div>
 			<div class="buttons">

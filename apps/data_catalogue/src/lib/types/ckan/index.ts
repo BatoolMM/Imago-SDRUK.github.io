@@ -1,3 +1,13 @@
+export type CkanPing = {
+	site_title: string
+	site_description: string
+	site_url: string
+	error_emails_to: string
+	locale_default: string
+	extensions: string[]
+	ckan_version: string
+}
+
 export type CkanTag = {
 	display_name: string
 	id: string
