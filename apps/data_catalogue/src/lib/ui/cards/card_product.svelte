@@ -8,12 +8,12 @@
 <BaseCard>
 	<div class="product-card">
 		<a href={`/datasets/${dataset.name}`} class="title">
-			<Subtitle weight={600} current_colour size="md">{dataset.title}</Subtitle>
+			<Subtitle weight={700} size="lg">{dataset.title}</Subtitle>
 		</a>
 		<div class="metadata">
 			<div class="notes">
 				{#if dataset.notes}
-					<Notes note={String(dataset.notes)} trim={200}></Notes>
+					<Notes note={String(dataset.notes)} trim={70}></Notes>
 				{/if}
 			</div>
 			<div class="footer">
@@ -22,7 +22,6 @@
 						{@const formats = Array.from(
 							new Set(dataset.resources.map((resource) => resource.format))
 						)}
-
 						<Paragraph size="xs"
 							>{#each formats as format}
 								{#if format && format !== ''}
@@ -60,7 +59,7 @@
 		background-color: var(--background);
 		border: 1px solid var(--border-muted);
 		border-radius: 0.35rem;
-		padding: 2rem;
+		padding: 1rem;
 	}
 	.product-card:visited {
 		background-color: var(--background-accent);
@@ -68,18 +67,33 @@
 	.title {
 		/* background-color: var(--quinary); */
 		/* padding: 0.5rem; */
-		border-radius: 0.35rem;
-		color: var(--quinary);
+		/* border-radius: 0.35rem; */
+		/* color: var(--tertiary); */
 		text-decoration: none;
+		/* border-bottom: 1px solid var(--tertiary); */
+		/* background-color: var(--tertiary-muted); */
+		padding: 0.25rem 1rem;
+		background-color: var(--background);
+		border: 1px solid var(--background-accent);
+		border-radius: var(--radius);
 	}
 	.title:hover {
 		text-decoration: underline;
 	}
 	.title:visited {
-		background-color: var(--quinary-muted);
+		/* background-color: var(--quinary-muted); */
 	}
 	.notes {
-		padding-bottom: 2rem;
+		padding: 1rem;
+		/* color: var(--tertiary); */
+		background-color: var(--background-muted);
+		border: 1px solid var(--tertiary-accent);
+		border-radius: var(--radius);
+	}
+	.metadata {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 	.metadata .footer {
 		display: grid;

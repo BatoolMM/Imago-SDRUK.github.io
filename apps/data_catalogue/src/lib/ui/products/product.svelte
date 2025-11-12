@@ -2,6 +2,7 @@
 	import { page } from '$app/state'
 	import Notes from '$lib/ui/text/notes.svelte'
 	import { Button, Icon, Subtitle, Title } from '@imago/ui'
+	import ProductTitle from './product_title.svelte'
 	let { result }: { result: T } = $props()
 	const file_format_icons = [
 		'file-download',
@@ -35,10 +36,7 @@
 
 <div class="product">
 	<div class="header">
-		<div class="product-title">
-			<Title size="lg" text={String(result.title)}></Title>
-		</div>
-
+		<ProductTitle title={result.title}></ProductTitle>
 		{#if 'notes' in result && result.notes !== null}
 			<div class="product-notes">
 				<Notes note={String(result.notes)}></Notes>
@@ -110,22 +108,6 @@
 </div>
 
 <style>
-	.product-title {
-		position: relative;
-		background-color: color-mix(in oklab, var(--background) 90%, transparent 10%);
-		padding: 1rem;
-		border: 1px solid var(--border);
-	}
-	.product-title::before {
-		content: '';
-		position: absolute;
-		bottom: -0.75rem;
-		left: 0.75rem;
-		height: 100%;
-		width: 100%;
-		background-color: var(--highlight);
-		z-index: -1;
-	}
 	.header {
 		display: flex;
 		flex-direction: column;
