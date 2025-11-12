@@ -9,9 +9,11 @@ if (env.PUBLIC_NODE_ENV === 'production') {
 	Sentry.init({
 		dsn: env.PUBLIC_SENTRY_DSN,
 		tracesSampleRate: 1.0,
+		sendDefaultPii: true,
 		integrations: [Sentry.replayIntegration()],
 		replaysSessionSampleRate: 0.1,
-		replaysOnErrorSampleRate: 1.0
+		replaysOnErrorSampleRate: 1.0,
+		enableLogs: true
 	})
 }
 
