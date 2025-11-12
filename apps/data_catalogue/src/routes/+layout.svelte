@@ -46,6 +46,7 @@
 </script>
 
 <svelte:head>
+	<title>Imago - Data catalogue</title>
 	<link rel="icon" href={favicon} />
 </svelte:head>
 <main style:--footer-height={`${footer_height}px`}>
