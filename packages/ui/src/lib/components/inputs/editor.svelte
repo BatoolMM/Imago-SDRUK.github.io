@@ -48,14 +48,14 @@
 <div class="editor" data-style={style}>
 	{#if editor_state.editor}
 		<div class="fixed-menu">
-			<Button
-				type="button"
-				style="clean"
-				onclick={() => editor_state.editor?.chain().focus().toggleHeading({ level: 1 }).run()}
-				active={editor_state.editor.isActive('heading', { level: 1 })}
-			>
-				<Icon icon={{ icon: 'heading-01', set: 'hugeicons' }}></Icon>
-			</Button>
+			<!-- <Button -->
+			<!-- 	type="button" -->
+			<!-- 	style="clean" -->
+			<!-- 	onclick={() => editor_state.editor?.chain().focus().toggleHeading({ level: 1 }).run()} -->
+			<!-- 	active={editor_state.editor.isActive('heading', { level: 1 })} -->
+			<!-- > -->
+			<!-- 	<Icon icon={{ icon: 'heading-01', set: 'hugeicons' }}></Icon> -->
+			<!-- </Button> -->
 			<Button
 				type="button"
 				style="clean"
@@ -119,6 +119,14 @@
 			>
 				<Icon icon={{ icon: 'code', set: 'tabler' }}></Icon>
 			</Button>
+			<!-- <Button -->
+			<!-- 	type="button" -->
+			<!-- 	style="clean" -->
+			<!-- 	onclick={() => editor_state.editor?.chain().focus().toggleLink().run()} -->
+			<!-- 	active={editor_state.editor.isActive('link')} -->
+			<!-- > -->
+			<!-- 	<Icon icon={{ icon: 'link', set: 'tabler' }}></Icon> -->
+			<!-- </Button> -->
 			<Button
 				type="button"
 				style="clean"
