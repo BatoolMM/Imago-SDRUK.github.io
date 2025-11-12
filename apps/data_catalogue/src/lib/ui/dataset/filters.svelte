@@ -17,15 +17,15 @@
 		licenses: CkanResult | CkanTextError
 	} = $props()
 	let filters = $state([
-		{
-			title: 'Organisations',
-			filters: organisations,
-			query: 'organization',
-			limit: 10,
-			transform: (id: string) => {
-				return { label: id, href: `?organization=${id}` }
-			}
-		},
+		// {
+		// 	title: 'Organisations',
+		// 	filters: organisations,
+		// 	query: 'organization',
+		// 	limit: 10,
+		// 	transform: (id: string) => {
+		// 		return { label: id, href: `?organization=${id}` }
+		// 	}
+		// },
 		{
 			title: 'Groups',
 			filters: groups,
