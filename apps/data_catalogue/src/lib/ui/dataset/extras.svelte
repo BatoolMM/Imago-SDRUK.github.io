@@ -37,7 +37,11 @@
 			})
 		})
 		const data = await res.json()
-		console.log(data)
+		if (data?.dataset?.success === true) {
+			notify.send(`Metadata successfully saved.`)
+		} else {
+			notify.send(`There's been an issue saving the metadata, please try again.`)
+		}
 		await invalidateAll()
 	}
 </script>

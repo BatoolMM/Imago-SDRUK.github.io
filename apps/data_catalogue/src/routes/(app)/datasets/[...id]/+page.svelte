@@ -102,7 +102,7 @@
 										toggleOpen()
 									}}
 								>
-									<Subtitle>Additional information</Subtitle>
+									<Subtitle>Metadata</Subtitle>
 									<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}
 									></Icon>
 								</button>
