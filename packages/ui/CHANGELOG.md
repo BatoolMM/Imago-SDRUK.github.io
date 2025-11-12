@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.6
+### Patch Changes
+
+- 36dbd5d: modify package, trigger build
+
 ## 1.0.5
 ### Patch Changes
 
