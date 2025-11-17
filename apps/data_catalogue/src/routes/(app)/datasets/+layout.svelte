@@ -81,6 +81,7 @@
 		method="post"
 		use:enhance={() => {
 			return async ({ result }) => {
+				console.log(result)
 				if (result.type === 'redirect') {
 					notify.send(`Dataset successfully created`)
 				}
@@ -96,9 +97,9 @@
 			<Input required label="Title">
 				<Text required name="title"></Text>
 			</Input>
-			<Input required label="Name" information="This will be the URL of the dataset">
-				<Text required name="name"></Text>
-			</Input>
+			<!-- <Input required label="Name" information="This will be the URL of the dataset"> -->
+			<!-- 	<Text required name="name"></Text> -->
+			<!-- </Input> -->
 		</div>
 		<div class="buttons">
 			<Button

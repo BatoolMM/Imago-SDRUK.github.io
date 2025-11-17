@@ -1,20 +1,9 @@
 <script lang="ts">
 	import { debug } from '$lib/globals/dev.svelte.js'
-	import { jstr } from '@arturoguzman/art-ui'
-	import {
-		Banner,
-		BaseSection,
-		Button,
-		handleSearchParams,
-		Icon,
-		Paragraph,
-		Subtitle
-	} from '@imago/ui'
+	import { BaseSection, Button, handleSearchParams, Icon, Paragraph, Subtitle } from '@imago/ui'
 	import { page } from '$app/state'
 	import Filters from '$lib/ui/dataset/filters.svelte'
 	import CardProduct from '$lib/ui/cards/card_product.svelte'
-	import { onMount } from 'svelte'
-
 	let { data } = $props()
 	let datasets = $derived(data.datasets)
 	debug.data = data

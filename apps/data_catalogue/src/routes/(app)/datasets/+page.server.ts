@@ -1,6 +1,7 @@
 import { create, get, remove } from '$lib/utils/ckan/ckan.js'
 import type { PageServerLoadEvent } from './$types.js'
 import { error, fail, redirect } from '@sveltejs/kit'
+import slugify from '@sindresorhus/slugify'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -117,16 +118,19 @@ export const actions = {
 	create: async ({ locals, request }) => {
 		const form = await request.formData()
 		const title = String(form.get('title'))
-		const name = String(form.get('name'))
+		const name = slugify(title)
 		const owner_org = 'imago'
 		const dataset = await locals.ckan.request(
 			create('package_create', { name, title, owner_org, private: true, state: 'draft' })
 		)
 		if (!dataset.success) {
 			if ('error' in dataset) {
-				return fail(400, { message: dataset.error.message })
+				if ('message' in dataset.error) {
+					return fail(400, { message: dataset.error.message })
+				}
+				console.log(dataset)
+				return fail(500, { message: `Unknown error` })
 			}
-
 			return fail(400, { message: dataset.message })
 		}
 		return redirect(307, `/datasets/${dataset.result.name}/edit`)
