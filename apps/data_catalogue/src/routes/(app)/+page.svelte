@@ -33,7 +33,7 @@
 						}}
 					></Text>
 				</Input>
-				<Button href="/datasets?search={search}">Search</Button>
+				<Button umami_event="Search datasets" href="/datasets?search={search}">Search</Button>
 			</div>
 		</div>
 		<!-- <div class="body"> -->

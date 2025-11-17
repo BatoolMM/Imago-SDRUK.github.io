@@ -60,6 +60,7 @@
 			<div class="social-media">
 				<Subtitle>Contact us:</Subtitle>
 				<Button
+					umami_event="Contact email"
 					style="clean"
 					onclick={() => {
 						window.location = 'mailto:imago@liverpool.ac.uk'
@@ -68,6 +69,7 @@
 					<Icon icon={{ icon: 'mail', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
+					umami_event="Linkedin"
 					style="clean"
 					onclick={() => {
 						window.location = 'https://www.linkedin.com/company/sdr-imago'
@@ -76,6 +78,7 @@
 					<Icon icon={{ icon: 'brand-linkedin', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
+					umami_event="Github"
 					style="clean"
 					onclick={() => {
 						window.location = 'https://github.com/Imago-SDRUK/'
