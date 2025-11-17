@@ -51,7 +51,7 @@ export const POST = async ({ request, url, params, locals }) => {
 			const resource = await locals.ckan.request(
 				create('resource_create', {
 					id: resource_id.id,
-					url: clean_url.url.toString(),
+					url: `${env.ORIGIN ?? 'http://127.0.0.1:5174'}/api/v1/resources/${resource_id.id}`,
 					name: data.name,
 					package_id: data.id,
 					description: data.description,

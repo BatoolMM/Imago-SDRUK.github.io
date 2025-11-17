@@ -1,10 +1,5 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { get } from '$lib/utils/ckan/ckan.js'
-import {
-	getSignedDownloadUrl,
-	loadStorageClient,
-	resourceIdFromURL
-} from '$lib/utils/files/azure/index.js'
 import { getFields } from '@imago/ui'
 import { error } from '@sveltejs/kit'
 
@@ -31,9 +26,9 @@ export const load = async ({ locals, params }) => {
 		'url'
 	])
 	// if (!locals.session) {
-	const client = loadStorageClient()
-	result.url = getSignedDownloadUrl({ ...client, filename: result.id })
-	result.download_url = getSignedDownloadUrl({ ...client, filename: result.id })
+	// const client = loadStorageClient()
+	// result.url = getSignedDownloadUrl({ ...client, filename: result.id })
+	// result.download_url = getSignedDownloadUrl({ ...client, filename: result.id })
 	// }
 	return { data: { ...data, result } }
 }

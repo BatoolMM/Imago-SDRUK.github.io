@@ -46,15 +46,15 @@ export const load = async ({ locals, params }) => {
 	])
 	// const data = await locals.ckan.request(get('package_show', { id: params.id }))
 	// if (!locals.session) {
-	const client = loadStorageClient()
-	fields.resources = fields.resources.map((resource) => {
-		const resource_url = getSignedDownloadUrl({ ...client, filename: resource.id })
-		return {
-			...resource,
-			url: resource_url,
-			download_url: resource_url
-		}
-	})
+	// const client = loadStorageClient()
+	// fields.resources = fields.resources.map((resource) => {
+	// 	const resource_url = getSignedDownloadUrl({ ...client, filename: resource.id })
+	// 	return {
+	// 		...resource,
+	// 		url: resource_url,
+	// 		download_url: resource_url
+	// 	}
+	// })
 	// }
 	return {
 		result: fields,

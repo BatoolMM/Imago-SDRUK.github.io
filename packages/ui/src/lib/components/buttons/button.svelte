@@ -15,12 +15,14 @@
 		active,
 		style = 'base',
 		type,
-		line_clamp
+		line_clamp,
+		umami_event
 	}: {
 		hover_label?: string
 		href?: string
 		download?: string | boolean
 		disabled?: boolean
+		umami_event?: string
 		leftCol?: Snippet
 		rightCol?: Snippet
 		children?: Snippet
@@ -46,6 +48,7 @@
 		{download}
 		{onpointerdown}
 		{onpointerup}
+		data-umami-event={umami_event}
 		target={download ? '_blank' : undefined}
 	>
 		{@render leftCol?.()}
@@ -65,6 +68,7 @@
 		{type}
 		{onpointerdown}
 		{onpointerup}
+		data-umami-event={umami_event}
 	>
 		{@render leftCol?.()}
 		{@render children?.()}

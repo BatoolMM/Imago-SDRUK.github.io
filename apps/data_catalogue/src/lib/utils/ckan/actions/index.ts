@@ -20,6 +20,8 @@ export type SolrResponse = {
 export type CkanError = {
 	success: false
 	error: {
+		[k: string]: string[]
+	} & {
 		__type: string
 		message: string
 	}
