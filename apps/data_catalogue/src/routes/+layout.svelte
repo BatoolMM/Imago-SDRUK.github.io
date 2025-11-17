@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.css'
-	import favicon from '$lib/assets/favicon.svg'
 	import Loading from '$lib/ui/loading.svelte'
 	import { afterNavigate, beforeNavigate } from '$app/navigation'
 	import { APP_STATE } from '$lib/globals/state.svelte'
@@ -9,6 +8,7 @@
 	import { DateTime } from 'luxon'
 	import { getId } from '@arturoguzman/art-ui'
 	import { onMount } from 'svelte'
+	import { env } from '$env/dynamic/public'
 	let { data, children } = $props()
 	const footer_id = `footer-${getId()}`
 	let footer_height = $state(0)
@@ -47,7 +47,14 @@
 
 <svelte:head>
 	<title>Imago - Data catalogue</title>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/favicon.png" />
+	{#if env.PUBLIC_NODE_ENV === 'production'}
+		<script
+			defer
+			src="https://events.imago.ac.uk/script.js"
+			data-website-id="d84c7036-b0ee-4dc4-847e-f036e0db4973"
+		></script>
+	{/if}
 </svelte:head>
 <main style:--footer-height={`${footer_height}px`}>
 	{@render children?.()}
