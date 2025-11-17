@@ -1,7 +1,7 @@
 <script lang="ts" generics="T extends Record<PropertyKey, unknown>">
 	import { page } from '$app/state'
 	import Notes from '$lib/ui/text/notes.svelte'
-	import { Button, Icon, Subtitle, Title } from '@imago/ui'
+	import { Button, Icon, Subtitle } from '@imago/ui'
 	import ProductTitle from './product_title.svelte'
 	let { result }: { result: T } = $props()
 	const file_format_icons = [
@@ -37,14 +37,14 @@
 <div class="product">
 	<div class="header">
 		<ProductTitle title={result.title}></ProductTitle>
-		{#if 'notes' in result && result.notes !== null}
+		{#if 'notes' in result && result.notes !== null && result.notes !== ''}
 			<div class="product-notes">
 				<Notes note={String(result.notes)}></Notes>
 			</div>
 		{/if}
 	</div>
-	<div class="product-content">
-		{#if 'resources' in result && Array.isArray(result.resources) && result.resources.length > 0}
+	{#if 'resources' in result && Array.isArray(result.resources) && result.resources.length > 0}
+		<div class="product-content">
 			<div class="resources">
 				<Subtitle size="md" text="Resources"></Subtitle>
 				<div class="content">
@@ -53,7 +53,9 @@
 							<div class="pill">
 								<Subtitle size="xs">{resource.name ?? resource.description}</Subtitle>
 								<div class="pill-buttons">
-									<Button href="/datasets/{page.params.id}/resources/{resource.id}"
+									<Button
+										umami_event="File details"
+										href="/datasets/{page.params.id}/resources/{resource.id}"
 										>{#snippet leftCol()}
 											<span>Details</span>
 										{/snippet}
@@ -62,7 +64,7 @@
 										{/snippet}
 									</Button>
 									{#if resource.format.toLowerCase() === 'html'}
-										<Button href={resource.url}
+										<Button umami_event="Visit external link" href={resource.url}
 											>{#snippet leftCol()}
 												<span>Visit</span>
 											{/snippet}
@@ -71,7 +73,10 @@
 											{/snippet}
 										</Button>
 									{:else}
-										<Button href={resource.url} download
+										<Button
+											umami_event="Download resource"
+											href={resource.url}
+											download={resource.name}
 											>{#snippet leftCol()}
 												<span>Download</span>
 											{/snippet}
@@ -86,25 +91,8 @@
 					</div>
 				</div>
 			</div>
-		{/if}
-		<!-- {#if Array.isArray(result.extras) && result.extras.length > 0} -->
-		<!-- 	<div class="resources"> -->
-		<!-- 		<Subtitle size="md" text="Extras"></Subtitle> -->
-		<!-- 		<div class="content"> -->
-		<!-- 			<div class="pills"> -->
-		<!-- 				{#each result.extras as extra} -->
-		<!-- 					<div class="pill"> -->
-		<!-- 						<Subtitle size="xs">{extra.key}</Subtitle> -->
-		<!-- 						<div class="pill-buttons"> -->
-		<!-- 							<pre>{extra.value}</pre> -->
-		<!-- 						</div> -->
-		<!-- 					</div> -->
-		<!-- 				{/each} -->
-		<!-- 			</div> -->
-		<!-- 		</div> -->
-		<!-- 	</div> -->
-		<!-- {/if} -->
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
