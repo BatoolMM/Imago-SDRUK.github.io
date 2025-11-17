@@ -40,36 +40,39 @@
 				}
 			}
 		} = { added: {}, removed: {}, changed: {} }
-		const entries_current = Object.entries(current)
-		const checked_keys: string[] = []
-		for (const [key, value] of entries_current) {
-			if (skip_keys.includes(key)) {
-				continue
+		if (current && previous) {
+			const entries_current = Object.entries(current)
+			const checked_keys: string[] = []
+			for (const [key, value] of entries_current) {
+				if (skip_keys.includes(key)) {
+					continue
+				}
+				if (key in previous === false && value && value !== '') {
+					changes.added[key] = value
+					checked_keys.push(key)
+					continue
+				}
+				if (!isEqual(previous[key], current[key])) {
+					changes.changed[key] = { previous: {}, current: {} }
+					changes.changed[key].previous = previous[key]
+					changes.changed[key].current = current[key]
+					checked_keys.push(key)
+				}
 			}
-			if (!previous[key] && value && value !== '') {
-				changes.added[key] = value
-				checked_keys.push(key)
-				continue
-			}
-			if (!isEqual(previous[key], current[key])) {
-				changes.changed[key] = { previous: {}, current: {} }
-				changes.changed[key].previous = previous[key]
-				changes.changed[key].current = current[key]
-				checked_keys.push(key)
+			const entries_passed = Object.entries(previous).filter(
+				(entry) => !checked_keys.includes(entry[0])
+			)
+			for (const [key, value] of entries_passed) {
+				if (skip_keys.includes(key)) {
+					continue
+				}
+				if (current[key]) {
+					continue
+				}
+				changes.removed[key] = value
 			}
 		}
-		const entries_passed = Object.entries(previous).filter(
-			(entry) => !checked_keys.includes(entry[0])
-		)
-		for (const [key, value] of entries_passed) {
-			if (skip_keys.includes(key)) {
-				continue
-			}
-			if (current[key]) {
-				continue
-			}
-			changes.removed[key] = value
-		}
+
 		return changes
 	}
 </script>
