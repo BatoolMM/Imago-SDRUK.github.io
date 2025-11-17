@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.12
+### Patch Changes
+
+- c81657a: add favicon and apple only favicons, handle a bug on metadata activity stream if the dataset is undefined, refactor file upload and download, now the resource id endpoint handles the transformation of the url
+
 ## 1.1.11
 ### Patch Changes
 
