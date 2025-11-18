@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.8
+### Patch Changes
+
+- c81657a: add favicon and apple only favicons, handle a bug on metadata activity stream if the dataset is undefined, refactor file upload and download, now the resource id endpoint handles the transformation of the url
+
 ## 1.0.7
 ### Patch Changes
 
