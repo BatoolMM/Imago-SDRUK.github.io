@@ -67,7 +67,7 @@
 		</div>
 		<div class="right-col">
 			{#if Array.isArray(result) === false && typeof result.url === 'string'}
-				<Button href={result.url} download
+				<Button href={result.url} download={result.name}
 					>Download: {result.name ?? result.description}
 					<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
 				</Button>

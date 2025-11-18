@@ -10,9 +10,11 @@
 <style>
 	.product-title {
 		position: relative;
-		background-color: color-mix(in oklab, var(--background) 90%, transparent 10%);
+		/* background-color: color-mix(in oklab, var(--background) 90%, transparent 10%); */
 		padding: 1rem;
-		border: 1px solid var(--border);
+		background-color: var(--background-accent);
+		border-radius: var(--radius);
+		/* border: 1px solid var(--border); */
 	}
 	.product-title::before {
 		content: '';
@@ -21,7 +23,7 @@
 		left: 0.75rem;
 		height: 100%;
 		width: 100%;
-		background-color: var(--highlight);
+		/* background-color: var(--highlight); */
 		z-index: -1;
 	}
 </style>
