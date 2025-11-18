@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms'
 	import { invalidateAll } from '$app/navigation'
 	import { getDataset } from '$lib/context/dataset.svelte'
+	import { APP_STATE } from '$lib/globals/state.svelte'
 	import { notify } from '$lib/stores/notify'
 	import type { CkanTag } from '$lib/types/ckan'
 	import { fuzzy, getId, jstr } from '@arturoguzman/art-ui'
@@ -43,7 +44,9 @@
 	action="?/save_tags"
 	method="POST"
 	use:enhance={() => {
+		APP_STATE.loading = true
 		return async ({ result }) => {
+			APP_STATE.loading = false
 			if ('data' in result) {
 				notify.send(String(result.data?.message))
 			}

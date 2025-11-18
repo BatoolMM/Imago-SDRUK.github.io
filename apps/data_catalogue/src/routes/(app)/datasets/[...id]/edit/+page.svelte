@@ -3,33 +3,29 @@
 	import { invalidateAll } from '$app/navigation'
 	import { notify } from '$lib/stores/notify.js'
 	import licenses from '$lib/utils/ckan/licenses.json'
-	import {
-		BaseSection,
-		Button,
-		Editor,
-		Input,
-		InputBlock,
-		Select,
-		Subtitle,
-		Text,
-		Textarea
-	} from '@imago/ui'
+	import { BaseSection, Button, Editor, Input, InputBlock, Select, Subtitle, Text } from '@imago/ui'
 	import Resources from '$lib/ui/dataset/resource/resources.svelte'
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
 	import Extras from '$lib/ui/dataset/extras.svelte'
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import Tags from '$lib/ui/dataset/tags.svelte'
 	import { onMount } from 'svelte'
+	import { APP_STATE } from '$lib/globals/state.svelte.js'
 
 	let { data } = $props()
 	setDataset(data.dataset.result)
 	const ctx = getDataset()
+	let editor_enabled = $state(false)
 	onMount(() => {
 		debug.data = data
 	})
 	$effect(() => {
 		console.log(`refreshing data from invalidate`)
+		editor_enabled = false
 		ctx.dataset = data.dataset.result
+		setTimeout(() => {
+			editor_enabled = true
+		}, 1)
 	})
 </script>
 
@@ -43,7 +39,9 @@
 						action="?/update"
 						method="POST"
 						use:enhance={() => {
+							APP_STATE.loading = true
 							return async ({ result }) => {
+								APP_STATE.loading = false
 								if ('data' in result) {
 									notify.send(String(result.data?.message))
 								}
@@ -74,7 +72,9 @@
 								</Input>
 								<Input label="Description">
 									<textarea name="notes" hidden bind:value={ctx.dataset.notes}></textarea>
-									<Editor bind:content={ctx.dataset.notes}></Editor>
+									{#if editor_enabled}
+										<Editor bind:content={ctx.dataset.notes}></Editor>
+									{/if}
 									<!-- <Textarea name="notes" bind:value={ctx.dataset.notes}></Textarea> -->
 								</Input>
 							</InputBlock>
@@ -115,6 +115,13 @@
 							</InputBlock>
 						</div>
 						<div class="buttons">
+							<Button
+								style="alt"
+								type="button"
+								onclick={() => {
+									invalidateAll()
+								}}>Cancel</Button
+							>
 							<Button style="alt">Save</Button>
 						</div>
 					</form>
@@ -173,7 +180,7 @@
 	}
 	.buttons {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 	}
 	@media (min-width: 1024px) {
 		.page {

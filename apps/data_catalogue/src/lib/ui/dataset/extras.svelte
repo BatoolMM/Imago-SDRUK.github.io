@@ -6,6 +6,7 @@
 	import { invalidateAll } from '$app/navigation'
 	import { getDataset } from '$lib/context/dataset.svelte'
 	import { notify } from '$lib/stores/notify'
+	import { APP_STATE } from '$lib/globals/state.svelte'
 
 	const ctx = getDataset()
 	let extras: { key: string; value: string; id: string; error: boolean }[] = $state(
@@ -28,6 +29,7 @@
 		}, 100)
 	}
 	const handleSave = async () => {
+		APP_STATE.loading = true
 		const res = await fetch(`/api/v1/datasets/${page.params.id}`, {
 			method: 'PATCH',
 			body: JSON.stringify({
@@ -36,6 +38,7 @@
 					.filter((x) => x.key !== '')
 			})
 		})
+		APP_STATE.loading = false
 		const data = await res.json()
 		if (data?.dataset?.success === true) {
 			notify.send(`Metadata successfully saved.`)
@@ -44,6 +47,12 @@
 		}
 		await invalidateAll()
 	}
+	$effect(() => {
+		extras =
+			ctx.dataset.extras.length === 0
+				? [{ key: '', value: '', id: getId(), error: false }]
+				: ctx.dataset.extras.map((x) => ({ ...x, id: getId(), error: false }))
+	})
 </script>
 
 <div class="field-header">
@@ -67,6 +76,15 @@
 		{/each}
 	</div>
 	<div class="buttons">
+		<Button
+			style="alt"
+			type="button"
+			onclick={() => {
+				invalidateAll()
+			}}
+		>
+			Cancel
+		</Button>
 		<Button
 			style="alt"
 			type="button"
@@ -101,6 +119,6 @@
 	}
 	.buttons {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 	}
 </style>
