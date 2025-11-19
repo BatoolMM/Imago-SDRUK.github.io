@@ -11,11 +11,11 @@
 			<Subtitle weight={700} size="lg">{dataset.title}</Subtitle>
 		</a>
 		<div class="metadata">
-			<div class="notes">
-				{#if dataset.notes}
+			{#if dataset.notes && dataset.notes !== ''}
+				<div class="notes">
 					<Notes note={String(dataset.notes)} trim={70}></Notes>
-				{/if}
-			</div>
+				</div>
+			{/if}
 			<div class="footer">
 				<div class="facts">
 					{#if dataset.resources && Array.isArray(dataset.resources)}
@@ -59,7 +59,7 @@
 		background-color: var(--background);
 		border: 1px solid var(--border-muted);
 		border-radius: 0.35rem;
-		padding: 1rem;
+		padding: 1rem 1.5rem;
 	}
 	.product-card:visited {
 		background-color: var(--background-accent);
@@ -72,9 +72,9 @@
 		text-decoration: none;
 		/* border-bottom: 1px solid var(--tertiary); */
 		/* background-color: var(--tertiary-muted); */
-		padding: 0.25rem 1rem;
+		/* padding: 0.25rem 1rem; */
 		background-color: var(--background);
-		border: 1px solid var(--background-accent);
+		/* border: 1px solid var(--background-accent); */
 		border-radius: var(--radius);
 	}
 	.title:hover {
@@ -87,7 +87,7 @@
 		padding: 1rem;
 		/* color: var(--tertiary); */
 		background-color: var(--background-muted);
-		border: 1px solid var(--tertiary-accent);
+		/* border: 1px solid var(--tertiary-accent); */
 		border-radius: var(--radius);
 	}
 	.metadata {

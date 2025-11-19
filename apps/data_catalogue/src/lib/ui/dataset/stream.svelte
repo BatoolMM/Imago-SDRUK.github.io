@@ -59,113 +59,116 @@
 					checked_keys.push(key)
 				}
 			}
-			const entries_passed = Object.entries(previous).filter(
+			const previous_entries = Object.entries(previous).filter(
 				(entry) => !checked_keys.includes(entry[0])
 			)
-			for (const [key, value] of entries_passed) {
+			for (const [key, value] of previous_entries) {
 				if (skip_keys.includes(key)) {
 					continue
 				}
 				if (current[key]) {
 					continue
 				}
-				changes.removed[key] = value
+				if (value) {
+					changes.removed[key] = value
+				}
 			}
 		}
-
 		return changes
 	}
 </script>
 
-<div class="stream">
-	<Subtitle size="md">Activity stream</Subtitle>
-	{#each activities
-		.map( (activity, index, arr) => ({ ...activity, diff: diff( { current: index === 0 ? ctx.dataset : arr[index - 1].data.package, previous: activity.data.package } ) }) )
-		.filter( (activity) => (Object.values(activity.diff).every((value) => Object.keys(value).length === 0) ? false : true) ) as _activity, index}
-		{@const activity = _activity.diff}
-		<div class="accordion-wrapper">
-			<Accordion>
-				{#snippet title()}
-					<Subtitle
-						>Modified: {DateTime.fromISO(
-							index === 0 ? ctx.dataset.metadata_modified : _activity.timestamp
-						).toLocaleString(DateTime.DATETIME_FULL)}</Subtitle
-					>
-				{/snippet}
-				{#snippet buttons({ toggleOpen, open })}
-					<Button
-						active={open}
-						style="clean"
-						onclick={() => {
-							toggleOpen()
-						}}
-					>
-						<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}></Icon>
-					</Button>
-				{/snippet}
-				<div class="activity">
-					{#if Object.keys(activity.added).length > 0}
-						<Subtitle>Added</Subtitle>
-						{#each Object.entries(activity.added) as [key, value]}
-							<div class="field">
-								<div class="header">
-									<Paragraph>{key}</Paragraph>
+{#if activities.length > 1}
+	<div class="stream">
+		<Subtitle size="md">Activity stream</Subtitle>
+		{#each activities
+			.map( (activity, index, arr) => ({ ...activity, diff: diff( { current: index === 0 ? ctx.dataset : arr[index - 1].data.package, previous: activity.data.package } ) }) )
+			.filter( (activity) => (Object.values(activity.diff).every((value) => Object.keys(value).length === 0) ? false : true) ) as _activity, index}
+			{@const activity = _activity.diff}
+			<div class="accordion-wrapper">
+				<Accordion>
+					{#snippet title()}
+						<Subtitle
+							>Modified: {DateTime.fromISO(
+								index === 0 ? ctx.dataset.metadata_modified : _activity.timestamp
+							).toLocaleString(DateTime.DATETIME_FULL)}</Subtitle
+						>
+					{/snippet}
+					{#snippet buttons({ toggleOpen, open })}
+						<Button
+							active={open}
+							style="clean"
+							onclick={() => {
+								toggleOpen()
+							}}
+						>
+							<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}></Icon>
+						</Button>
+					{/snippet}
+					<div class="activity">
+						{#if Object.keys(activity.added).length > 0}
+							<Subtitle>Added</Subtitle>
+							{#each Object.entries(activity.added) as [key, value]}
+								<div class="field">
+									<div class="header">
+										<Paragraph>{key}</Paragraph>
+									</div>
+									<div class="right-col">
+										<Paragraph>{typeof value === 'object' ? jstr(value) : value}</Paragraph>
+									</div>
 								</div>
-								<div class="right-col">
-									<Paragraph>{typeof value === 'object' ? jstr(value) : value}</Paragraph>
-								</div>
-							</div>
-						{/each}
-					{/if}
+							{/each}
+						{/if}
 
-					{#if Object.keys(activity.changed).filter(([key]) => key !== 'metadata_modified').length > 0}
-						<Subtitle>Changed</Subtitle>
-						{#each Object.entries(activity.changed).filter(([key]) => key !== 'metadata_modified') as [key, value]}
-							<div class="field">
-								<div class="header">
-									<Paragraph>{key}</Paragraph>
-								</div>
-								<div class="left-col">
+						{#if Object.keys(activity.changed).filter(([key]) => key !== 'metadata_modified').length > 0}
+							<Subtitle>Changed</Subtitle>
+							{#each Object.entries(activity.changed).filter(([key]) => key !== 'metadata_modified') as [key, value]}
+								<div class="field">
 									<div class="header">
-										<Paragraph>Previous</Paragraph>
+										<Paragraph>{key}</Paragraph>
 									</div>
-									<Paragraph
-										>{typeof value.previous === 'object'
-											? jstr(value.previous)
-											: value.previous}</Paragraph
-									>
+									<div class="left-col">
+										<div class="header">
+											<Paragraph>Previous</Paragraph>
+										</div>
+										<Paragraph
+											>{typeof value.previous === 'object'
+												? jstr(value.previous)
+												: value.previous}</Paragraph
+										>
+									</div>
+									<div class="right-col">
+										<div class="header">
+											<Paragraph>Current</Paragraph>
+										</div>
+										<Paragraph
+											>{typeof value.current === 'object'
+												? jstr(value.current)
+												: value.current}</Paragraph
+										>
+									</div>
 								</div>
-								<div class="right-col">
+							{/each}
+						{/if}
+						{#if Object.keys(activity.removed).length > 0}
+							<Subtitle>Removed</Subtitle>
+							{#each Object.entries(activity.removed) as [key, value]}
+								<div class="field">
 									<div class="header">
-										<Paragraph>Current</Paragraph>
+										<Paragraph>{key}</Paragraph>
 									</div>
-									<Paragraph
-										>{typeof value.current === 'object'
-											? jstr(value.current)
-											: value.current}</Paragraph
-									>
+									<div class="right-col">
+										<Paragraph>{typeof value === 'object' ? jstr(value) : value}</Paragraph>
+									</div>
 								</div>
-							</div>
-						{/each}
-					{/if}
-					{#if Object.keys(activity.removed).length > 0}
-						<Subtitle>Removed</Subtitle>
-						{#each Object.entries(activity.removed) as [key, value]}
-							<div class="field">
-								<div class="header">
-									<Paragraph>{key}</Paragraph>
-								</div>
-								<div class="right-col">
-									<Paragraph>{typeof value === 'object' ? jstr(value) : value}</Paragraph>
-								</div>
-							</div>
-						{/each}
-					{/if}
-				</div>
-			</Accordion>
-		</div>
-	{/each}
-</div>
+							{/each}
+						{/if}
+					</div>
+				</Accordion>
+			</div>
+		{/each}
+	</div>
+{/if}
 
 <style>
 	.stream {
