@@ -83,7 +83,7 @@
 									<div class="tags">
 										{#each ctx.dataset.tags as tag}
 											<div class="button-wapper">
-												<Button href={`/datasets?tags=${tag.name}`} style="clean"
+												<Button href={`/datasets?tags=${tag.name}`} style="tag"
 													>{tag.display_name}</Button
 												>
 											</div>
@@ -133,6 +133,8 @@
 	}
 	.tags {
 		display: flex;
-		gap: 1rem;
+		gap: 0.25rem;
+		flex-wrap: wrap;
+		padding: 1rem 0;
 	}
 </style>

@@ -153,9 +153,9 @@
 		background-color: var(--background);
 		display: grid;
 		/* justify-items: center; */
-		align-items: center;
+		align-items: start;
 		width: 100%;
-		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
+		grid-template-columns: minmax(min-content, 1fr) minmax(0, 4fr);
 		gap: 1rem;
 		padding: 1rem;
 		border-radius: 0.5rem;
