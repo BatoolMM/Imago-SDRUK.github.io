@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.14
+### Patch Changes
+
+- 345d932: set the metadata fields at creation, remove the removal and adding of extra fields
+
 ## 1.1.13
 ### Patch Changes
 
