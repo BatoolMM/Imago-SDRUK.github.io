@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.10
+### Patch Changes
+
+- 345d932: set the metadata fields at creation, remove the removal and adding of extra fields
+
 ## 1.0.9
 ### Patch Changes
 
