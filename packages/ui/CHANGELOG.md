@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.12
+### Patch Changes
+
+- 567dbfd: improve ui, add temp resolution, edit file format
+
 ## 1.0.11
 ### Patch Changes
 
