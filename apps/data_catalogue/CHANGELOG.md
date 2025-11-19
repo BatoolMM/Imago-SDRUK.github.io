@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.16
+### Patch Changes
+
+- 567dbfd: improve ui, add temp resolution, edit file format
+
 ## 1.1.15
 ### Patch Changes
 
