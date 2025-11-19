@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.11
+### Patch Changes
+
+- 3f475ff: fix filters to use the field they need, fix missing licenses on filter, select group on dataset creation
+
 ## 1.0.10
 ### Patch Changes
 

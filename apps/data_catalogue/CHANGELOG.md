@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 1.1.15
+### Patch Changes
+
+- 3f475ff: fix filters to use the field they need, fix missing licenses on filter, select group on dataset creation
+
 ## 1.1.14
 ### Patch Changes
 
