@@ -3,8 +3,9 @@
 	import { page } from '$app/state'
 	import { notify } from '$lib/stores/notify'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
-	import { Button, Input, Paragraph, Subtitle, Text } from '@imago/ui'
-	let { children } = $props()
+	import { jstr } from '@arturoguzman/art-ui'
+	import { Button, Input, Paragraph, Select, Subtitle, Text } from '@imago/ui'
+	let { data, children } = $props()
 	const toggleDialog = (id: string) => {
 		const dialog = document.getElementById(id) as HTMLDialogElement | null
 		if (dialog) {
@@ -97,9 +98,17 @@
 			<Input required label="Title">
 				<Text required name="title"></Text>
 			</Input>
-			<!-- <Input required label="Name" information="This will be the URL of the dataset"> -->
-			<!-- 	<Text required name="name"></Text> -->
-			<!-- </Input> -->
+			{#if Array.isArray(data.groups.result)}
+				<Input required label="Group">
+					<Select
+						name="group"
+						options={data.groups.result.map((result) => ({
+							label: result.title,
+							value: JSON.stringify({ id: result.id, name: result.name })
+						}))}
+					></Select>
+				</Input>
+			{/if}
 		</div>
 		<div class="buttons">
 			<Button
