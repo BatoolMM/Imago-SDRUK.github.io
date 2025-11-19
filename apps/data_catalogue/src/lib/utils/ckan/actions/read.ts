@@ -1,4 +1,10 @@
-import type { CkanDataset, CkanResource, CkanTag } from '$lib/types/ckan'
+import type {
+	CkanDataset,
+	CkanGroup,
+	CkanOrganisation,
+	CkanResource,
+	CkanTag
+} from '$lib/types/ckan'
 
 type PackageList = [
 	'package_list',
@@ -94,7 +100,8 @@ type GroupList = [
 		include_extras?: boolean
 		include_groups?: boolean
 		include_users?: boolean
-	}
+	},
+	CkanGroup
 ]
 
 type GroupShow = [

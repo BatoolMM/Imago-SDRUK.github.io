@@ -2,6 +2,8 @@ import { create, get, remove } from '$lib/utils/ckan/ckan.js'
 import type { PageServerLoadEvent } from './$types.js'
 import { error, fail, redirect } from '@sveltejs/kit'
 import slugify from '@sindresorhus/slugify'
+import licenses from '$lib/utils/ckan/licenses.json'
+
 import { METADATA_KEYS } from '$lib/globals/datasets.js'
 import { jstr } from '@arturoguzman/art-ui'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
@@ -60,13 +62,6 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 		data,
 		datasets: data.result.results,
 		datasets_count: data.result.count,
-		groups: await locals.ckan.request(
-			get('group_list', {
-				// NOTE: get the names instead of the ids only, this takes a long time to fetch, replace this when testing with imago instance
-				// all_fields: true
-			})
-		),
-
 		organisations: await locals.ckan.request(
 			get(
 				'organization_list'
@@ -77,7 +72,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 		package_count: (await locals.ckan.request(get('package_list'))).result.length,
 		tags: await locals.ckan.request(get('tag_list')),
 		resources: { result: resources },
-		licenses: await locals.ckan.request(get('license_list'))
+		licenses: { result: licenses }
 	}
 	// }
 
@@ -120,12 +115,14 @@ export const actions = {
 	create: async ({ locals, request }) => {
 		const form = await request.formData()
 		const title = String(form.get('title'))
+		const group = String(form.get('group'))
 		const name = slugify(title)
 		const owner_org = 'imago'
 		const dataset = await locals.ckan.request(
 			create('package_create', {
 				name,
 				title,
+				groups: [JSON.parse(group)],
 				owner_org,
 				private: true,
 				state: 'draft',

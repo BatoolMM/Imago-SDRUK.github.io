@@ -30,6 +30,7 @@
 			title: 'Groups',
 			filters: groups,
 			query: 'groups',
+			field: 'name',
 			limit: 10,
 			transform: (id: string) => {
 				return { label: id, href: `?groups=${id}` }
@@ -41,6 +42,7 @@
 			// query: 'vocab_Topics',
 			query: 'tags',
 			limit: 10,
+			field: 'id',
 			transform: (id: string) => {
 				return { label: id, href: `?tags=${id}` }
 			}
@@ -50,6 +52,7 @@
 			filters: resources,
 			query: 'res_format',
 			limit: 10,
+			field: 'id',
 			transform: (id: string) => {
 				console.log(id)
 				return { label: id, href: `?res_format=${id}` }
@@ -60,6 +63,7 @@
 			filters: licenses,
 			query: 'license_id',
 			limit: 10,
+			field: 'id',
 			transform: (id: string) => {
 				return { label: id, href: `?license_id=${id}` }
 			}
@@ -123,14 +127,18 @@
 							{/if}
 							{#if typeof result === 'object'}
 								{#if result && 'title' in result}
-									{@const active = page.url.searchParams.getAll(filter.query).includes(result.id)}
+									{@const active = page.url.searchParams
+										.getAll(filter.query)
+										.includes(result[filter.field])}
 									<Button
 										style="tag"
 										{active}
 										line_clamp
 										href={handleSearchParams({
-											add: [{ key: filter.query, value: result.id }],
-											remove: active ? [{ key: filter.query, value: result.id }] : undefined
+											add: [{ key: filter.query, value: result[filter.field] }],
+											remove: active
+												? [{ key: filter.query, value: result[filter.field] }]
+												: undefined
 										})}>{result.title}</Button
 									>
 								{/if}

@@ -75,8 +75,7 @@ export const get =
 			headers.set('Authorization', client.token)
 		}
 		const res = await fetch(url, { method: 'GET', headers })
-		const data =
-			await handleResponse<Extract<CkanextActivityGetActions, [T, unknown, unknown]>[2]>(res)
+		const data = await handleResponse<Extract<CkanAllGetActions, [T, unknown, unknown]>[2]>(res)
 		return data
 	}
 
