@@ -32,6 +32,10 @@ export const METADATA_KEYS = [
 		value: ''
 	},
 	{
+		key: 'temporal_resolution',
+		value: ''
+	},
+	{
 		key: 'size',
 		value: ''
 	},
@@ -60,6 +64,7 @@ export const METADATA_LABELS = {
 	spatial_coverage: 'Spatial coverage',
 	spatial_resolution: 'Spatial resolution',
 	temporal_coverage: 'Temporal coverage',
+	temporal_resolution: 'Temporal resolution',
 	size: 'Size',
 	lineage: 'Lineage',
 	data_source: 'Data source',

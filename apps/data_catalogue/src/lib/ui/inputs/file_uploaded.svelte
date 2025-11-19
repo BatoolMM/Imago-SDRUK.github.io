@@ -85,7 +85,6 @@
 					{/if}
 				</div>
 			{/snippet}
-
 			<form
 				method="post"
 				action="?/update_resource"
@@ -108,7 +107,7 @@
 						<Textarea name="description" bind:value={file.description}></Textarea>
 					</Input>
 					<Input label="Format">
-						<Text name="mimetype" bind:value={file.mimetype}></Text>
+						<Text name="format" bind:value={file.format}></Text>
 					</Input>
 				</div>
 				<div class="buttons">
