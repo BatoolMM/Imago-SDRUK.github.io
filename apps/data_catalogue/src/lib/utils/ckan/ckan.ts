@@ -97,7 +97,6 @@ export const create =
 			headers.set('Content-Type', 'application/json')
 			_body = JSON.stringify(body)
 		}
-		console.log(_body)
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
 		const data = await handleResponse(res)
 		return data
@@ -121,7 +120,6 @@ export const remove =
 			_body = JSON.stringify(body)
 		}
 
-		console.log(jstr({ method: 'POST', headers, body: _body, url }))
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
 		const data = await handleResponse(res)
 		return data

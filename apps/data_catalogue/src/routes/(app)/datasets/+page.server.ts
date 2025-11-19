@@ -2,6 +2,8 @@ import { create, get, remove } from '$lib/utils/ckan/ckan.js'
 import type { PageServerLoadEvent } from './$types.js'
 import { error, fail, redirect } from '@sveltejs/kit'
 import slugify from '@sindresorhus/slugify'
+import { METADATA_KEYS } from '$lib/globals/datasets.js'
+import { jstr } from '@arturoguzman/art-ui'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -121,7 +123,14 @@ export const actions = {
 		const name = slugify(title)
 		const owner_org = 'imago'
 		const dataset = await locals.ckan.request(
-			create('package_create', { name, title, owner_org, private: true, state: 'draft' })
+			create('package_create', {
+				name,
+				title,
+				owner_org,
+				private: true,
+				state: 'draft',
+				extras: METADATA_KEYS
+			})
 		)
 		if (!dataset.success) {
 			if ('error' in dataset) {

@@ -1,9 +1,11 @@
-<script lang="ts" generics="T extends Record<PropertyKey, unknown>">
+<script lang="ts">
 	import { page } from '$app/state'
 	import Notes from '$lib/ui/text/notes.svelte'
-	import { Button, Icon, Subtitle } from '@imago/ui'
+	import { Button, Icon, Paragraph, Subtitle } from '@imago/ui'
 	import ProductTitle from './product_title.svelte'
-	let { result }: { result: T } = $props()
+	import { getDataset } from '$lib/context/dataset.svelte'
+	import { METADATA_LABELS } from '$lib/globals/datasets'
+	let ctx = getDataset()
 	const file_format_icons = [
 		'file-download',
 		'file-type-jpg',
@@ -36,20 +38,20 @@
 
 <div class="product">
 	<div class="header">
-		<ProductTitle title={result.title}></ProductTitle>
-		{#if 'notes' in result && result.notes !== null && result.notes !== ''}
+		<ProductTitle title={ctx.dataset.title}></ProductTitle>
+		{#if 'notes' in ctx.dataset && ctx.dataset.notes !== null && ctx.dataset.notes !== ''}
 			<div class="product-notes">
-				<Notes note={String(result.notes)}></Notes>
+				<Notes note={String(ctx.dataset.notes)}></Notes>
 			</div>
 		{/if}
 	</div>
-	{#if 'resources' in result && Array.isArray(result.resources) && result.resources.length > 0}
+	{#if 'resources' in ctx.dataset && Array.isArray(ctx.dataset.resources) && ctx.dataset.resources.length > 0}
 		<div class="product-content">
 			<div class="resources">
 				<Subtitle size="md" text="Resources"></Subtitle>
 				<div class="content">
 					<div class="pills">
-						{#each result.resources as resource}
+						{#each ctx.dataset.resources as resource}
 							<div class="pill">
 								<Subtitle size="xs">{resource.name ?? resource.description}</Subtitle>
 								<div class="pill-buttons">
@@ -86,6 +88,23 @@
 										</Button>
 									{/if}
 								</div>
+							</div>
+						{/each}
+					</div>
+				</div>
+			</div>
+		</div>
+	{/if}
+	{#if 'extras' in ctx.dataset && Array.isArray(ctx.dataset.extras) && ctx.dataset.extras.filter((extra) => extra.value !== '' && extra.value !== null && extra.value !== undefined).length > 0}
+		<div class="product-content">
+			<div class="resources">
+				<Subtitle size="md" text="Metadata"></Subtitle>
+				<div class="content">
+					<div class="pills">
+						{#each ctx.dataset.extras.filter((extra) => extra.value !== '' && extra.value !== null && extra.value !== undefined) as extra}
+							<div class="pill">
+								<Paragraph>{METADATA_LABELS[extra.key] ?? extra.key}</Paragraph>
+								<Paragraph>{extra.value}</Paragraph>
 							</div>
 						{/each}
 					</div>
