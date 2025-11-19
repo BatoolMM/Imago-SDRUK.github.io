@@ -11,6 +11,7 @@
 	import Tags from '$lib/ui/dataset/tags.svelte'
 	import { onMount } from 'svelte'
 	import { APP_STATE } from '$lib/globals/state.svelte.js'
+	import Metadata from '$lib/ui/dataset/metadata.svelte'
 
 	let { data } = $props()
 	setDataset(data.dataset.result)
@@ -127,7 +128,7 @@
 					</form>
 				</div>
 				<div class="form">
-					<Extras></Extras>
+					<Metadata></Metadata>
 				</div>
 				<div class="form">
 					<Tags existing_tags={data.tags.result}></Tags>

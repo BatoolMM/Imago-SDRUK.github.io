@@ -93,34 +93,9 @@
 							{/if}
 						</div>
 					</Accordion>
-					{#if ctx.dataset.extras.length > 0}
-						<Accordion default_open>
-							{#snippet title({ open, toggleOpen })}
-								<button
-									class="trigger-button"
-									onclick={() => {
-										toggleOpen()
-									}}
-								>
-									<Subtitle>Metadata</Subtitle>
-									<Icon icon={{ icon: open ? 'chevron-down' : 'chevron-right', set: 'tabler' }}
-									></Icon>
-								</button>
-							{/snippet}
-							<div class="facts">
-								{#each ctx.dataset.extras as extra}
-									<Fact size="xs" title={extra.key} text={extra.value}></Fact>
-								{/each}
-							</div>
-						</Accordion>
-
-						<!-- {#each Object.entries(ctx.dataset) as [key, value]} -->
-						<!-- 	<Fact title={key} text={String(value)}></Fact> -->
-						<!-- {/each} -->
-					{/if}
 				</div>
 				<div class="right-col">
-					<Product result={data.result}></Product>
+					<Product></Product>
 					<Stream activities={data.activities.result}></Stream>
 				</div>
 			</div>
