@@ -21,10 +21,8 @@
 
 <Input {id} {...attrs}>
 	{#if design_type === 'dropdown'}
-		<select {name} {id} bind:value {disabled} {...attrs}>
-			{#if !value}
-				<option value={''} disabled selected>{placeholder}</option>
-			{/if}
+		<select {name} bind:value {id} {disabled} {...attrs}>
+			<option disabled selected>{placeholder}</option>
 			{#each options as option, idx (idx)}
 				<option value={option.value}>{option.label}</option>
 			{/each}
