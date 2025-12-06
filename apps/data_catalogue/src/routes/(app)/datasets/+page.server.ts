@@ -6,6 +6,8 @@ import licenses from '$lib/utils/ckan/licenses.json'
 
 import { METADATA_KEYS } from '$lib/globals/datasets.js'
 import { jstr } from '@arturoguzman/art-ui'
+import { authorise, ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
+import { getDatasetBasePermissions } from '$lib/utils/auth/permissions/index.js'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -60,6 +62,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 
 	return {
 		data,
+		//NOTE: filter by results that the user is allowed to see
 		datasets: data.result.results,
 		datasets_count: data.result.count,
 		organisations: await locals.ckan.request(
@@ -112,41 +115,39 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 }
 
 export const actions = {
-	create: async ({ locals, request }) => {
+	create: async ({ locals, request, fetch }) => {
 		const form = await request.formData()
 		const title = String(form.get('title'))
 		const group = String(form.get('group'))
-		const name = slugify(title)
-		const owner_org = 'imago'
-		const dataset = await locals.ckan.request(
-			create('package_create', {
-				name,
-				title,
-				groups: [JSON.parse(group)],
-				owner_org,
-				private: true,
-				state: 'draft',
-				extras: METADATA_KEYS
-			})
-		)
-		if (!dataset.success) {
-			if ('error' in dataset) {
-				if ('message' in dataset.error) {
-					return fail(400, { message: dataset.error.message })
-				}
-				console.log(dataset)
-				return fail(500, { message: `Unknown error` })
-			}
-			return fail(400, { message: dataset.message })
-		}
-		return redirect(307, `/datasets/${dataset.result.name}/edit`)
+		const data = await fetch(`/api/v1/datasets`, {
+			method: 'POST',
+			body: JSON.stringify({ title, group })
+		})
+		const res = await data.json()
+		return res
+		// return redirect(307, `/datasets/${dataset.result.name}/edit`)
 	},
 
 	delete: async ({ locals, request }) => {
 		const form = await request.formData()
 		const id = String(form.get('id'))
-		const dataset = await locals.ckan.request(remove('package_delete', { id }))
-		console.log(dataset)
+		const permission = await ketoCheck.checkPermission({
+			namespace: 'Dataset',
+			object: id,
+			relation: 'delete',
+			subjectId: locals.session?.identity.id
+		})
+		if (!permission.allowed) {
+			return fail(401, { message: `Unauthorised` })
+		}
+		await locals.ckan.request(remove('package_delete', { id }))
+		const relationships = await ketoRead.getRelationships({ namespace: 'Dataset', object: id })
+		await ketoWrite.patchRelationships({
+			relationshipPatch: relationships.relation_tuples?.map((relation) => ({
+				action: 'delete',
+				relation_tuple: relation
+			}))
+		})
 		return redirect(307, `/datasets`)
 	}
 }
