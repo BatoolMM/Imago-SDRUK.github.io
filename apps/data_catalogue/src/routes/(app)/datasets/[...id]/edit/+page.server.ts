@@ -1,9 +1,17 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
+import { authorise, checkPermission } from '$lib/utils/auth/index.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { error } from '@sveltejs/kit'
 
 export const load = async ({ params, locals }) => {
+	await authorise({
+		namespace: 'Dataset',
+		object: params.id,
+		relation: 'edit',
+		session: locals.session
+	})
+
 	const dataset = await locals.ckan.request(get('package_show', { id: params.id }))
 	const tags = await locals.ckan.request(get('tag_list', { all_fields: true }))
 	if (Array.isArray(dataset.result)) {
@@ -37,6 +45,7 @@ const parseForm = (form: FormData, keys: FormField[]) => {
 }
 
 export const actions = {
+	//TODO: move to endpoint
 	create_tag: async ({ request, locals, params }) => {
 		const form = await request.formData()
 		const name = String(form.get('display_name'))
