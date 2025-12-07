@@ -127,3 +127,26 @@ export const validateAnswersForm = ({
 			.then((questions) => checkAnswer({ answer, user_id })(questions[0]))
 			.catch(handleDBError(`Question ${question_id} not found`))
 	})
+
+export const validateAnswer = ({
+	answer,
+	user_id
+}: {
+	answer: { question: string; answer: string }
+	user_id: string
+}) =>
+	db
+		.select()
+		.from(questions)
+		.where(eq(questions.id, answer.question))
+		.then((question) =>
+			validateInsertAnswer({
+				question: question[0].id,
+				question_reference: question[0].question,
+				answer: answer.answer,
+				created_by: user_id,
+				updated_by: user_id,
+				status: 'published'
+			})
+		)
+		.catch(handleDBError(`Question ${answer.question} not found`))
