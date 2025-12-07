@@ -51,7 +51,7 @@ type PackageSearch = [
 		include_private?: boolean
 		use_default_schema?: boolean
 	},
-	CkanDataset[]
+	{ count: number; facets: Record<PropertyKey, unknown>; results: CkanDataset[] }
 ]
 
 type MemberList = [
