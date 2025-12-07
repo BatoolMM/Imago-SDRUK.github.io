@@ -96,7 +96,7 @@
 		</div>
 	{/if}
 	<div class="form-header">
-		<img class="logo" src="/logos/logo.png" alt="" />
+		<img class="logo" src="/imago_logo.png" alt="" />
 		{#if page_fields}
 			<Subtitle text={page_fields.title}></Subtitle>
 		{/if}
