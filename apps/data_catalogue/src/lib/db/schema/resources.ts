@@ -40,7 +40,8 @@ export const resources = pgTable(
 	'resources',
 	{
 		id: uuid().primaryKey().defaultRandom(),
-		url: text().notNull().unique(),
+		title: text().notNull(),
+		description: text(),
 		...reuse()
 	},
 	(table) => [
@@ -52,11 +53,10 @@ export const resources = pgTable(
 
 export const resource_versions = pgTable('resource_versions', {
 	id: uuid().primaryKey().defaultRandom(),
-	title: text().notNull(),
-	downloads: integer().default(0).notNull(),
-	url: text(),
-	description: text(),
+	version: text().notNull(),
 	changelog: text(),
+	url: text(),
+	downloads: integer().default(0).notNull(),
 	resource: uuid()
 		.notNull()
 		.references(() => resources.id),
