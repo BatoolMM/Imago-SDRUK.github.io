@@ -62,5 +62,5 @@ const pool = new Pool({
 export const db = drizzle({
 	client: env.DB_MIGRATING && env.DB_MIGRATING === 'true' ? client : pool,
 	schema,
-	logger: true
+	logger: false
 })
