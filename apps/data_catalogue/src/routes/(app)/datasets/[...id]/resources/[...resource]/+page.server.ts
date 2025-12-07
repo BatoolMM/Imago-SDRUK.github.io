@@ -1,18 +1,17 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { checkPermission } from '$lib/utils/auth/index.js'
+import { authorise, checkPermission } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { getFields } from '@imago/ui'
+import { redirect } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
 export const load = async ({ locals, params }) => {
-	const permission = await checkPermission({
-		subject_id: locals.session?.identity.id,
-		relation: 'read',
+	await authorise({
+		namespace: 'Resource',
 		object: params.resource,
-		namespace: 'Resource'
+		relation: 'read',
+		session: locals.session,
+		action: () => redirect(307, '/auth/login')
 	})
-	if (!permission) {
-		return error(401, { message: 'Unauthorised', id: 'Unauthorised' })
-	}
 	const data = await locals.ckan.request(get('resource_show', { id: params.resource }))
 	if (Array.isArray(data.result) || !data.result || !data.success) {
 		return error(...SERVER_ERRORS[404])

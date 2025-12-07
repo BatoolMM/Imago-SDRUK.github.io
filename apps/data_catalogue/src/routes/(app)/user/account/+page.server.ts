@@ -1,6 +1,6 @@
 import type { PageServerLoadEvent } from './$types.js'
 import { error, redirect } from '@sveltejs/kit'
-import { checkPermission, handleOryResponse } from '$lib/utils/auth/index.js'
+import { authorise, handleOryResponse } from '$lib/utils/auth/index.js'
 import { env } from '$env/dynamic/private'
 import { db } from '$lib/db/index.js'
 import { users } from '$lib/db/schema/users.js'
@@ -8,16 +8,12 @@ import { eq } from 'drizzle-orm'
 import { handleDBError } from '$lib/utils/db/index.js'
 const FLOW = 'settings'
 export const load = async ({ url, request, cookies, fetch, locals }: PageServerLoadEvent) => {
-	const permission = await checkPermission({
-		namespace: 'Group',
-		object: 'public',
-		relation: 'users',
-		subject_id: locals.session?.identity.id
+	await authorise({
+		namespace: 'User',
+		object: locals.session?.identity.id,
+		session: locals.session,
+		relation: 'members'
 	})
-	if (!locals.session && !permission) {
-		redirect(307, '/')
-	}
-
 	const user = await db
 		.select()
 		.from(users)
@@ -30,7 +26,7 @@ export const load = async ({ url, request, cookies, fetch, locals }: PageServerL
 		redirect(307, '/user/register')
 	}
 	const flow_id = url.searchParams.get('flow')
-	const return_to = url.searchParams.get('return_to')
+	// const return_to = url.searchParams.get('return_to')
 	if (!flow_id) {
 		const endpoint = `${env.IDENTITY_SERVER}/self-service/${FLOW}/browser`
 		redirect(307, endpoint)
