@@ -5,9 +5,10 @@ export const getDatasetBasePermissions = ({
 	object: string
 	owner?: string
 }) => {
+	const namespace = 'Dataset'
 	const base = [
 		{
-			namespace: 'Dataset',
+			namespace,
 			object: object,
 			relation: 'admins',
 			subject_set: {
@@ -17,7 +18,7 @@ export const getDatasetBasePermissions = ({
 			}
 		},
 		{
-			namespace: 'Dataset',
+			namespace,
 			object: object,
 			relation: 'editors',
 			subject_set: {
@@ -27,12 +28,12 @@ export const getDatasetBasePermissions = ({
 			}
 		},
 		{
-			namespace: 'Dataset',
+			namespace,
 			object: object,
 			relation: 'viewers',
 			subject_set: {
 				namespace: 'Group',
-				object: 'public',
+				object: 'viewer',
 				relation: 'users'
 			}
 		}
@@ -41,7 +42,7 @@ export const getDatasetBasePermissions = ({
 		return [
 			...base,
 			{
-				namespace: 'Dataset',
+				namespace,
 				object: object,
 				relation: 'owners',
 				subject_id: owner
@@ -71,4 +72,59 @@ export const getResourceBasePermissions = ({
 	]
 
 	return base
+}
+
+export const getUserBasePermissions = ({ id }: { id: string }) => {
+	return [
+		{
+			namespace: 'User',
+			object: id,
+			relation: 'members',
+			subject_id: id
+		},
+		{
+			namespace: 'Group',
+			object: 'viewer',
+			relation: 'users',
+			subject_id: id
+		}
+	]
+}
+
+export const getAnswerBasePermissions = ({
+	user_id,
+	answer_id
+}: {
+	user_id: string
+	answer_id: string
+}) => {
+	const namespace = 'Answer'
+	return [
+		{
+			namespace,
+			object: answer_id,
+			relation: 'admins',
+			subject_set: {
+				namespace: 'Group',
+				object: 'admin',
+				relation: 'users'
+			}
+		},
+		{
+			namespace,
+			object: answer_id,
+			relation: 'editors',
+			subject_set: {
+				namespace: 'Group',
+				object: 'editor',
+				relation: 'users'
+			}
+		},
+		{
+			namespace,
+			object: answer_id,
+			relation: 'owners',
+			subject_id: user_id
+		}
+	]
 }
