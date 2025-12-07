@@ -5,27 +5,16 @@ import { DateTime } from 'luxon'
 import { env } from '$env/dynamic/private'
 
 export const load = async ({ cookies, url, params, fetch, locals }: PageServerLoadEvent) => {
-	console.log('-----------')
-	console.log(url)
-	console.log('triggered', params.flow)
 	const id = url.searchParams.get('id')
-	console.log(`id: ${id}`)
 	const flow_id = url.searchParams.get('flow')
-	console.log(`flow_id: ${flow_id}`)
 	const aal = url.searchParams.get('aal')
-	console.log(`aal: ${aal}`)
 	const return_to = url.searchParams.get('return_to')
-	console.log(`return_to: ${return_to}`)
 	let endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/flows?id=${flow_id}`
-	console.log(`endpoint: ${endpoint}`)
 
-	console.log('-----------')
 	if (locals.session?.redirect_browser_to) {
-		console.log(`---------REDIR BROWSER TO ${locals.session.redirect_browser_to}`)
 		return redirect(303, locals.session.redirect_browser_to)
 	}
 	if (params.flow === 'logout') {
-		console.log('logging out')
 		endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/browser`
 		/**
 		 * NOTE: if there is no session here ory will redirect straight to flow error
@@ -42,7 +31,6 @@ export const load = async ({ cookies, url, params, fetch, locals }: PageServerLo
 			console.log('Redirecting due to error')
 			redirect(307, '/')
 		}
-		console.log(data, 'passed')
 		redirect(307, data.logout_url)
 	}
 	if (!flow_id && params.flow !== 'error' && !aal) {
@@ -86,8 +74,9 @@ export const load = async ({ cookies, url, params, fetch, locals }: PageServerLo
 					cookies.delete(cookie.name, { path: '/' })
 				}
 			})
-			console.log('redirecting to /')
-			return redirect(307, '/')
+			const _f = '/'
+			console.log(`redirecting to ${_f}`)
+			return redirect(307, _f)
 		}
 		if (data.error.id === 'security_identity_mismatch') {
 			console.log('security_identity_mismatch')

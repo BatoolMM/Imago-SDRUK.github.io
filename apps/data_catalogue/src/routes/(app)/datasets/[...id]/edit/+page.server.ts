@@ -1,5 +1,5 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { authorise, checkPermission } from '$lib/utils/auth/index.js'
+import { authorise } from '$lib/utils/auth/index.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { error } from '@sveltejs/kit'
