@@ -150,4 +150,9 @@
 			flex-direction: initial;
 		}
 	}
+	@media print {
+		footer {
+			display: none;
+		}
+	}
 </style>
