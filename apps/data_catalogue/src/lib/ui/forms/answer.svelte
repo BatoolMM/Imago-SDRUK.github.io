@@ -48,7 +48,7 @@
 		<Input label={question.question} required={question.required ? true : false}>
 			{#if question.type === 'countries'}
 				<Select
-					name="answer.{question.id}"
+					name={question.id}
 					required={question.required ? true : false}
 					options={COUNTRIES}
 					bind:value={answer.answer}
@@ -56,14 +56,14 @@
 			{/if}
 			{#if question.type === 'string'}
 				<Text
-					name="answer.{question.id}"
+					name={question.id}
 					required={question.required ? true : false}
 					bind:value={answer.answer}
 				></Text>
 			{/if}
 			{#if question.type === 'number'}
 				<Text
-					name="answer.{question.id}"
+					name={question.id}
 					required={question.required ? true : false}
 					bind:value={answer.answer}
 				></Text>
@@ -71,7 +71,7 @@
 			{#if question.type === 'bool'}
 				<div class="anti-wrap">
 					<Checkbox
-						name="answer.{question.id}"
+						name={question.id}
 						onchange={(e) => {
 							answer.answer = `${e.currentTarget.checked}`
 						}}
@@ -80,7 +80,7 @@
 			{/if}
 			{#if question.type === 'select' && question.options}
 				<Select
-					name="answer.{question.id}"
+					name={question.id}
 					required={question.required ? true : false}
 					options={question.options}
 					bind:value={answer.answer}
@@ -90,7 +90,7 @@
 				<Select
 					required={question.required ? true : false}
 					multiple
-					name="answer.{question.id}"
+					name={question.id}
 					options={question.options}
 					bind:value={answer.answer}
 				></Select>
