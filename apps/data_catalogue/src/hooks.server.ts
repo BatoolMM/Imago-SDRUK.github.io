@@ -34,7 +34,6 @@ export const init = async () => {
 }
 
 const handleAccessMode: Handle = async ({ event, resolve }) => {
-	console.log('run handle access mode')
 	event.locals.access = false
 	const access_mode = env.ACCESS_MODE
 	if (access_mode === 'invite_only') {
@@ -64,12 +63,10 @@ const handleAccessMode: Handle = async ({ event, resolve }) => {
 			headers: { location: '/' }
 		})
 	}
-	console.log('run resolve handle access mode')
 	return resolve(event)
 }
 
 const handleCkan: Handle = async ({ event, resolve }) => {
-	console.log('run handle ckan')
 	event.locals.ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined,
@@ -86,12 +83,10 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	if (!event.url.pathname.includes('/assets')) {
 		log({ response: response, event: event, status: response.status })
 	}
-	console.log('run resolve handle ckan')
 	return response
 }
 
 const handleAuthentication: Handle = async ({ event, resolve }) => {
-	console.log('run handle authentication')
 	const auth_cookie = event.cookies.get('ory_kratos_session')
 	/**
 	 * NOTE: login in sets a cookie but must be bypassed if 2fa is enabled
@@ -134,26 +129,25 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		}
 		event.locals.session = session
 	}
-	console.log('run resolve handle authentication')
 	return resolve(event)
 }
 
 const handleProfile: Handle = async ({ event, resolve }) => {
-	console.log('run handle profile')
 	if (event.locals.session && event.locals.session.identity) {
 		const profile = await db
 			.select()
 			.from(users)
 			.where(eq(users.id, event.locals.session.identity.id))
 		if (
-			profile.length === 0 &&
+			profile.length === 1 &&
 			event.url.pathname !== `/user/register` &&
-			!event.url.pathname.startsWith('/auth')
+			!event.url.pathname.startsWith('/auth') &&
+			profile[0].status === 'preregister' &&
+			!event.url.pathname.startsWith('/api')
 		) {
 			redirect(307, `/user/register`)
 		}
 	}
-	console.log('run resolve handle profile')
 	return resolve(event)
 }
 

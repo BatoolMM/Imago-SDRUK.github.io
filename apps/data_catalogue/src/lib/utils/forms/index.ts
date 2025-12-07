@@ -1,7 +1,6 @@
 const arr_regex = /\[[0-9]+\]/i
 
 export const parseForm = (form: FormData) => {
-	console.log(form)
 	const result: Record<PropertyKey, unknown | unknown[]> = {}
 	form.forEach((value, key) => {
 		const split = key.split('.')
@@ -26,7 +25,6 @@ export const parseForm = (form: FormData) => {
 			}, result)
 		}
 		if (split.length === 1) {
-			console.log(`${value}, ${key}`)
 			if (key in result === false) {
 				result[key] = value
 				return
