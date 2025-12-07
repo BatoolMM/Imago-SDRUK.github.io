@@ -57,7 +57,7 @@ export const validateUpdate = <T extends TableConfig>(
 		return handleArkErrors(parsed)
 	}
 	return {
-		success: true,
+		success: true as const,
 		data: parsed
 	}
 }
