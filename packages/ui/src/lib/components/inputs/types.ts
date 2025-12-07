@@ -39,5 +39,6 @@ export type InputSelectProps = {
 	disabled?: boolean
 	placeholder?: string
 	design_type?: 'dropdown' | 'list'
+	debug?: boolean
 } & Omit<HTMLInputAttributes, 'popover'> &
 	InputComponentProps
