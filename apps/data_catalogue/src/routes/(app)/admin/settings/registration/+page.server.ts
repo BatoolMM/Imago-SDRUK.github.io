@@ -14,7 +14,7 @@ export const load = async ({ locals }) => {
 }
 
 export const actions = {
-	create_question: async ({ request, locals }) => {
+	create_question: async ({ request, locals, fetch }) => {
 		if (!locals.session) {
 			redirect(307, '/')
 		}
@@ -50,7 +50,7 @@ export const actions = {
 			message: `Question created`
 		}
 	},
-	update_question: async ({ request, locals }) => {
+	update_question: async ({ request, locals, fetch }) => {
 		if (!locals.session) {
 			redirect(307, '/')
 		}
