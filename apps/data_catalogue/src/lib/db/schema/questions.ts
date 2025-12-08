@@ -16,12 +16,8 @@ import { users } from './users'
 
 const status_enum = pgEnum('status_enum', ['published', 'archived', 'draft'])
 const reuse = () => ({
-	created_by: uuid()
-		.references(() => users.id, { onDelete: 'no action' })
-		.notNull(),
-	updated_by: uuid()
-		.references(() => users.id, { onDelete: 'no action' })
-		.notNull(),
+	created_by: uuid().references(() => users.id, { onDelete: 'cascade' }),
+	updated_by: uuid().references(() => users.id, { onDelete: 'cascade' }),
 	status: status_enum().default('draft').notNull(),
 	created_at: timestamp({
 		mode: 'date',
