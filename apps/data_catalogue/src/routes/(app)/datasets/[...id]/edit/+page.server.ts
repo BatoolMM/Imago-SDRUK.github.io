@@ -2,6 +2,7 @@ import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { authorise } from '$lib/utils/auth/index.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
 import { jstr } from '@arturoguzman/art-ui'
+import slugify from '@sindresorhus/slugify'
 import { error } from '@sveltejs/kit'
 
 export const load = async ({ params, locals }) => {
@@ -60,8 +61,21 @@ export const actions = {
 	save_tags: async ({ request, locals, params }) => {
 		const form = await request.formData()
 		const tags = String(form.get('tags'))
+		const _tags = JSON.parse(tags).map((tag) => ({
+			...tag,
+			name: slugify(tag.display_name),
+			display_name: tag.display_name
+		}))
+		console.log(_tags)
 		const tag = await locals.ckan.request(
-			patch('package_patch', { id: params.id }, { tags: JSON.parse(tags), id: params.id })
+			patch(
+				'package_patch',
+				{ id: params.id },
+				{
+					tags: _tags,
+					id: params.id
+				}
+			)
 		)
 		console.log(jstr(tag))
 		return {
