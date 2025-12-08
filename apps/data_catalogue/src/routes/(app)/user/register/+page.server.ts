@@ -21,6 +21,10 @@ export const load = async ({ locals }: PageServerLoadEvent) => {
 		.from(questions)
 		.orderBy(questions.created_at)
 		.catch(handleDBError('Error fetching questions'))
+	if (records.length === 0) {
+		await db.update(users).set({ status: 'active' }).where(eq(users.id, locals.session.identity.id))
+		return redirect(307, '/')
+	}
 	return {
 		questions: records
 	}
