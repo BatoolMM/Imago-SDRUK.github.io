@@ -1,7 +1,9 @@
+import { env } from '$env/dynamic/private'
 import { ADMIN_ROUTES, ROUTES } from '$lib/globals/routes'
 import { COOKIES } from '$lib/globals/server.js'
 import { ketoRead } from '$lib/utils/auth/index.js'
 export const load = async ({ locals, cookies }) => {
+	const allow_debug = env.NODE_ENV !== 'production'
 	const expire = cookies.get(COOKIES.expire)
 	const session = locals.session?.active ?? false
 	const routes = structuredClone(ROUTES)
@@ -38,6 +40,7 @@ export const load = async ({ locals, cookies }) => {
 	return {
 		routes,
 		session,
-		expire
+		expire,
+		allow_debug
 	}
 }

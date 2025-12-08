@@ -12,15 +12,17 @@
 	{/snippet}
 </DynamicNav>
 {@render children?.()}
-<div class="tooltip">
-	<Button
-		active={debug.status}
-		onclick={() => {
-			debug.status = !debug.status
-		}}>Debug</Button
-	>
-</div>
-<Debug></Debug>
+{#if data.allow_debug}
+	<div class="tooltip">
+		<Button
+			active={debug.status}
+			onclick={() => {
+				debug.status = !debug.status
+			}}>Debug</Button
+		>
+	</div>
+	<Debug></Debug>
+{/if}
 
 <style>
 	.tooltip {
