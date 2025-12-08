@@ -113,6 +113,9 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 			if (event.url.pathname === '/') {
 				redirect(307, '/auth/login')
 			}
+			if (session.error?.code === 401) {
+				redirect(307, '/auth/login')
+			}
 		}
 		if (
 			session &&
