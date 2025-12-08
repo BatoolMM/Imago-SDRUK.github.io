@@ -1,5 +1,11 @@
 # website
 
+## 2.0.18
+### Patch Changes
+
+- 78aa436: remove green background from stacks blocks
+- c5f1aa5: change background for stack cards
+
 ## 2.0.17
 ### Patch Changes
 
