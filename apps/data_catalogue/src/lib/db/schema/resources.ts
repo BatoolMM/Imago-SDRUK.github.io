@@ -26,14 +26,7 @@ const reuse = () => ({
 	})
 		.defaultNow()
 		.notNull()
-		.$onUpdateFn(() => DateTime.now().toBSON()),
-	deleted_at: timestamp({
-		mode: 'date',
-		precision: 3,
-		withTimezone: true
-	})
-		.defaultNow()
-		.notNull()
+		.$onUpdateFn(() => DateTime.now().toBSON())
 })
 
 export const resources = pgTable(
@@ -59,7 +52,7 @@ export const resource_versions = pgTable('resource_versions', {
 	downloads: integer().default(0).notNull(),
 	resource: uuid()
 		.notNull()
-		.references(() => resources.id),
+		.references(() => resources.id, { onDelete: 'cascade' }),
 	...reuse()
 })
 

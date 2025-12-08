@@ -2,14 +2,13 @@ import {
 	pgTable,
 	uuid,
 	text,
-	index,
 	boolean,
 	pgEnum,
 	numeric,
 	time,
 	timestamp,
 	jsonb,
-	varchar
+	index
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
 import { DateTime } from 'luxon'
@@ -44,8 +43,6 @@ const reuse = () => ({
 		precision: 3,
 		withTimezone: true
 	})
-		.defaultNow()
-		.notNull()
 })
 
 export const question_type_enum = pgEnum('question_type_enum', [
@@ -87,19 +84,23 @@ export const questions = pgTable(
 	// ]
 )
 
-export const answers = pgTable('answers', {
-	id: uuid().primaryKey().defaultRandom(),
-	free_text: text(),
-	number: numeric(),
-	bool: boolean(),
-	time: time(),
-	answer: text(),
-	question_reference: text(),
-	question: uuid()
-		.notNull()
-		.references(() => questions.id, { onDelete: 'cascade' }),
-	...reuse()
-})
+export const answers = pgTable(
+	'answers',
+	{
+		id: uuid().primaryKey().defaultRandom(),
+		free_text: text(),
+		number: numeric(),
+		bool: boolean(),
+		time: time(),
+		answer: text(),
+		question_reference: text(),
+		question: uuid()
+			.notNull()
+			.references(() => questions.id, { onDelete: 'cascade' }),
+		...reuse()
+	},
+	(table) => [index('user_question_idx').on(table.created_by, table.question)]
+)
 
 export const question_answers = relations(questions, ({ many }) => ({
 	answers: many(answers)

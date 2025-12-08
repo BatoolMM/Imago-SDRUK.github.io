@@ -13,3 +13,4 @@ export {
 	answer_question,
 	question_answers
 } from './questions'
+export { downloads, downloads_relations } from './downloads'
