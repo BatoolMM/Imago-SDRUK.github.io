@@ -1,5 +1,14 @@
 # data-catalogue
 
+## 2.0.0
+### Major Changes
+
+- dc71a3a: This implements authentication and authorisation for the data catalogue. Previous instances will have to be redeployed from scratch as permissions are not bootstraped. File handling is improved with versioning but updating a file version is currently not implemented in the frontend. There is no JWT/Token authorisation. Scripts and variables must be updated before redeploying
+
+### Minor Changes
+
+- 78aa436: this completes the authentication flow. set up drizzle and db schema to register users and resources, initialises the implementation of authorisation, add admin settings pages
+
 ## 1.1.16
 ### Patch Changes
 
