@@ -41,6 +41,7 @@ export const verifyOrySession = (session: IdentitySession) => {
 }
 
 export const kratosRead = new IdentityApi(new Configuration({ basePath: 'http://127.0.0.1:4433' }))
+export const kratosWrite = new IdentityApi(new Configuration({ basePath: 'http://127.0.0.1:4434' }))
 
 export const ketoWrite = new RelationshipApi(
 	new Configuration({

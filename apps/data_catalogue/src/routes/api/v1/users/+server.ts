@@ -2,7 +2,7 @@ import { env } from '$env/dynamic/private'
 import { db } from '$lib/db/index.js'
 import { users } from '$lib/db/schema/users.js'
 import { validateInsert } from '$lib/db/validation/index.js'
-import { authorise, ketoWrite } from '$lib/utils/auth'
+import { authorise, ketoWrite, kratosRead } from '$lib/utils/auth'
 import { getUserBasePermissions } from '$lib/utils/auth/permissions/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
 import { json } from '@sveltejs/kit'
@@ -15,7 +15,8 @@ export const GET = async ({ locals, request }) => {
 		object: '/api/v1/users',
 		relation: 'GET'
 	})
-	return json({ message: 'ok' })
+	const users = await kratosRead.listIdentities()
+	return json({ users })
 }
 
 export const POST = async ({ locals, request, cookies }) => {

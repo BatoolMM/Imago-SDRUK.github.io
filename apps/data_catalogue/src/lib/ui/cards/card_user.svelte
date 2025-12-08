@@ -35,6 +35,13 @@
 			<Paragraph>{user.id}</Paragraph>
 			<Paragraph>Name: {user.name.first} {user.name.last}</Paragraph>
 			<Paragraph>Email: {user.email}</Paragraph>
+			<Button
+				onclick={() => {
+					toggleDialog(`delete-user-${user.id}`)
+				}}
+			>
+				<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+			</Button>
 		</div>
 		<Subtitle>Groups</Subtitle>
 		<div class="groups">
@@ -127,6 +134,33 @@
 					}
 					console.log(data)
 				}}>Remove</Button
+			>
+		</div>
+	</div>
+</Dialog>
+
+<Dialog id="delete-user-{user.id}">
+	<div class="dialog">
+		<Subtitle size="md">Are you sure you want to delete {user.name.first}?</Subtitle>
+		<div class="buttons">
+			<Button
+				type="button"
+				onclick={() => {
+					selected_group = ''
+					toggleDialog(`remove-user-group-${user.id}`)
+				}}>Cancel</Button
+			>
+			<Button
+				onclick={async () => {
+					const res = await fetch(`/api/v1/users/${user.id}`, {
+						method: 'DELETE'
+					})
+					const data = await res.json()
+					notify.send({ message: data.message })
+					selected_group = ''
+					toggleDialog(`delete-user-${user.id}`)
+					await invalidateAll()
+				}}>Delete</Button
 			>
 		</div>
 	</div>

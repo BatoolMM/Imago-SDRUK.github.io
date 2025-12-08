@@ -1,12 +1,17 @@
-import { fail, redirect } from '@sveltejs/kit'
-import { ketoCheck, ketoRead, ketoWrite, kratosRead } from '$lib/utils/auth/index.js'
+import { fail } from '@sveltejs/kit'
+import { authorise, ketoRead, ketoWrite, kratosRead } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
-export const load = async ({ locals }) => {
-	if (!locals.session) {
-		return redirect(307, '/')
-	}
-	const users = await kratosRead.listIdentities()
+import type { Identity } from '@ory/client-fetch'
+export const load = async ({ locals, fetch }) => {
+	await authorise({
+		namespace: 'Endpoint',
+		object: '/api/v1/users',
+		relation: 'GET',
+		session: locals.session
+	})
+	const res = await fetch(`/api/v1/users`)
+	const { users } = (await res.json()) as { users: Identity[] }
 	const active_groups = await ketoRead.getRelationships({ namespace: 'Group' })
 	const ckan_groups = await locals.ckan.request(get('group_list'))
 	let groups = [...AUTH_GROUPS]
@@ -29,6 +34,12 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	edit_user_groups: async ({ locals, request }) => {
+		await authorise({
+			namespace: 'Endpoint',
+			object: '/api/v1/users',
+			relation: 'POST',
+			session: locals.session
+		})
 		if (!locals.session) {
 			return fail(401, { message: 'Unauthorised' })
 		}
