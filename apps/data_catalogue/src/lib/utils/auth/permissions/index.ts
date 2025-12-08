@@ -1,10 +1,12 @@
+import type { Relationship } from '@ory/client-fetch'
+
 export const getDatasetBasePermissions = ({
 	object,
 	owner
 }: {
 	object: string
 	owner?: string
-}) => {
+}): Relationship[] => {
 	const namespace = 'Dataset'
 	const base = [
 		{
@@ -58,15 +60,37 @@ export const getResourceBasePermissions = ({
 }: {
 	object: string
 	dataset_id: string
-}) => {
+}): Relationship[] => {
+	const namespace = 'Resource'
 	const base = [
 		{
-			namespace: 'Resource',
+			namespace,
 			object: object,
 			relation: 'datasets',
 			subject_set: {
 				namespace: 'Dataset',
-				object: dataset_id
+				object: dataset_id,
+				relation: 'admins'
+			}
+		},
+		{
+			namespace,
+			object: object,
+			relation: 'datasets',
+			subject_set: {
+				namespace: 'Dataset',
+				object: dataset_id,
+				relation: 'editors'
+			}
+		},
+		{
+			namespace,
+			object: object,
+			relation: 'datasets',
+			subject_set: {
+				namespace: 'Dataset',
+				object: dataset_id,
+				relation: 'viewers'
 			}
 		}
 	]
@@ -74,7 +98,7 @@ export const getResourceBasePermissions = ({
 	return base
 }
 
-export const getUserBasePermissions = ({ id }: { id: string }) => {
+export const getUserBasePermissions = ({ id }: { id: string }): Relationship[] => {
 	return [
 		{
 			namespace: 'User',
@@ -97,7 +121,7 @@ export const getAnswerBasePermissions = ({
 }: {
 	user_id: string
 	answer_id: string
-}) => {
+}): Relationship[] => {
 	const namespace = 'Answer'
 	return [
 		{
