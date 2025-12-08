@@ -6,7 +6,6 @@
 	import { BaseSection, Button, Editor, Input, InputBlock, Select, Subtitle, Text } from '@imago/ui'
 	import Resources from '$lib/ui/dataset/resource/resources.svelte'
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
-	import Extras from '$lib/ui/dataset/extras.svelte'
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import Tags from '$lib/ui/dataset/tags.svelte'
 	import { onMount } from 'svelte'
@@ -21,7 +20,6 @@
 		debug.data = data
 	})
 	$effect(() => {
-		console.log(`refreshing data from invalidate`)
 		editor_enabled = false
 		ctx.dataset = data.dataset.result
 		setTimeout(() => {
