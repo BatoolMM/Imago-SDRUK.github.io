@@ -4,10 +4,10 @@ import { json } from '@sveltejs/kit'
 
 export const PATCH = async ({ request, locals, params }) => {
 	await authorise({
-		namespace: 'Dataset',
-		relation: 'PATCH',
+		namespace: 'Endpoint',
+		session: locals.session,
 		object: '/api/v1/datasets',
-		subjectId: locals.session?.identity.id
+		relation: 'PATCH'
 	})
 	const data = await request.json()
 	const dataset = await locals.ckan.request(
