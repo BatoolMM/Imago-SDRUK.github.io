@@ -209,6 +209,9 @@ importers:
       typescript-svelte-plugin:
         specifier: ^0.3.50
         version: 0.3.50(svelte@5.45.3)(typescript@5.9.3)
+      uuid:
+        specifier: ^13.0.0
+        version: 13.0.0
       vite:
         specifier: ^7.2.6
         version: 7.2.6(@types/node@22.19.1)(jiti@1.21.7)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.1)
@@ -277,7 +280,7 @@ importers:
         version: 11.0.6(semantic-release@24.2.9(typescript@5.9.3))
       '@semantic-release/npm':
         specifier: github:semantic-release/npm
-        version: https://codeload.github.com/semantic-release/npm/tar.gz/42f1b8f385c45cceb067cf94d9ddeeae43a05f66(semantic-release@24.2.9(typescript@5.9.3))
+        version: https://codeload.github.com/semantic-release/npm/tar.gz/b1d35575b27b10b2042d6f525c81f4280401a9bf(semantic-release@24.2.9(typescript@5.9.3))
       '@semantic-release/release-notes-generator':
         specifier: ^14.1.0
         version: 14.1.0(semantic-release@24.2.9(typescript@5.9.3))
@@ -3612,8 +3615,8 @@ packages:
     peerDependencies:
       semantic-release: '>=20.1.0'
 
-  '@semantic-release/npm@https://codeload.github.com/semantic-release/npm/tar.gz/42f1b8f385c45cceb067cf94d9ddeeae43a05f66':
-    resolution: {tarball: https://codeload.github.com/semantic-release/npm/tar.gz/42f1b8f385c45cceb067cf94d9ddeeae43a05f66}
+  '@semantic-release/npm@https://codeload.github.com/semantic-release/npm/tar.gz/b1d35575b27b10b2042d6f525c81f4280401a9bf':
+    resolution: {tarball: https://codeload.github.com/semantic-release/npm/tar.gz/b1d35575b27b10b2042d6f525c81f4280401a9bf}
     version: 0.0.0-development
     engines: {node: ^22.14.0 || >= 24.10.0}
     peerDependencies:
@@ -10624,6 +10627,10 @@ packages:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
 
+  uuid@13.0.0:
+    resolution: {integrity: sha512-XQegIaBTVUjSHliKqcnFqYypAd4S+WCYt5NIeRs6w/UAry7z8Y9j5ZwRRL4kzq9U3sD6v+85er9FvkEaBpji2w==}
+    hasBin: true
+
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -15033,7 +15040,7 @@ snapshots:
       semver: 7.7.3
       tempy: 3.1.0
 
-  '@semantic-release/npm@https://codeload.github.com/semantic-release/npm/tar.gz/42f1b8f385c45cceb067cf94d9ddeeae43a05f66(semantic-release@24.2.9(typescript@5.9.3))':
+  '@semantic-release/npm@https://codeload.github.com/semantic-release/npm/tar.gz/b1d35575b27b10b2042d6f525c81f4280401a9bf(semantic-release@24.2.9(typescript@5.9.3))':
     dependencies:
       '@actions/core': 1.11.1
       '@semantic-release/error': 4.0.0
@@ -23116,6 +23123,8 @@ snapshots:
   utils-merge@1.0.1: {}
 
   uuid@11.1.0: {}
+
+  uuid@13.0.0: {}
 
   uuid@8.3.2: {}
 
