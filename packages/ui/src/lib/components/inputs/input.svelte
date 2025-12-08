@@ -83,7 +83,7 @@
 	}
 
 	.information-icon:hover {
-		color: color-mix(in oklab, var(--text) 60%, var(--bg) 40%);
+		color: color-mix(in oklab, var(--text) 60%, var(--background) 40%);
 		font-weight: 300;
 	}
 	.information-icon:hover::after {
@@ -95,7 +95,7 @@
 		top: 50%;
 		left: calc(100% + 0.35rem);
 		transform: translate(0%, -50%);
-		background-color: var(--bg);
+		background-color: var(--background);
 		width: max(100%, 25lvw);
 		z-index: 1;
 	}

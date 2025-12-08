@@ -8,14 +8,24 @@
 		shadow?: boolean
 		style?: 'default' | 'padded' | 'even-padded'
 		size?: 'sm' | 'md' | 'lg' | 'base'
+		overflow?: boolean
 	}
-	let { children, border, style = 'default', rounded, size = 'base', shadow }: Props = $props()
+	let {
+		children,
+		border,
+		style = 'default',
+		rounded,
+		size = 'base',
+		shadow,
+		overflow
+	}: Props = $props()
 </script>
 
 <div
 	class="card"
 	data-style={style}
 	data-size={size}
+	data-overflow={overflow ? true : undefined}
 	class:border
 	class:rounded
 	class:shadow
@@ -58,5 +68,8 @@
 	}
 	.card[data-size='base'] {
 		width: min(100%);
+	}
+	.card[data-overflow] {
+		overflow: initial;
 	}
 </style>

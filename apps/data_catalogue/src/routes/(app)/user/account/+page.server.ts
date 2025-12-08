@@ -1,12 +1,32 @@
 import type { PageServerLoadEvent } from './$types.js'
-import { redirect } from '@sveltejs/kit'
-import { handleOryResponse } from '$lib/utils/auth/index.js'
+import { error, redirect } from '@sveltejs/kit'
+import { authorise, handleOryResponse } from '$lib/utils/auth/index.js'
 import { env } from '$env/dynamic/private'
+import { db } from '$lib/db/index.js'
+import { users } from '$lib/db/schema/users.js'
+import { eq } from 'drizzle-orm'
+import { handleDBError } from '$lib/utils/db/index.js'
 const FLOW = 'settings'
-export const load = async ({ url, request, cookies, fetch }: PageServerLoadEvent) => {
-	console.log('triggered settings')
+export const load = async ({ url, request, cookies, fetch, locals }: PageServerLoadEvent) => {
+	await authorise({
+		namespace: 'User',
+		object: locals.session?.identity.id,
+		session: locals.session,
+		relation: 'members'
+	})
+	const user = await db
+		.select()
+		.from(users)
+		.where(eq(users.id, locals.session.identity.id))
+		.catch(handleDBError)
+	if (!Array.isArray(user)) {
+		error(400, { message: 'Error retriving the user', id: '' })
+	}
+	if (user.length === 0) {
+		redirect(307, '/user/register')
+	}
 	const flow_id = url.searchParams.get('flow')
-	const return_to = url.searchParams.get('return_to')
+	// const return_to = url.searchParams.get('return_to')
 	if (!flow_id) {
 		const endpoint = `${env.IDENTITY_SERVER}/self-service/${FLOW}/browser`
 		redirect(307, endpoint)

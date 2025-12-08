@@ -4,7 +4,6 @@ import type { CkanGetActions } from '$lib/utils/ckan/actions/read'
 import type { CkanCreateActions } from '$lib/utils/ckan/actions/create'
 import type { CkanDeleteActions } from '$lib/utils/ckan/actions/delete'
 import type { CkanPatchActions, CkanUpdateActions } from '$lib/utils/ckan/actions/update'
-import { jstr } from '@arturoguzman/art-ui'
 import type { CkanPing } from '$lib/types/ckan'
 import type { CkanextActivityGetActions } from '$lib/utils/ckan/extensions/versions/read'
 const handleResponse = async <T>(response: Response) => {

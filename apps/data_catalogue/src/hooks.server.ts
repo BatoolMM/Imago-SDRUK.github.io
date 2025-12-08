@@ -6,6 +6,10 @@ import { getId, jstr, log } from '@arturoguzman/art-ui'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { COOKIES } from '$lib/globals/server'
+import { db } from '$lib/db'
+import { users } from '$lib/db/schema'
+import { eq } from 'drizzle-orm'
+import type { IdentitySession } from '$lib/utils/auth/types'
 
 // export const crawlers = [
 // 	'Googlebot',
@@ -84,24 +88,68 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 
 const handleAuthentication: Handle = async ({ event, resolve }) => {
 	const auth_cookie = event.cookies.get('ory_kratos_session')
-	if (auth_cookie) {
+	/**
+	 * NOTE: login in sets a cookie but must be bypassed if 2fa is enabled
+	 **/
+	if (auth_cookie && !event.url.pathname.startsWith('/auth/login')) {
 		const res = await fetch(`${env.IDENTITY_SERVER}/sessions/whoami`, {
 			headers: {
 				Accept: 'application/json',
 				Cookie: `ory_kratos_session=${auth_cookie}`
 			}
 		})
-		const session = await res.json()
+		const session = (await res.json()) as IdentitySession
+		// NOTE: check if there is a redirect request, if so, do not set the session
+		if (session.redirect_browser_to) {
+			redirect(303, session.redirect_browser_to)
+			// return resolve(event)
+		}
 		/**
 		 * NOTE: This will need refactoring to revalidate sessions
 		 **/
 		const valid_session = verifyOrySession(session)
+
 		if (session.error || !valid_session) {
 			if (event.url.pathname === '/') {
 				redirect(307, '/auth/login')
 			}
+			if (session.error?.code === 401) {
+				redirect(307, '/auth/login')
+			}
+		}
+		if (
+			session &&
+			valid_session &&
+			!session.identity.verifiable_addresses.some((va) => va.verified === true) &&
+			event.url.pathname !== '/auth/verification'
+		) {
+			redirect(307, '/auth/verification')
+		}
+		// NOTE: check if there is a redirect request, if so, do not set the session
+		if (session.redirect_browser_to) {
+			redirect(303, session.redirect_browser_to)
+			// return resolve(event)
 		}
 		event.locals.session = session
+	}
+	return resolve(event)
+}
+
+const handleProfile: Handle = async ({ event, resolve }) => {
+	if (event.locals.session && event.locals.session.identity) {
+		const profile = await db
+			.select()
+			.from(users)
+			.where(eq(users.id, event.locals.session.identity.id))
+		if (
+			profile.length === 1 &&
+			event.url.pathname !== `/user/register` &&
+			!event.url.pathname.startsWith('/auth') &&
+			profile[0].status === 'preregister' &&
+			!event.url.pathname.startsWith('/api')
+		) {
+			redirect(307, `/user/register`)
+		}
 	}
 	return resolve(event)
 }
@@ -121,8 +169,14 @@ export const hooksErrorHandler: HandleServerError = async ({ event, status, mess
 
 export const handle =
 	process.env.NODE_ENV === 'production'
-		? sequence(handleAccessMode, Sentry.sentryHandle(), handleAuthentication, handleCkan)
-		: sequence(handleAccessMode, handleAuthentication, handleCkan)
+		? sequence(
+				handleAccessMode,
+				Sentry.sentryHandle(),
+				handleAuthentication,
+				handleProfile,
+				handleCkan
+			)
+		: sequence(handleAccessMode, handleAuthentication, handleProfile, handleCkan)
 export const handleError =
 	process.env.NODE_ENV === 'production'
 		? Sentry.handleErrorWithSentry(hooksErrorHandler)

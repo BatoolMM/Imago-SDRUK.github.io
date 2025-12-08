@@ -12,6 +12,9 @@ export default defineConfig({
 		}),
 		sveltekit()
 	],
+	server: {
+		allowedHosts: ['host.docker.internal']
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

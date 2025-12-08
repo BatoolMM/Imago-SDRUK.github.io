@@ -51,7 +51,7 @@ type PackageSearch = [
 		include_private?: boolean
 		use_default_schema?: boolean
 	},
-	CkanDataset[]
+	{ count: number; facets: Record<PropertyKey, unknown>; results: CkanDataset[] }
 ]
 
 type MemberList = [
@@ -101,7 +101,7 @@ type GroupList = [
 		include_groups?: boolean
 		include_users?: boolean
 	},
-	CkanGroup
+	CkanGroup[]
 ]
 
 type GroupShow = [
@@ -114,7 +114,8 @@ type GroupShow = [
 		include_users?: boolean
 		include_groups?: boolean
 		include_followers?: boolean
-	}
+	},
+	CkanGroup
 ]
 
 type GroupPackageShow = [
