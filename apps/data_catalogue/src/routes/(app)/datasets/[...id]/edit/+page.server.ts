@@ -26,7 +26,7 @@ export const load = async ({ params, locals }) => {
 
 type FormField = { name: string; type: 'string' | 'file' | 'boolean' | 'array'; required: boolean }
 
-const parseForm = (form: FormData, keys: FormField[]) => {
+const parseForm = (form: FormData) => {
 	const object: Record<PropertyKey, unknown> = {}
 	form.forEach((value, key) => {
 		// Reflect.has in favor of: object.hasOwnProperty(key)

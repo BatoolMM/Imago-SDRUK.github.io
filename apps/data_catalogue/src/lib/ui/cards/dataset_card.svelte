@@ -115,59 +115,6 @@
 						</div>
 					{/if}
 				{/each}
-				<!-- <div class="groups-buttons"> -->
-				<!-- 	{#if dataset.groups && dataset.groups.length > 0} -->
-				<!-- 		{#each dataset.groups ?? [] as group} -->
-				<!-- 			<Button -->
-				<!-- 				onclick={() => { -->
-				<!-- 					selected_group = group.object -->
-				<!-- 					toggleDialog(`remove-dataset-group-${dataset.id}`) -->
-				<!-- 				}}>{group.object}</Button -->
-				<!-- 			> -->
-				<!-- 		{/each} -->
-				<!-- 	{:else} -->
-				<!-- 		<Paragraph>Dataset is not in any group</Paragraph> -->
-				<!-- 	{/if} -->
-				<!---->
-				<!-- 	<div class="add-groups"> -->
-				<!-- 		<Button -->
-				<!-- 			onclick={() => { -->
-				<!-- 				plus_open = !plus_open -->
-				<!-- 			}}><Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon></Button -->
-				<!-- 		> -->
-				<!-- 		{#if plus_open} -->
-				<!-- 			<div class="add-group-buttons"> -->
-				<!-- 				{#each groups.filter((group) => !dataset.groups?.find((relation) => relation.object === group)) as group} -->
-				<!-- 					<Button -->
-				<!-- 						onclick={async () => { -->
-				<!-- 							const relationship: Relationship = { -->
-				<!-- 								namespace: 'Dataset', -->
-				<!-- 								object: dataset.id, -->
-				<!-- 								relation: relation, -->
-				<!-- 								subject_set: { -->
-				<!-- 									namespace: 'Group', -->
-				<!-- 									object: group, -->
-				<!-- 									relation: 'users' -->
-				<!-- 								} -->
-				<!-- 							} -->
-				<!-- 							const res = await fetch(`/api/v1/permissions/Dataset`, { -->
-				<!-- 								method: 'POST', -->
-				<!-- 								body: JSON.stringify(relationship) -->
-				<!-- 							}) -->
-				<!-- 							const data = await res.json() -->
-				<!-- 							if (data.message === 'ok') { -->
-				<!-- 								notify.send({ -->
-				<!-- 									message: `${dataset.title} has been added to ${group} group` -->
-				<!-- 								}) -->
-				<!-- 								await invalidateAll() -->
-				<!-- 							} -->
-				<!-- 						}}>{group}</Button -->
-				<!-- 					> -->
-				<!-- 				{/each} -->
-				<!-- 			</div> -->
-				<!-- 		{/if} -->
-				<!-- 	</div> -->
-				<!-- </div> -->
 			</div>
 			<div class="right-col"></div>
 		</div>

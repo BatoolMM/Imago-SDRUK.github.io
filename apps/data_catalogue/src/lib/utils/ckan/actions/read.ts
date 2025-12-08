@@ -101,7 +101,7 @@ type GroupList = [
 		include_groups?: boolean
 		include_users?: boolean
 	},
-	CkanGroup
+	CkanGroup[]
 ]
 
 type GroupShow = [
@@ -114,7 +114,8 @@ type GroupShow = [
 		include_users?: boolean
 		include_groups?: boolean
 		include_followers?: boolean
-	}
+	},
+	CkanGroup
 ]
 
 type GroupPackageShow = [
