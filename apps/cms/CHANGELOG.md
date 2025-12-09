@@ -1,5 +1,10 @@
 # cms
 
+## 1.1.9
+### Patch Changes
+
+- 4e742ba: fix build and dev issues
+
 ## 1.1.8
 ### Patch Changes
 
