@@ -4,18 +4,25 @@ import { handleOryResponse } from '$lib/utils/auth/index.js'
 import { DateTime } from 'luxon'
 import { env } from '$env/dynamic/private'
 
-export const load = async ({ cookies, url, params, fetch, locals }: PageServerLoadEvent) => {
+export const load = async ({
+	request,
+	cookies,
+	url,
+	params,
+	fetch,
+	locals
+}: PageServerLoadEvent) => {
 	const id = url.searchParams.get('id')
 	const flow_id = url.searchParams.get('flow')
 	const aal = url.searchParams.get('aal')
 	const return_to = url.searchParams.get('return_to')
-	let endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/flows?id=${flow_id}`
+	let endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/flows?id=${flow_id}`
 
 	if (locals.session?.redirect_browser_to) {
 		return redirect(303, locals.session.redirect_browser_to)
 	}
 	if (params.flow === 'logout') {
-		endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/browser`
+		endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser`
 		/**
 		 * NOTE: if there is no session here ory will redirect straight to flow error
 		 **/
@@ -35,16 +42,17 @@ export const load = async ({ cookies, url, params, fetch, locals }: PageServerLo
 	}
 	if (!flow_id && params.flow !== 'error' && !aal) {
 		console.log(`Getting a new flow for ${params.flow}`)
-		const endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/browser`
+		const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser`
 		redirect(303, endpoint)
 	}
 
 	if (params.flow === 'error') {
-		endpoint = `${env.IDENTITY_SERVER}/self-service/errors?id=${id}`
+		endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/errors?id=${id}`
 	}
-
+	const cookie = request.headers.get('cookie') || ''
 	const res = await fetch(endpoint, {
-		credentials: 'include'
+		credentials: 'include',
+		headers: { cookie }
 	})
 	const data = await handleOryResponse(res)
 
@@ -85,7 +93,7 @@ export const load = async ({ cookies, url, params, fetch, locals }: PageServerLo
 		}
 		const redirect_to = data.error?.details?.redirect_to
 		if (redirect_to) {
-			const endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/browser`
+			const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser`
 			return redirect(307, endpoint)
 		}
 		return redirect(307, `/`)
@@ -98,7 +106,7 @@ export const load = async ({ cookies, url, params, fetch, locals }: PageServerLo
 
 	if (expires_at.diffNow().milliseconds < 0) {
 		url.searchParams.delete('flow_id')
-		const endpoint = `${env.IDENTITY_SERVER}/self-service/${params.flow}/browser`
+		const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser`
 		redirect(303, endpoint)
 	}
 	url.searchParams.delete('flow_id')
