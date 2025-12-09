@@ -17,7 +17,10 @@ const Env = type({
 const validated = Env(process.env)
 
 if (validated instanceof type.errors) {
-	throw Error(validated.summary)
+	if (!process.env.BUILDING) {
+		console.log(process.env)
+		throw Error(validated.summary)
+	}
 }
 
 export const env = validated

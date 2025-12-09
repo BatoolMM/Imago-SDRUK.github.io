@@ -11,7 +11,9 @@
 				"SENTRY_PROJECT",
 				"SENTRY_AUTH_TOKEN",
 				"BRANCH",
-				"SENTRY_RELEASE"
+				"SENTRY_RELEASE",
+				"BUILDING",
+				"CI"
 			]
 		},
 		"lint": {

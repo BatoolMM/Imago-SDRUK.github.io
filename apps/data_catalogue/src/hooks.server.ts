@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/sveltekit'
 import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
-import { getId, jstr, log } from '@arturoguzman/art-ui'
+import { getId, jstr } from '@arturoguzman/art-ui'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { COOKIES } from '$lib/globals/server'
@@ -10,6 +10,7 @@ import { db } from '$lib/db'
 import { users } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import type { IdentitySession } from '$lib/utils/auth/types'
+import { log } from '$lib/utils/server/logger'
 
 // export const crawlers = [
 // 	'Googlebot',
@@ -36,6 +37,7 @@ export const init = async () => {
 const handleAccessMode: Handle = async ({ event, resolve }) => {
 	event.locals.access = false
 	const access_mode = env.ACCESS_MODE
+	log.info(`access mode: ${access_mode}`)
 	if (access_mode === 'invite_only') {
 		const cookie = event.cookies.get(COOKIES.access_token)
 		if (cookie === env.ACESSS_INVITE_ONLY_TOKEN) {
@@ -74,6 +76,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	})
 	const connection = await event.locals.ckan.ping()
 	if (!connection.success) {
+		log.debug(`CKAN is down`)
 		error(503, {
 			message: `Imago is currently down, please check back later!`,
 			id: 'service-unavailable'
@@ -81,7 +84,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	}
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
-		log({ response: response, event: event, status: response.status })
+		log.info({ response: response, event: event, status: response.status })
 	}
 	return response
 }
@@ -110,6 +113,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		const valid_session = verifyOrySession(session)
 
 		if (session.error || !valid_session) {
+			log.debug(`session error`)
 			if (event.url.pathname === '/') {
 				redirect(307, '/auth/login')
 			}
@@ -123,10 +127,12 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 			!session.identity.verifiable_addresses.some((va) => va.verified === true) &&
 			event.url.pathname !== '/auth/verification'
 		) {
+			log.debug(`session is valid but account isnt verified`)
 			redirect(307, '/auth/verification')
 		}
 		// NOTE: check if there is a redirect request, if so, do not set the session
 		if (session.redirect_browser_to) {
+			log.debug(`session includes a redirect browser to`)
 			redirect(303, session.redirect_browser_to)
 			// return resolve(event)
 		}
@@ -143,11 +149,12 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 			.where(eq(users.id, event.locals.session.identity.id))
 		if (
 			profile.length === 1 &&
+			profile[0].status === 'preregister' &&
 			event.url.pathname !== `/user/register` &&
 			!event.url.pathname.startsWith('/auth') &&
-			profile[0].status === 'preregister' &&
 			!event.url.pathname.startsWith('/api')
 		) {
+			log.debug(`redirect user to /user/register as profile exists but status is preregister`)
 			redirect(307, `/user/register`)
 		}
 	}
@@ -159,7 +166,7 @@ export const hooksErrorHandler: HandleServerError = async ({ event, status, mess
 	if (status !== 404) {
 		console.log(jstr(error))
 	}
-	log({ status: status, event: event, content: message })
+	log.info({ status: status, event: event, content: message })
 	return {
 		id: getId(),
 		message: status === 404 ? `This page does not exist!` : 'Whoops!'
