@@ -1,5 +1,6 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { authorise, ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
+import { log } from '$lib/utils/server/logger.js'
+import { authorise, ketoCheck, ketoWrite } from '$lib/utils/auth/index.js'
 import { jstr } from '@arturoguzman/art-ui'
 import type { Relationship } from '@ory/client-fetch'
 import { error, json } from '@sveltejs/kit'
@@ -48,6 +49,6 @@ export const DELETE = async ({ locals, request }) => {
 		error(...SERVER_ERRORS[401])
 	}
 	const body = (await request.json()) as Relationship
-	await ketoWrite.deleteRelationships(body).catch((err) => console.log(jstr(err)))
+	await ketoWrite.deleteRelationships(body).catch((err) => log.debug(jstr(err)))
 	return json({ message: 'ok' })
 }

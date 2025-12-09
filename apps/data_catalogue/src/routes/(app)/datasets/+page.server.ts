@@ -1,13 +1,9 @@
-import { create, get, remove } from '$lib/utils/ckan/ckan.js'
+import { get, remove } from '$lib/utils/ckan/ckan.js'
 import type { PageServerLoadEvent } from './$types.js'
 import { error, fail, redirect } from '@sveltejs/kit'
-import slugify from '@sindresorhus/slugify'
 import licenses from '$lib/utils/ckan/licenses.json'
 
-import { METADATA_KEYS } from '$lib/globals/datasets.js'
-import { jstr } from '@arturoguzman/art-ui'
-import { authorise, ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
-import { getDatasetBasePermissions } from '$lib/utils/auth/permissions/index.js'
+import { ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -92,7 +88,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// )
 	//
 	// if (data.success === false) {
-	// 	console.log(jstr(data))
+	// 	log.debug(jstr(data))
 	// 	error(400, { message: `There's been an issue processing this request`, id: 'search-error' })
 	// }
 	//

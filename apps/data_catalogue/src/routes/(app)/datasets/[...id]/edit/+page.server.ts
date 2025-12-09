@@ -1,4 +1,5 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
+import { log } from '$lib/utils/server/logger.js'
 import { authorise } from '$lib/utils/auth/index.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
 import { jstr } from '@arturoguzman/art-ui'
@@ -50,9 +51,9 @@ export const actions = {
 	create_tag: async ({ request, locals, params }) => {
 		const form = await request.formData()
 		const name = String(form.get('display_name'))
-		console.log(name)
+		log.debug(name)
 		const tag = await locals.ckan.request(create('tag_create', { name, vocabulary_id: null }))
-		console.log(jstr(tag))
+		log.debug(jstr(tag))
 
 		return {
 			message: `Tag created`
@@ -66,7 +67,7 @@ export const actions = {
 			name: slugify(tag.display_name),
 			display_name: tag.display_name
 		}))
-		console.log(_tags)
+		log.debug(_tags)
 		const tag = await locals.ckan.request(
 			patch(
 				'package_patch',
@@ -77,7 +78,7 @@ export const actions = {
 				}
 			)
 		)
-		console.log(jstr(tag))
+		log.debug(jstr(tag))
 		return {
 			message: `Tags saved`
 		}
@@ -88,7 +89,7 @@ export const actions = {
 		const dataset = await locals.ckan.request(
 			patch('package_patch', { id: params.id }, { ...parsed, id: params.id })
 		)
-		console.log(jstr(dataset))
+		log.debug(jstr(dataset))
 		return {
 			message: `Dataset successfully updated`
 		}
@@ -100,7 +101,7 @@ export const actions = {
 		const dataset = await locals.ckan.request(
 			patch('resource_patch', { id: parsed.id }, { ...parsed, id: parsed.id })
 		)
-		console.log(jstr(dataset))
+		log.debug(jstr(dataset))
 		return {
 			message: `Resource successfully updated`
 		}

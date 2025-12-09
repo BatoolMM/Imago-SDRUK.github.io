@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private'
+import { log } from '$lib/utils/server/logger.js'
 import { SERVER_ERRORS } from '$lib/globals/server'
 import type { IdentityError, IdentityResponse, IdentitySession } from '$lib/utils/auth/types'
-import { jstr } from '@arturoguzman/art-ui'
 import {
 	RelationshipApi,
 	Configuration,
@@ -34,14 +34,14 @@ export const verifyOrySession = (session: IdentitySession) => {
 	}
 	const diff = DateTime.fromISO(session.expires_at).diffNow().milliseconds
 	if (diff <= 0) {
-		console.log('session has expired')
+		log.debug('session has expired')
 		return false
 	}
 	return true
 }
 
 export const kratosRead = new IdentityApi(
-	new Configuration({ basePath: env.IDENTITY_SERVER_PUBLIC })
+	new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN })
 )
 export const kratosWrite = new IdentityApi(
 	new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN })
@@ -85,7 +85,7 @@ export const checkPermission = async ({
 	url.searchParams.append('object', String(object))
 	url.searchParams.append('relation', String(relation))
 	url.searchParams.append('subject_id', String(subject_id))
-	console.log(url.toString())
+	log.debug(url.toString())
 	const res = await fetch(url.toString(), {
 		method: 'GET'
 	})
@@ -114,7 +114,7 @@ export const authorise = async ({
 		}
 		error(...SERVER_ERRORS[401])
 	}
-	// console.log(
+	// log.debug(
 	// 	`EVALUATING: ${jstr({
 	// 		session,
 	// 		namespace,
@@ -136,7 +136,7 @@ export const authorise = async ({
 				subjectSetRelation
 			})
 			.catch((err) => {
-				console.log(err)
+				log.debug(err)
 				return {
 					allowed: false
 				}
@@ -145,7 +145,7 @@ export const authorise = async ({
 			if (action) {
 				action()
 			}
-			console.log(permission)
+			log.debug(permission)
 			error(...SERVER_ERRORS[401])
 		}
 	}
@@ -157,7 +157,7 @@ export const authorise = async ({
 			subjectId: session.identity.id
 		})
 		.catch((err) => {
-			console.log(err)
+			log.debug(err)
 			return {
 				allowed: false
 			}
@@ -166,7 +166,7 @@ export const authorise = async ({
 		if (action) {
 			action()
 		}
-		console.log(permission)
+		log.debug(permission)
 		error(...SERVER_ERRORS[401])
 	}
 }

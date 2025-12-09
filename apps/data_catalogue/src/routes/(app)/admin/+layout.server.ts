@@ -1,5 +1,6 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { ketoCheck } from '$lib/utils/auth'
+import { log } from '$lib/utils/server/logger.js'
 import { error } from '@sveltejs/kit'
 
 export const load = async ({ locals }) => {
@@ -14,7 +15,7 @@ export const load = async ({ locals }) => {
 			subjectId: locals.session?.identity.id
 		})
 		.catch((err) => {
-			console.log(err)
+			log.debug(err)
 			return {
 				allowed: false
 			}

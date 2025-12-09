@@ -24,7 +24,7 @@ import { runMigration } from '$lib/db/migrate'
 
 export const init = async () => {
 	if (process.env.BUILD) {
-		console.log('building - skip')
+		log.debug('building - skip')
 		return
 	}
 	if (!env.ACCESS_MODE) {
@@ -168,9 +168,9 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 }
 
 export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
-	console.log(error)
+	log.debug(error)
 	if (status !== 404) {
-		console.log(jstr(error))
+		log.debug(jstr(error))
 	}
 	log.info(error)
 	return {

@@ -2,6 +2,7 @@ import { db } from '$lib/db/index.js'
 import { questions } from '$lib/db/schema/questions.js'
 import { handleDBError } from '$lib/utils/db/index.js'
 import { parseForm } from '$lib/utils/forms/index.js'
+import { log } from '$lib/utils/server/logger.js'
 import { fail } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
@@ -76,7 +77,7 @@ export const actions = {
 		}
 		const res = await fetch('/api/v1/questions', { method: 'PATCH', body: JSON.stringify(form) })
 		const data = await res.json()
-		console.log(data)
+		log.debug(data)
 		return {
 			message: `Question updated`
 		}

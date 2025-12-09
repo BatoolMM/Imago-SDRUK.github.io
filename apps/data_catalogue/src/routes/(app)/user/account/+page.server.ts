@@ -6,6 +6,7 @@ import { db } from '$lib/db/index.js'
 import { users } from '$lib/db/schema/users.js'
 import { eq } from 'drizzle-orm'
 import { handleDBError } from '$lib/utils/db/index.js'
+import { log } from '$lib/utils/server/logger.js'
 const FLOW = 'settings'
 export const load = async ({ url, request, cookies, fetch, locals }: PageServerLoadEvent) => {
 	await authorise({
@@ -43,8 +44,8 @@ export const load = async ({ url, request, cookies, fetch, locals }: PageServerL
 			redirect(307, '/')
 		}
 		if (data.error.id === 'security_csrf_violation') {
-			cookies.getAll().forEach((cookie) => console.log(cookie))
-			console.log(request.headers)
+			cookies.getAll().forEach((cookie) => log.debug(cookie))
+			log.debug(request.headers)
 			redirect(307, '/')
 		}
 		const redirect_to = data.error?.details?.redirect_to
