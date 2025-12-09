@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.1
+### Patch Changes
+
+- 4e742ba: fix build and dev issues
+
 ## 2.0.0
 ### Major Changes
 
