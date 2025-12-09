@@ -14,6 +14,7 @@ export const load = async ({ url, request, cookies, fetch, locals }: PageServerL
 		session: locals.session,
 		relation: 'members'
 	})
+	const cookie = request.headers.get('cookie') || ''
 	const user = await db
 		.select()
 		.from(users)
@@ -32,7 +33,10 @@ export const load = async ({ url, request, cookies, fetch, locals }: PageServerL
 		redirect(307, endpoint)
 	}
 	const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${FLOW}/flows?id=${flow_id}`
-	const res = await fetch(endpoint)
+	const res = await fetch(endpoint, {
+		credentials: 'include',
+		headers: { cookie }
+	})
 	const data = await handleOryResponse(res)
 	if ('error' in data) {
 		if (data.error.id === 'custom error') {

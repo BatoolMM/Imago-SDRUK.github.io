@@ -18,6 +18,7 @@ export const load = async ({
 	const return_to = url.searchParams.get('return_to')
 	let endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/flows?id=${flow_id}`
 
+	const cookie = request.headers.get('cookie') || ''
 	if (locals.session?.redirect_browser_to) {
 		return redirect(303, locals.session.redirect_browser_to)
 	}
@@ -27,7 +28,8 @@ export const load = async ({
 		 * NOTE: if there is no session here ory will redirect straight to flow error
 		 **/
 		const res = await fetch(endpoint, {
-			credentials: 'include'
+			credentials: 'include',
+			headers: { cookie }
 		})
 		//@ts-expect-error ok ok ok
 		const data = (await handleOryResponse(res)) as {
@@ -49,7 +51,6 @@ export const load = async ({
 	if (params.flow === 'error') {
 		endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/errors?id=${id}`
 	}
-	const cookie = request.headers.get('cookie') || ''
 	const res = await fetch(endpoint, {
 		credentials: 'include',
 		headers: { cookie }
