@@ -12,6 +12,7 @@ import { eq } from 'drizzle-orm'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 
+import { runMigration } from '$lib/db/migrate'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -31,6 +32,11 @@ export const init = async () => {
 			id: 'server-error',
 			message: `Sorry, you need to specify an access mode before deploying this website.`
 		})
+	}
+	if (env.NODE_ENV === 'production') {
+		log.info('initialising with the following envs')
+		log.info(env)
+		await runMigration()
 	}
 }
 
