@@ -1,5 +1,10 @@
 # website
 
+## 2.0.20
+### Patch Changes
+
+- 24cb493: fix build issue
+
 ## 2.0.19
 ### Patch Changes
 
