@@ -75,7 +75,6 @@
 			>
 				<div class="inputs">
 					<input type="text" hidden value={question.id} name="id" />
-					<pre>{jstr(question)}</pre>
 					<QuestionInputs {questions} bind:question bind:type></QuestionInputs>
 				</div>
 				<div class="buttons">
