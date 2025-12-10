@@ -71,85 +71,97 @@
 	])
 </script>
 
-{#each filters.filter((filter) => filter.filters?.result?.length > 0) as filter}
-	<div class="accordion-wrapper">
-		<Accordion default_open>
-			{#snippet title({ toggleOpen, open })}
-				<Button
-					style="clean-full"
-					onclick={() => {
-						toggleOpen()
-					}}
-				>
-					{#snippet leftCol()}
-						<Subtitle>{filter.title}</Subtitle>
-					{/snippet}
-					{#snippet rightCol()}
-						<Icon icon={{ icon: open ? 'arrow-down-01' : 'arrow-right-01', set: 'hugeicons' }}
-						></Icon>
-					{/snippet}
-				</Button>
+<div class="filters">
+	{#if page.url.searchParams.get('search')}
+		<Button
+			style="tag"
+			active={true}
+			line_clamp
+			href={handleSearchParams({
+				remove: ['search']
+			})}>Clear search</Button
+		>
+	{/if}
+	{#each filters.filter((filter) => filter.filters?.result?.length > 0) as filter}
+		<div class="accordion-wrapper">
+			<Accordion default_open>
+				{#snippet title({ toggleOpen, open })}
+					<Button
+						style="clean-full"
+						onclick={() => {
+							toggleOpen()
+						}}
+					>
+						{#snippet leftCol()}
+							<Subtitle>{filter.title}</Subtitle>
+						{/snippet}
+						{#snippet rightCol()}
+							<Icon icon={{ icon: open ? 'arrow-down-01' : 'arrow-right-01', set: 'hugeicons' }}
+							></Icon>
+						{/snippet}
+					</Button>
 
-				<!-- {#if filter.limit < filter.filters.result.length} -->
-				<!-- 	<Button -->
-				<!-- 		onclick={() => { -->
-				<!-- 			filter.limit = 999 -->
-				<!-- 		}} -->
-				<!-- 	> -->
-				<!-- 		+</Button -->
-				<!-- 	> -->
-				<!-- {:else} -->
-				<!-- 	<Button -->
-				<!-- 		onclick={() => { -->
-				<!-- 			filter.limit = 10 -->
-				<!-- 		}} -->
-				<!-- 	> -->
-				<!-- 		-</Button -->
-				<!-- 	> -->
-				<!-- {/if} -->
-			{/snippet}
-			{#if Array.isArray(filter.filters.result)}
-				<div class="accordion-buttons">
-					{#each filter.filters.result as result}
-						<div class="button-wrapper">
-							<!-- {#each filter.filters.result.slice(0, filter.limit) as result} -->
-							{#if typeof result === 'string'}
-								{@const active = page.url.searchParams.getAll(filter.query).includes(result)}
-								<Button
-									style="tag"
-									{active}
-									line_clamp
-									href={handleSearchParams({
-										add: [{ key: filter.query, value: result }],
-										remove: active ? [{ key: filter.query, value: result }] : undefined
-									})}>{result}</Button
-								>
-							{/if}
-							{#if typeof result === 'object'}
-								{#if result && 'title' in result}
-									{@const active = page.url.searchParams
-										.getAll(filter.query)
-										.includes(result[filter.field])}
+					<!-- {#if filter.limit < filter.filters.result.length} -->
+					<!-- 	<Button -->
+					<!-- 		onclick={() => { -->
+					<!-- 			filter.limit = 999 -->
+					<!-- 		}} -->
+					<!-- 	> -->
+					<!-- 		+</Button -->
+					<!-- 	> -->
+					<!-- {:else} -->
+					<!-- 	<Button -->
+					<!-- 		onclick={() => { -->
+					<!-- 			filter.limit = 10 -->
+					<!-- 		}} -->
+					<!-- 	> -->
+					<!-- 		-</Button -->
+					<!-- 	> -->
+					<!-- {/if} -->
+				{/snippet}
+				{#if Array.isArray(filter.filters.result)}
+					<div class="accordion-buttons">
+						{#each filter.filters.result as result}
+							<div class="button-wrapper">
+								<!-- {#each filter.filters.result.slice(0, filter.limit) as result} -->
+								{#if typeof result === 'string'}
+									{@const active = page.url.searchParams.getAll(filter.query).includes(result)}
 									<Button
 										style="tag"
 										{active}
 										line_clamp
 										href={handleSearchParams({
-											add: [{ key: filter.query, value: result[filter.field] }],
-											remove: active
-												? [{ key: filter.query, value: result[filter.field] }]
-												: undefined
-										})}>{result.title}</Button
+											add: [{ key: filter.query, value: result }],
+											remove: active ? [{ key: filter.query, value: result }] : undefined
+										})}>{result}</Button
 									>
 								{/if}
-							{/if}
-						</div>
-					{/each}
-				</div>
-			{/if}
-		</Accordion>
-	</div>
-{/each}
+								{#if typeof result === 'object'}
+									{#if result && 'title' in result}
+										{@const active = page.url.searchParams
+											.getAll(filter.query)
+											.includes(result[filter.field])}
+										<Button
+											style="tag"
+											{active}
+											line_clamp
+											href={handleSearchParams({
+												add: [{ key: filter.query, value: result[filter.field] }],
+												remove: active
+													? [{ key: filter.query, value: result[filter.field] }]
+													: undefined
+											})}>{result.title}</Button
+										>
+									{/if}
+								{/if}
+							</div>
+						{/each}
+					</div>
+				{/if}
+			</Accordion>
+		</div>
+	{/each}
+</div>
 
 <style>
 	.accordion-wrapper {
@@ -174,5 +186,10 @@
 		overflow-y: scroll;
 		scrollbar-width: none;
 		padding: 1rem;
+	}
+	.filters {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 </style>
