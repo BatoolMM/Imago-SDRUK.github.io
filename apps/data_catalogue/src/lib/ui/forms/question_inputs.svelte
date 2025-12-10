@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Question } from '$lib/db/schema/questions'
-	import { Checkbox } from '@arturoguzman/art-ui'
-	import { Icon, Input, Select, Subtitle, Text, Button, Paragraph } from '@imago/ui'
+	import { Icon, Input, Select, Subtitle, Text, Button, Paragraph, Checkbox } from '@imago/ui'
 	import OptionsCreate from '../inputs/options_create.svelte'
 
 	let {

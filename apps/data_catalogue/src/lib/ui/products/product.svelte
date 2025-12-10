@@ -38,7 +38,7 @@
 
 <div class="product">
 	<div class="header">
-		<ProductTitle title={ctx.dataset.title}></ProductTitle>
+		<ProductTitle state={ctx.dataset.state} title={ctx.dataset.title}></ProductTitle>
 		{#if 'notes' in ctx.dataset && ctx.dataset.notes !== null && ctx.dataset.notes !== ''}
 			<div class="product-notes">
 				<Notes note={String(ctx.dataset.notes)}></Notes>
