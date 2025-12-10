@@ -1,5 +1,11 @@
 # data-catalogue
 
+## 2.0.11
+### Patch Changes
+
+- 4a85d23: make private packages for admin and editors only
+- 4daa8fc: trigger pipeline
+
 ## 2.0.10
 ### Patch Changes
 
