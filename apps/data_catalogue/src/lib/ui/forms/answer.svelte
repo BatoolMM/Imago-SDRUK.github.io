@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { Checkbox } from '@arturoguzman/art-ui'
-	import type { Answer, Question } from '$lib/db/schema/questions'
+	import type { Question } from '$lib/db/schema/questions'
 	import { COUNTRIES } from '$lib/utils/forms/countries'
-	import { Select, Input, Text } from '@imago/ui'
+	import { Select, Input, Text, Checkbox } from '@imago/ui'
 	let {
 		answers = $bindable(),
 		question
@@ -71,6 +70,7 @@
 			{#if question.type === 'bool'}
 				<div class="anti-wrap">
 					<Checkbox
+						required={question.required ? true : false}
 						name={question.id}
 						onchange={(e) => {
 							answer.answer = `${e.currentTarget.checked}`
