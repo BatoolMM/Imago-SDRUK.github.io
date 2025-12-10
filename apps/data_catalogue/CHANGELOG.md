@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.3
+### Patch Changes
+
+- 1843025: trigger build
+
 ## 2.0.2
 ### Patch Changes
 
