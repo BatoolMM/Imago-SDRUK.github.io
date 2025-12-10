@@ -62,6 +62,8 @@ export const actions = {
 		}
 		if ('required' in form && form.required === 'on') {
 			form.required = true
+		} else {
+			form['required'] = false
 		}
 		if ('visibility' in form && form.visibility === 'on') {
 			form.visibility = true
