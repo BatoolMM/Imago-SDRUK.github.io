@@ -5,6 +5,7 @@ import { validateInsert } from '$lib/db/validation/index.js'
 import { authorise, ketoWrite, kratosRead } from '$lib/utils/auth'
 import { getUserBasePermissions } from '$lib/utils/auth/permissions/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
+import { log } from '$lib/utils/server/logger.js'
 import { json } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
 
@@ -45,5 +46,6 @@ export const POST = async ({ locals, request, cookies }) => {
 		}).map((relation) => ({ action: 'insert', relation_tuple: relation }))
 	})
 	await db.insert(users).values(user.data).catch(handleDBError('Error creating user'))
+	log.info(`registered user ${user.data.id}`)
 	return json({ message: 'ok' })
 }
