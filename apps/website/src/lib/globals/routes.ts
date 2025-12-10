@@ -3,17 +3,8 @@ type Route = { label: string; href: string }
 export const ROUTES: (Route & { subpaths: Route[] })[] = [
 	{
 		label: 'Data',
-		href: '/data',
-		subpaths: [
-			{
-				label: 'Data products',
-				href: '/data/products'
-			},
-			{
-				label: 'Data catalogue',
-				href: '/data'
-			}
-		]
+		href: 'https://data.imago.ac.uk',
+		subpaths: []
 	},
 	{
 		label: 'News',
