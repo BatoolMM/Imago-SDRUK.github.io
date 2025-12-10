@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.5
+### Patch Changes
+
+- 06c0549: add exception if api cookie
+
 ## 2.0.4
 ### Patch Changes
 
