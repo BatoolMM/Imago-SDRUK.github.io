@@ -1,5 +1,5 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { authorise, authorise, ketoCheck } from '$lib/utils/auth/index.js'
+import { authorise, ketoCheck } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { getFields } from '@imago/ui'
 import { error } from '@sveltejs/kit'
