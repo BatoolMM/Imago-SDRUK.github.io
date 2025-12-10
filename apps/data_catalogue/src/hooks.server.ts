@@ -59,6 +59,11 @@ const handleAccessMode: Handle = async ({ event, resolve }) => {
 	if (access_mode === 'build') {
 		event.locals.access = true
 	}
+
+	const preauthorised = event.cookies.get('kratos-api') === env.ADMIN_TOKEN
+	if (preauthorised) {
+		event.locals.access = true
+	}
 	if (!event.locals.access && event.url.pathname !== '/access') {
 		return new Response(null, {
 			status: 307,
