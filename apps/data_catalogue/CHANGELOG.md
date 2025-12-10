@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.7
+### Patch Changes
+
+- beb25c7: bring back log, add exception to stop breaking
+
 ## 2.0.6
 ### Patch Changes
 
