@@ -4,6 +4,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import licenses from '$lib/utils/ckan/licenses.json'
 
 import { ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
+import { SERVER_ERRORS } from '$lib/globals/server.js'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -115,12 +116,15 @@ export const actions = {
 		const form = await request.formData()
 		const title = String(form.get('title'))
 		const group = String(form.get('group'))
-		const data = await fetch(`/api/v1/datasets`, {
+		const res = await fetch(`/api/v1/datasets`, {
 			method: 'POST',
 			body: JSON.stringify({ title, group })
 		})
-		const res = await data.json()
-		return res
+		const data = await res.json()
+		if (res.ok) {
+			redirect(307, data.data.url)
+		}
+		error(...SERVER_ERRORS[500])
 		// return redirect(307, `/datasets/${dataset.result.name}/edit`)
 	},
 
