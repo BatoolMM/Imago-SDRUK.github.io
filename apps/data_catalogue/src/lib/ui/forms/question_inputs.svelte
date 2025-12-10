@@ -1,14 +1,22 @@
 <script lang="ts">
 	import type { Question } from '$lib/db/schema/questions'
-	import { Icon, Input, Select, Subtitle, Text, Button, Paragraph, Checkbox } from '@imago/ui'
+	import {
+		Icon,
+		Input,
+		Select,
+		Subtitle,
+		Text,
+		Button,
+		Paragraph,
+		Checkbox,
+		Editor
+	} from '@imago/ui'
 	import OptionsCreate from '../inputs/options_create.svelte'
 
 	let {
 		questions,
-		type = $bindable(),
 		question = $bindable()
 	}: {
-		type?: Question['type'] | null
 		question: Question
 		questions: Question[]
 	} = $props()
@@ -21,7 +29,6 @@
 		{ label: 'Yes / No', value: 'bool' },
 		{ label: 'Countries', value: 'countries' }
 	]
-	let conditionals: Question['conditionals'] = $state(question.conditionals ?? [])
 </script>
 
 <div class="question">
@@ -29,11 +36,19 @@
 		<Input label="Question">
 			<Text name="question" required value={question.question}></Text>
 		</Input>
-
-		<Input label="Type" required>
-			<Select name="type" bind:value={type} required {options}></Select>
+		<Input label="Description">
+			<textarea name="description" hidden bind:value={question.description}></textarea>
+			<Editor bind:content={question.description}></Editor>
 		</Input>
-		{#if type === 'select' || type === 'multiple_select'}
+		{#if question.description && question.description !== ''}
+			<Input label="Label">
+				<Text name="label" value={question.label}></Text>
+			</Input>
+		{/if}
+		<Input label="Type" required>
+			<Select name="type" bind:value={question.type} required {options}></Select>
+		</Input>
+		{#if question.type === 'select' || question.type === 'multiple_select'}
 			<OptionsCreate name="options" bind:options={question.options}></OptionsCreate>
 		{/if}
 	</div>
@@ -48,21 +63,26 @@
 			</Input>
 		</div>
 		<div class="conditionals">
-			<input name="conditionals" type="text" value={JSON.stringify(conditionals)} hidden />
+			<input name="conditionals" type="text" value={JSON.stringify(question.conditionals)} hidden />
 			<div class="conditionals-header">
 				<Paragraph>Conditionals</Paragraph>
 				<Button
 					type="button"
 					onclick={() => {
-						if (conditionals) {
-							conditionals.push({ question: '', value: '', action: 'visible', operator: 'equal' })
+						if (question.conditionals && Array.isArray(question.conditionals)) {
+							question.conditionals.push({
+								question: '',
+								value: '',
+								action: 'visible',
+								operator: 'equal'
+							})
 						}
 					}}><Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon></Button
 				>
 			</div>
-			{#if conditionals && conditionals.length > 0}
+			{#if question.conditionals && Array.isArray(question.conditionals) && question.conditionals.length > 0}
 				<div class="conditionals">
-					{#each conditionals as conditional, index}
+					{#each question.conditionals as conditional, index}
 						<div class="conditional">
 							<div class="conditional-header">
 								<Paragraph>
@@ -71,10 +91,10 @@
 								<Button
 									type="button"
 									onclick={() => {
-										if (conditionals) {
-											conditionals = [
-												...conditionals.slice(0, index),
-												...conditionals.slice(index + 1)
+										if (question.conditionals) {
+											question.conditionals = [
+												...question.conditionals.slice(0, index),
+												...question.conditionals.slice(index + 1)
 											]
 										}
 									}}><Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon></Button

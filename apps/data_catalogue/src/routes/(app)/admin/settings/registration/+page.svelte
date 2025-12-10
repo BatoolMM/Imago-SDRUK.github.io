@@ -7,6 +7,10 @@
 	import CardQuestion from '$lib/ui/forms/card_question.svelte'
 	import QuestionInputs from '$lib/ui/forms/question_inputs.svelte'
 	let { data } = $props()
+	let questions = $derived.by(() => {
+		let questions = $state(data.questions)
+		return questions
+	})
 
 	let type: Question['type'] | undefined = $state(undefined)
 	let question: Question = $state({
@@ -14,8 +18,21 @@
 		options: [{ label: '', id: getId(), value: '', error: false }],
 		created_by: '',
 		updated_by: '',
-		conditionals: []
+		description: '',
+		conditionals: [],
+		label: ''
 	})
+	const resetQuestion = () => {
+		question = {
+			question: '',
+			options: [{ label: '', id: getId(), value: '', error: false }],
+			created_by: '',
+			updated_by: '',
+			description: '',
+			conditionals: [],
+			label: ''
+		}
+	}
 </script>
 
 <BaseSection>
@@ -39,7 +56,9 @@
 						if (result.type === 'redirect') {
 							applyAction(result)
 						}
-						update({ reset: true, invalidateAll: true })
+
+						await update({ reset: true, invalidateAll: true })
+						resetQuestion()
 					}
 				}}
 			>
@@ -54,8 +73,8 @@
 		</div>
 		<div class="right-col">
 			<Title size="md">Existing questions</Title>
-			{#each data.questions as question}
-				<CardQuestion questions={data.questions} {question}></CardQuestion>
+			{#each questions as question, index (question.id)}
+				<CardQuestion {questions} bind:question={questions[index]}></CardQuestion>
 			{/each}
 		</div>
 	</div>

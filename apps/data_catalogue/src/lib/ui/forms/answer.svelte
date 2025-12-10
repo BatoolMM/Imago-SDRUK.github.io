@@ -1,13 +1,16 @@
 <script lang="ts">
 	import type { Question } from '$lib/db/schema/questions'
 	import { COUNTRIES } from '$lib/utils/forms/countries'
-	import { Select, Input, Text, Checkbox } from '@imago/ui'
+	import { jstr } from '@arturoguzman/art-ui'
+	import { Select, Input, Text, Checkbox, Button, Icon } from '@imago/ui'
+	import Notes from '../text/notes.svelte'
 	let {
 		answers = $bindable(),
 		question
 	}: { answers: { question: string; answer: string }[]; question: Question } = $props()
 	let answer = $derived(answers.find((answer) => answer.question === question.id))
 	let visibility = $state(question.visibility)
+	let desctiption_open = $state(false)
 	$effect(() => {
 		if (answers && question && question.conditionals && Array.isArray(question.conditionals)) {
 			question.conditionals?.forEach((conditional) => {
@@ -96,13 +99,48 @@
 				></Select>
 			{/if}
 		</Input>
+
+		{#if question.description}
+			<div class="button">
+				<Button
+					active={desctiption_open}
+					type="button"
+					style="clean"
+					onclick={() => {
+						desctiption_open = !desctiption_open
+					}}
+					>{#if question.label}
+						{question.label}
+					{:else}
+						<Icon icon={{ icon: 'info-circle-filled', set: 'tabler' }}></Icon>
+					{/if}
+				</Button>
+			</div>
+			{#if desctiption_open}
+				<div class="description">
+					<Notes note={String(question.description)}></Notes>
+				</div>
+			{/if}
+		{/if}
 	</div>
 {/if}
 
 <style>
 	.answer-card {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
 		gap: 1rem;
+	}
+	.button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+	.description {
+		grid-column: 1 / -1;
+		width: 100%;
+		background-color: var(--background-muted);
+		padding: 2rem;
+		border-radius: var(--radius);
 	}
 </style>

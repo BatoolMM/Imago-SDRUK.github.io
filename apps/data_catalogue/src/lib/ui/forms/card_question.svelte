@@ -6,8 +6,8 @@
 	import type { Question } from '$lib/db/schema/questions'
 	import { invalidateAll } from '$app/navigation'
 	import QuestionInputs from '../forms/question_inputs.svelte'
-	let { question, questions }: { question: Question; questions: Question[] } = $props()
-	let type = $derived(question.type)
+	let { question = $bindable(), questions }: { question: Question; questions: Question[] } =
+		$props()
 	let open = $state(false)
 </script>
 
@@ -69,14 +69,13 @@
 						if (result.type === 'redirect') {
 							applyAction(result)
 						}
-						update({ reset: true, invalidateAll: true })
+						update({ invalidateAll: true })
 					}
 				}}
 			>
 				<div class="inputs">
-					<input type="text" hidden value={question.id} name="id" />
-					<pre>{jstr(question)}</pre>
-					<QuestionInputs {questions} bind:question bind:type></QuestionInputs>
+					<input type="text" hidden bind:value={question.id} name="id" />
+					<QuestionInputs {questions} bind:question></QuestionInputs>
 				</div>
 				<div class="buttons">
 					<Button

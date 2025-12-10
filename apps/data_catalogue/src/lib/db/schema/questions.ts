@@ -55,6 +55,8 @@ export const questions = pgTable(
 	{
 		id: uuid().primaryKey().defaultRandom(),
 		question: text().notNull(),
+		description: text(),
+		label: text(),
 		required: boolean(),
 		group: text(),
 		type: question_type_enum().default('string'),
