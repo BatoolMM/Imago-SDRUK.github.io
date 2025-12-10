@@ -5,7 +5,7 @@ import { validateAnswer } from '$lib/db/validation/questions.js'
 import { authorise, ketoWrite } from '$lib/utils/auth/index.js'
 import { getAnswerBasePermissions } from '$lib/utils/auth/permissions/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
-import { jstr } from '@arturoguzman/art-ui'
+import { log } from '$lib/utils/server/logger.js'
 import { error } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 
@@ -60,7 +60,7 @@ export const POST = async ({ request, locals }) => {
 					}).map((relation) => ({ action: 'insert', relation_tuple: relation }))
 				})
 				.catch((err) => {
-					console.log(err)
+					log.debug(err)
 					error(500, { message: 'Error saving answer permissions', id: 'err' })
 				})
 		)

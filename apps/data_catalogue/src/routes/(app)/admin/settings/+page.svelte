@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state'
 	import { BaseSection, Button, Title } from '@imago/ui'
-
 	let { data } = $props()
 </script>
 

@@ -1,4 +1,5 @@
 import { METADATA_KEYS } from '$lib/globals/datasets.js'
+import { log } from '$lib/utils/server/logger.js'
 import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { authorise, ketoWrite } from '$lib/utils/auth/index.js'
 import { getDatasetBasePermissions } from '$lib/utils/auth/permissions/index.js'
@@ -37,7 +38,7 @@ export const POST = async ({ locals, request }) => {
 			if ('message' in dataset.error) {
 				error(400, { message: dataset.error.message, id: 'error' })
 			}
-			console.log(dataset)
+			log.debug(dataset)
 			error(...SERVER_ERRORS[500])
 		}
 		return error(400, { message: dataset.message, id: 'error' })

@@ -1,6 +1,5 @@
 import { fail, redirect } from '@sveltejs/kit'
-import { authorise, ketoRead, ketoWrite, kratosRead } from '$lib/utils/auth/index.js'
-import { AUTH_GROUPS } from '$lib/globals/auth.js'
+import { authorise, ketoRead } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { error } from '@sveltejs/kit'
 import { parseForm } from '$lib/utils/forms/index.js'

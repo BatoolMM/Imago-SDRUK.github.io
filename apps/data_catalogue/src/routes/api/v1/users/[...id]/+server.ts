@@ -5,7 +5,7 @@ import { users } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { handleDBError } from '$lib/utils/db'
 import { json } from '@sveltejs/kit'
-import { authorise, ketoRead, ketoWrite, kratosRead, kratosWrite } from '$lib/utils/auth'
+import { authorise, ketoRead, ketoWrite, kratosWrite } from '$lib/utils/auth'
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
 	await authorise({

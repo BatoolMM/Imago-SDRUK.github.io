@@ -7,7 +7,7 @@ import { error } from '@sveltejs/kit'
 export const load = async ({ locals, params }) => {
 	const data = await locals.ckan.request(get('package_show', { id: params.id }))
 	const activities = await locals.ckan.request(get('package_activity_list', { id: params.id }))
-	// console.log(jstr(data))
+	// log.debug(jstr(data))
 	if (
 		data.success === false ||
 		Array.isArray(data.result) ||

@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private'
+import { log } from '$lib/utils/server/logger.js'
 import { ADMIN_ROUTES, ROUTES } from '$lib/globals/routes'
 import { COOKIES } from '$lib/globals/server.js'
 import { ketoRead } from '$lib/utils/auth/index.js'
@@ -15,7 +16,7 @@ export const load = async ({ locals, cookies }) => {
 				subjectId: locals.session?.identity.id
 			})
 			.catch((error) => {
-				console.log(error)
+				log.debug(error)
 				return {
 					allowed: false
 				}

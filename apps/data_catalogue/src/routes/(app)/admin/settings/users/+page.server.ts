@@ -1,5 +1,6 @@
 import { fail } from '@sveltejs/kit'
-import { authorise, ketoRead, ketoWrite, kratosRead } from '$lib/utils/auth/index.js'
+import { log } from '$lib/utils/server/logger.js'
+import { authorise, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
 import type { Identity } from '@ory/client-fetch'
@@ -45,16 +46,16 @@ export const actions = {
 		}
 		const form = await request.formData()
 		const roles = JSON.parse(String(form.get('roles')))
-		console.log(roles[0])
+		log.debug(roles[0])
 		const exists = await ketoRead.getRelationships(roles[0])
-		console.log(exists)
+		log.debug(exists)
 		if (
 			exists.relation_tuples?.filter((relation) => relation.subject_id === roles[0].subject_id)
 				.length === 0
 		) {
-			console.log(roles[0])
+			log.debug(roles[0])
 			const create = await ketoWrite.createRelationship({ createRelationshipBody: roles[0] })
-			console.log(create)
+			log.debug(create)
 		}
 		return {
 			message: 'ok'

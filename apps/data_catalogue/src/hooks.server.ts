@@ -12,6 +12,7 @@ import { eq } from 'drizzle-orm'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 
+import { runMigration } from '$lib/db/migrate'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -23,7 +24,7 @@ import { log } from '$lib/utils/server/logger'
 
 export const init = async () => {
 	if (process.env.BUILD) {
-		console.log('building - skip')
+		log.debug('building - skip')
 		return
 	}
 	if (!env.ACCESS_MODE) {
@@ -31,6 +32,11 @@ export const init = async () => {
 			id: 'server-error',
 			message: `Sorry, you need to specify an access mode before deploying this website.`
 		})
+	}
+	if (env.NODE_ENV === 'production') {
+		log.info('initialising with the following envs')
+		log.info(env)
+		await runMigration()
 	}
 }
 
@@ -84,7 +90,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	}
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
-		log.info({ response: response, event: event, status: response.status })
+		log.debug(event.url.pathname)
 	}
 	return response
 }
@@ -95,7 +101,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	 * NOTE: login in sets a cookie but must be bypassed if 2fa is enabled
 	 **/
 	if (auth_cookie && !event.url.pathname.startsWith('/auth/login')) {
-		const res = await fetch(`${env.IDENTITY_SERVER}/sessions/whoami`, {
+		const res = await fetch(`${env.IDENTITY_SERVER_PUBLIC}/sessions/whoami`, {
 			headers: {
 				Accept: 'application/json',
 				Cookie: `ory_kratos_session=${auth_cookie}`
@@ -162,11 +168,11 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 }
 
 export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
-	console.log(error)
+	log.debug(error)
 	if (status !== 404) {
-		console.log(jstr(error))
+		log.debug(jstr(error))
 	}
-	log.info({ status: status, event: event, content: message })
+	log.info(error)
 	return {
 		id: getId(),
 		message: status === 404 ? `This page does not exist!` : 'Whoops!'
