@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.12
+### Patch Changes
+
+- 8468b8f: fix double import
+
 ## 2.0.11
 ### Patch Changes
 
