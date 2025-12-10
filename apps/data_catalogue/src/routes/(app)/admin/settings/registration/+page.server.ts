@@ -57,6 +57,9 @@ export const actions = {
 		}
 		const form = parseForm(await request.formData())
 
+		if ('id' in form == false) {
+			return fail(400, { message: 'You need to provide an ID' })
+		}
 		if ('required' in form && form.required === 'on') {
 			form.required = true
 		}
@@ -75,7 +78,10 @@ export const actions = {
 		) {
 			form.conditionals = []
 		}
-		const res = await fetch('/api/v1/questions', { method: 'PATCH', body: JSON.stringify(form) })
+		const res = await fetch(`/api/v1/questions/${form.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify(form)
+		})
 		const data = await res.json()
 		log.debug(data)
 		return {
