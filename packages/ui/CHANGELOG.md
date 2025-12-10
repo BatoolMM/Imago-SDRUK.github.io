@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.15
+### Patch Changes
+
+- 0745ce6: add icons
+
 ## 1.0.14
 ### Patch Changes
 
