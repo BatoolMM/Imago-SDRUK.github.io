@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.9
+### Patch Changes
+
+- d03cb8b: add checkbox
+
 ## 2.0.8
 ### Patch Changes
 
