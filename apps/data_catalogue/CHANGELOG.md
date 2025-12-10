@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.6
+### Patch Changes
+
+- 43491bb: fix question edit
+
 ## 2.0.5
 ### Patch Changes
 
