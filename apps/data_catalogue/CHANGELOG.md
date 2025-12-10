@@ -1,5 +1,11 @@
 # data-catalogue
 
+## 2.0.10
+### Patch Changes
+
+- fd9008e: add beta version notices
+  clear search button
+
 ## 2.0.9
 ### Patch Changes
 

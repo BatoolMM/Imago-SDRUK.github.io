@@ -1,5 +1,11 @@
 # @imago/ui
 
+## 1.0.14
+### Patch Changes
+
+- fd9008e: add beta version notices
+  clear search button
+
 ## 1.0.13
 ### Patch Changes
 
