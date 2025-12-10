@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.4
+### Patch Changes
+
+- f6b6065: trigger build
+
 ## 2.0.3
 ### Patch Changes
 
