@@ -144,7 +144,8 @@ export enum TablerIconsEnum {
 	'italic',
 	'strikethrough',
 	'underline',
-	'link'
+	'link',
+	'question-mark'
 }
 
 export type HugeIconsSet = keyof typeof HugeIconsEnum
