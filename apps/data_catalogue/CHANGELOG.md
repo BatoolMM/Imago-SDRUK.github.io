@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.2
+### Patch Changes
+
+- 894dbf9: add db migrations and db service
+
 ## 2.0.1
 ### Patch Changes
 
