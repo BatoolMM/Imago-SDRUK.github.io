@@ -10,7 +10,7 @@
 	let answer = $derived(answers.find((answer) => answer.question === question.id))
 	let visibility = $state(question.visibility)
 	$effect(() => {
-		if (answers) {
+		if (answers && question && question.conditionals && Array.isArray(question.conditionals)) {
 			question.conditionals?.forEach((conditional) => {
 				const _val = answers.find((_answer) => _answer.question === conditional.question)?.answer
 				if (conditional.operator === 'equal') {
