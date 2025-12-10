@@ -1,6 +1,6 @@
 {
 	"name": "@imago/ui",
-	"version": "1.0.14",
+	"version": "1.0.15",
 	"scripts": {
 		"dev": "svelte-kit sync && svelte-package --watch --input=src/lib",
 		"build": "vite build && npm run prepack",
