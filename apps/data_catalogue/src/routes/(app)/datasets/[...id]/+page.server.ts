@@ -1,5 +1,5 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { ketoCheck } from '$lib/utils/auth/index.js'
+import { authorise, authorise, ketoCheck } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { getFields } from '@imago/ui'
 import { error } from '@sveltejs/kit'
@@ -27,6 +27,23 @@ export const load = async ({ locals, params }) => {
 		})
 		if (!permission.allowed) {
 			return error(401, { message: 'Unauthorised', id: 'Unauthorised' })
+		}
+
+		if (data.result.private) {
+			await authorise({
+				session: locals.session,
+				namespace: 'Group',
+				relation: 'users',
+				object: 'admin',
+				action: async () => {
+					await authorise({
+						session: locals.session,
+						namespace: 'Group',
+						relation: 'users',
+						object: 'editor'
+					})
+				}
+			})
 		}
 	}
 	const fields = getFields(data.result, [

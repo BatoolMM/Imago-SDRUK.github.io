@@ -46,7 +46,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 			start: offset <= 0 ? 0 : offset,
 			rows: limit,
 			fq,
-			include_private: true,
+			include_private: false,
 			include_drafts: true
 		})
 	)
