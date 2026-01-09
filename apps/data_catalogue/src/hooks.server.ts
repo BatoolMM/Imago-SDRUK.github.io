@@ -13,6 +13,7 @@ import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 
 import { runMigration } from '$lib/db/migrate'
+import { DateTime } from 'luxon'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -95,7 +96,11 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	}
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
-		log.debug(event.url.pathname)
+		log.debug({
+			pathname: event.url.pathname,
+			ip: event.getClientAddress(),
+			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+		})
 	}
 	return response
 }
@@ -173,11 +178,9 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 }
 
 export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
-	log.debug(error)
 	if (status !== 404) {
-		log.debug(jstr(error))
+		log.error(error)
 	}
-	log.info(error)
 	return {
 		id: getId(),
 		message: status === 404 ? `This page does not exist!` : 'Whoops!'
