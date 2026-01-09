@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.0
+### Minor Changes
+
+- 160de27: Enable ckan api endpoint for get actions
+
 ## 2.0.14
 ### Patch Changes
 
