@@ -44,7 +44,6 @@ export const init = async () => {
 const handleAccessMode: Handle = async ({ event, resolve }) => {
 	event.locals.access = false
 	const access_mode = env.ACCESS_MODE
-	log.info(`access mode: ${access_mode}`)
 	if (access_mode === 'invite_only') {
 		const cookie = event.cookies.get(COOKIES.access_token)
 		if (cookie === env.ACESSS_INVITE_ONLY_TOKEN) {
