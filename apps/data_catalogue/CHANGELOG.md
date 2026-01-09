@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.0.14
+### Patch Changes
+
+- b9afa21: add detailed logging, move err logs to err
+
 ## 2.0.13
 ### Patch Changes
 
