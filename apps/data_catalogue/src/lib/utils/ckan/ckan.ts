@@ -6,10 +6,14 @@ import type { CkanDeleteActions } from '$lib/utils/ckan/actions/delete'
 import type { CkanPatchActions, CkanUpdateActions } from '$lib/utils/ckan/actions/update'
 import type { CkanPing } from '$lib/types/ckan'
 import type { CkanextActivityGetActions } from '$lib/utils/ckan/extensions/versions/read'
-const handleResponse = async <T>(response: Response) => {
+export const handleCKANResponse = async <T>(response: Response) => {
 	const contentType = response.headers.get('content-type')
 	if (contentType && contentType.indexOf('application/json') !== -1) {
-		return response.json() as Promise<CkanJSONResponse<T>>
+		return response
+			.json()
+			.then((res) =>
+				typeof res === 'object' && res ? { ...res, help: undefined } : res
+			) as Promise<CkanJSONResponse<T>>
 	} else {
 		return response.text().then((text) => ({
 			message: response.statusText ?? text,
@@ -35,7 +39,7 @@ export const createCkanClient = ({ url, token, fetch }: CkanClientParams): CkanC
 					headers.set('Authorization', token)
 				}
 				const res = await fetch(url, { method: 'GET', headers })
-				const data = await handleResponse<CkanPing>(res)
+				const data = await handleCKANResponse<CkanPing>(res)
 				return {
 					success: data.success
 				}
@@ -73,8 +77,9 @@ export const get =
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
+		console.log(url)
 		const res = await fetch(url, { method: 'GET', headers })
-		const data = await handleResponse<Extract<CkanAllGetActions, [T, unknown, unknown]>[2]>(res)
+		const data = await handleCKANResponse<Extract<CkanAllGetActions, [T, unknown, unknown]>[2]>(res)
 		return data
 	}
 
@@ -96,7 +101,7 @@ export const create =
 			_body = JSON.stringify(body)
 		}
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
-		const data = await handleResponse(res)
+		const data = await handleCKANResponse(res)
 		return data
 	}
 
@@ -119,7 +124,7 @@ export const remove =
 		}
 
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
-		const data = await handleResponse(res)
+		const data = await handleCKANResponse(res)
 		return data
 	}
 
@@ -144,7 +149,7 @@ export const patch =
 			_body = JSON.stringify(body)
 		}
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
-		const data = await handleResponse(res)
+		const data = await handleCKANResponse(res)
 		return data
 	}
 
@@ -169,7 +174,7 @@ export const update =
 			_body = JSON.stringify(body)
 		}
 		const res = await fetch(url, { method: 'PATCH', headers, body: _body })
-		const data = await handleResponse(res)
+		const data = await handleCKANResponse(res)
 		return data
 	}
 
@@ -182,6 +187,6 @@ export const update =
 // 			headers.set('Authorization', client.token)
 // 		}
 // 		const res = await fetch(url, { method: 'PUT', headers })
-// 		const data = await handleResponse(res)
+// 		const data = await handleCKANResponse(res)
 // 		return data
 // 	}
