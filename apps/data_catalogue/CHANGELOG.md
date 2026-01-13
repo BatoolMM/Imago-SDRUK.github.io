@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.1
+### Patch Changes
+
+- 33d8ca9: fix export of fn for build
+
 ## 2.1.0
 ### Minor Changes
 
