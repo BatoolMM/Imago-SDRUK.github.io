@@ -47,7 +47,8 @@ export const load = async ({ locals, params }: PageServerLoadEvent) => {
 							}
 						]
 					},
-					{ user_created: ['first_name', 'last_name'] }
+					{ user_created: ['first_name', 'last_name'] },
+					{ media: ['*', { directus_files_id: ['*'] }] }
 				]
 			})
 		)

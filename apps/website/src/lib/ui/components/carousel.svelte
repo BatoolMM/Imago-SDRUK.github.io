@@ -13,6 +13,7 @@
 	let { media }: Props = $props()
 	const id = getId()
 	let current = $state(0)
+  console.log(media)
 </script>
 
 {#if media}
