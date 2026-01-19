@@ -92,8 +92,6 @@ export const actions = {
 		) {
 			form.conditionals = []
 		}
-		console.log('------------oiasdjufoiasjdfoijas   -a.sdf-as.dfm   TTTOOOOOO SEEEENNNNDDD')
-		console.log(jstr(form))
 		const res = await fetch(`/api/v1/questions/${form.id}`, {
 			method: 'PATCH',
 			body: JSON.stringify(form)

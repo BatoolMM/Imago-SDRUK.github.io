@@ -54,7 +54,6 @@
 			limit: 10,
 			field: 'id',
 			transform: (id: string) => {
-				console.log(id)
 				return { label: id, href: `?res_format=${id}` }
 			}
 		},

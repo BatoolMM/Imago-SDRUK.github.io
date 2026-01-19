@@ -77,7 +77,6 @@ export const get =
 		if (client.token) {
 			headers.set('Authorization', client.token)
 		}
-		console.log(url)
 		const res = await fetch(url, { method: 'GET', headers })
 		const data = await handleCKANResponse<Extract<CkanAllGetActions, [T, unknown, unknown]>[2]>(res)
 		return data
