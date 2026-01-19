@@ -1,5 +1,10 @@
 # website
 
+## 2.0.22
+### Patch Changes
+
+- 2a22232: get full media obj for news page
+
 ## 2.0.21
 ### Patch Changes
 
