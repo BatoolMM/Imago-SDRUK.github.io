@@ -44,6 +44,7 @@ export async function load({ locals }) {
 							}
 						]
 					},
+					{ media: ['*', { directus_files_id: ['*'] }] },
 					{ user_created: ['first_name', 'last_name'] }
 				]
 			})
