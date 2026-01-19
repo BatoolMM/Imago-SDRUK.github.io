@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.2
+### Patch Changes
+
+- cf3e706: cleanup logs
+
 ## 2.1.1
 ### Patch Changes
 
