@@ -21,11 +21,13 @@ export const ROUTES: (Route & { subpaths: Route[] })[] = [
 		label: 'Research',
 		href: '/research',
 		subpaths: [
-			{
-				label: 'Resources',
-				href: '/research/resources'
-			},
-			{ label: 'Publications', href: '/research/publications' }
+			{ label: 'Book of Imagery', href: 'https://boi.imago.ac.uk/' }
+
+			// {
+			// 	label: 'Resources',
+			// 	href: '/research/resources'
+			// },
+			// { label: 'Publications', href: '/research/publications' }
 		]
 	},
 	{
