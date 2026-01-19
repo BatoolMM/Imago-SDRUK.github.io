@@ -1,5 +1,10 @@
 # website
 
+## 2.0.23
+### Patch Changes
+
+- a203bdb: fetch full media obj on news slug, add log for news card
+
 ## 2.0.22
 ### Patch Changes
 
