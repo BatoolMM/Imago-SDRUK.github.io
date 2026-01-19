@@ -1,5 +1,11 @@
 # website
 
+## 2.0.21
+### Patch Changes
+
+- cb5a3e4: add boi to routes
+- 1696192: fetch full img object on about page for file transformation
+
 ## 2.0.20
 ### Patch Changes
 
