@@ -45,7 +45,9 @@ export async function load({ locals }) {
 			}
 		})
 	)
-	const team_members = locals.directus.request(readItems('team_members')).catch(handleDirectusError)
+	const team_members = locals.directus
+		.request(readItems('team_members', { fields: ['*', { picture: ['*'] }] }))
+		.catch(handleDirectusError)
 	return {
 		page: (await page) as Page[],
 		team_members: await team_members
