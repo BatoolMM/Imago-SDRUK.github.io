@@ -3,6 +3,9 @@ import { ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
 import { log } from '$lib/utils/server/logger.js'
+import { db } from '$lib/db/index.js'
+import { resource_versions, resources } from '$lib/db/schema/resources.js'
+import { eq } from 'drizzle-orm'
 export const load = async ({ locals }) => {
 	if (!locals.session) {
 		return redirect(307, '/')
@@ -19,10 +22,23 @@ export const load = async ({ locals }) => {
 	if (!datasets.success) {
 		return error(500, { message: 'err', id: 'err' })
 	}
+	const resources_data = await Promise.all(
+		datasets.result.results
+			.flatMap((dataset) => dataset.resources)
+			.map((resource) =>
+				db
+					.select()
+					.from(resources)
+					.leftJoin(resource_versions, eq(resource_versions.resource, resources.id))
+					.where(eq(resources.id, resource.id))
+					.then((res) => ({ ...resource, downloads: res[0].resource_versions?.downloads }))
+			)
+	)
 	return {
 		relationships,
 		datasets,
-		groups
+		groups,
+		resources: resources_data
 	}
 }
 

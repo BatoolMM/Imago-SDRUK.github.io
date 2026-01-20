@@ -5,17 +5,20 @@
 	import { toggleDialog } from '$lib/utils/ui'
 	import { invalidateAll } from '$app/navigation'
 	import { notify } from '$lib/stores/notify'
-	import type { CkanDataset } from '$lib/types/ckan'
+	import type { CkanDataset, CkanResource } from '$lib/types/ckan'
 	import { AVAILABLE_RELATIONS } from '$lib/globals/auth'
+	import { jstr } from '@arturoguzman/art-ui'
 
 	let {
 		dataset,
 		groups,
-		relationships
+		relationships,
+		resources = []
 	}: {
 		dataset: CkanDataset
 		groups: string[]
 		relationships: Relationships['relation_tuples']
+		resources: (CkanResource & { downloads?: number })[]
 	} = $props()
 	let selected_group = $state('')
 	const available_relations = [
@@ -53,6 +56,21 @@
 			<Paragraph>Name {dataset.name}</Paragraph>
 			<Paragraph>Title {dataset.title}</Paragraph>
 		</div>
+		{#if resources.length > 0}
+			<div class="resources">
+				<Paragraph>Resources</Paragraph>
+				<div class="resources-table">
+					<Paragraph>Name</Paragraph>
+					<Paragraph>Downloads</Paragraph>
+					{#each resources as resource}
+						<div class="resource">
+							<Paragraph>{resource.name}</Paragraph>
+							<Paragraph>{resource.downloads}</Paragraph>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/if}
 		<Subtitle>Groups</Subtitle>
 		<div class="groups">
 			<div class="left-col">
@@ -169,6 +187,27 @@
 	.user-information {
 		display: flex;
 		flex-direction: column;
+		gap: 0.25rem;
+	}
+	.resources {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.resources-table {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-auto-flow: row;
+		border: 1px solid var(--border);
+		border-radius: var(--radius);
+		padding: 0.25rem;
+	}
+	.resource {
+		display: grid;
+		grid-template-columns: subgrid;
+		grid-template-rows: minmax(0, 1fr);
+		grid-column: 1 / -1;
 		gap: 0.25rem;
 	}
 	.groups {

@@ -15,6 +15,9 @@
 			{#if !Array.isArray(data.datasets.result)}
 				{#each data.datasets.result.results as dataset}
 					<DatasetCard
+						resources={data.resources.filter((resource) =>
+							dataset.resources.map((res) => res.id).includes(resource.id)
+						)}
 						relationships={data.relationships.relation_tuples?.filter(
 							(relationship) => relationship.object === dataset.name
 						)}
