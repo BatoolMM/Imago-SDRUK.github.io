@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.3
+### Patch Changes
+
+- 7c8cd4c: add display resource downloads to admin page
+
 ## 2.1.2
 ### Patch Changes
 
