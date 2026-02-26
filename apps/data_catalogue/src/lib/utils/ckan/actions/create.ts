@@ -28,6 +28,7 @@ type PackageCreate = [
 type ResourceCreate = [
 	'resource_create',
 	{
+		id?: string
 		package_id: string // id of package that the resource should be added to
 		url: string // url of resource
 		description?: string

@@ -3,7 +3,6 @@
 	import { page } from '$app/state'
 	import { notify } from '$lib/stores/notify'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
-	import { jstr } from '@arturoguzman/art-ui'
 	import { Button, Input, Paragraph, Select, Subtitle, Text } from '@imago/ui'
 	let { data, children } = $props()
 	const toggleDialog = (id: string) => {
@@ -19,62 +18,21 @@
 </script>
 
 <div class="dataset-layout">
-	<nav>
-		{#if page.params.id}
-			{@const url = `/datasets/${page.params.id}`}
-			<Button active={page.url.pathname === url} href={url}>Preview</Button>
-			<Button active={page.url.pathname === `${url}/edit`} href={`${url}/edit`}>Edit</Button>
-			<Button
-				onclick={() => {
-					toggleDialog('dataset-delete')
-				}}>Delete</Button
-			>
-		{/if}
-
-		{#if !page.params.id}
-			<Button
-				onclick={() => {
-					toggleDialog('datasets-dialog')
-				}}>Create</Button
-			>
-		{/if}
-	</nav>
+	{#if !page.params.id}
+		<nav>
+			{#if data.allow_create}
+				<Button
+					onclick={() => {
+						toggleDialog('datasets-dialog')
+					}}>Create</Button
+				>
+			{/if}
+		</nav>
+	{/if}
 	<div class="dataset">
 		{@render children()}
 	</div>
 </div>
-{#if page.params.id}
-	<Dialog id="dataset-delete">
-		<Subtitle size="md">Delete dataset</Subtitle>
-		<Paragraph>Are you sure you want to delete this dataset?</Paragraph>
-		<form
-			action="/datasets?/delete"
-			method="post"
-			use:enhance={() => {
-				return async ({ result }) => {
-					if (result.type === 'redirect') {
-						notify.send(`Dataset successfully deleted`)
-					}
-					applyAction(result)
-					toggleDialog('dataset-delete')
-				}
-			}}
-		>
-			<div class="fields">
-				<input type="text" hidden value={page.params.id} name="id" />
-			</div>
-			<div class="buttons">
-				<Button
-					type="button"
-					onclick={() => {
-						toggleDialog('dataset-delete')
-					}}>Cancel</Button
-				>
-				<Button>Delete</Button>
-			</div>
-		</form>
-	</Dialog>
-{/if}
 <Dialog id="datasets-dialog">
 	<Subtitle size="md">Create dataset</Subtitle>
 	<form
@@ -82,13 +40,13 @@
 		method="post"
 		use:enhance={() => {
 			return async ({ result }) => {
-				console.log(result)
 				if (result.type === 'redirect') {
 					notify.send(`Dataset successfully created`)
 				}
 				if ('data' in result) {
 					notify.send(String(result.data?.message))
 				}
+
 				applyAction(result)
 				toggleDialog('datasets-dialog')
 			}

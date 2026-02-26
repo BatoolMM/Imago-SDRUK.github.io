@@ -1,15 +1,50 @@
 import { SERVER_ERRORS } from '$lib/globals/server.js'
+import { authorise, ketoCheck } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
-import { getSignedDownloadUrl, loadStorageClient } from '$lib/utils/files/azure/index.js'
 import { getFields } from '@imago/ui'
 import { error } from '@sveltejs/kit'
 
 export const load = async ({ locals, params }) => {
 	const data = await locals.ckan.request(get('package_show', { id: params.id }))
 	const activities = await locals.ckan.request(get('package_activity_list', { id: params.id }))
-	// console.log(jstr(data))
-	if (Array.isArray(data.result) || !data.result || !data.success || activities.success === false) {
+	// log.debug(jstr(data))
+	if (
+		data.success === false ||
+		Array.isArray(data.result) ||
+		!data.result ||
+		!data.success ||
+		activities.success === false ||
+		data.result.state === 'deleted'
+	) {
 		return error(...SERVER_ERRORS[404])
+	}
+	if (locals.session) {
+		const permission = await ketoCheck.checkPermission({
+			subjectId: locals.session?.identity.id,
+			relation: 'read',
+			object: params.id,
+			namespace: 'Dataset'
+		})
+		if (!permission.allowed) {
+			return error(401, { message: 'Unauthorised', id: 'Unauthorised' })
+		}
+
+		if (data.result.private) {
+			await authorise({
+				session: locals.session,
+				namespace: 'Group',
+				relation: 'users',
+				object: 'admin',
+				action: async () => {
+					await authorise({
+						session: locals.session,
+						namespace: 'Group',
+						relation: 'users',
+						object: 'editor'
+					})
+				}
+			})
+		}
 	}
 	const fields = getFields(data.result, [
 		'author',

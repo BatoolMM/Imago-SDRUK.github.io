@@ -11,7 +11,7 @@
 	<div class="auth-section">
 		<div class="left-col">
 			<!-- <pre>{jstr(data)}</pre> -->
-			<img src="/imago_logo.png" alt="" />
+			<img src="/images/terrain_1.png" alt="" />
 		</div>
 		<div class="right-col">
 			{#if page.params.flow === 'settings'}
@@ -32,9 +32,13 @@
 		/* gap: 2rem; */
 	}
 	.left-col {
-		padding: 2rem;
 		display: none;
 		/* background-color: var(--secondary); */
+		overflow: hidden;
+	}
+	.left-col img {
+		object-fit: cover;
+		height: 100%;
 	}
 	/* .left-col pre { */
 	/* 	overflow: scroll; */

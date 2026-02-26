@@ -67,11 +67,26 @@
 		</div>
 		<div class="right-col">
 			{#if Array.isArray(result) === false && typeof result.url === 'string'}
-				<Button href={result.url} download={result.name}
-					>Download: {result.name ?? result.description}
-					<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
-				</Button>
+				<div class="latest">
+					<Subtitle>Latest:</Subtitle>
+					<Button href={result.url} download={result.name}
+						>Download: {result.name ?? result.description}
+						<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
+					</Button>
+				</div>
 			{/if}
+
+			<div class="versions-block">
+				<Subtitle>Available versions</Subtitle>
+				<div class="versions">
+					{#each data.versions as version}
+						<Button href="{result.url}?version={version.version}" download={result.name}>
+							Version: {version.version}
+							<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
+						</Button>
+					{/each}
+				</div>
+			</div>
 		</div>
 	</div>
 </BaseSection>
@@ -106,5 +121,15 @@
 		grid-template-columns: subgrid;
 		width: 100%;
 		overflow-x: hidden;
+	}
+	.right-col {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.versions {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 	}
 </style>

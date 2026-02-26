@@ -31,8 +31,17 @@ export const ROUTES: Routes = [
 	// 		}
 	// 	]
 	// },
-	// { label: 'Login',
-	// 	href: '/auth/login',
-	// 	subpaths: []
-	// }
+	// { label: 'Login', href: '/auth/login', subpaths: [] }
 ]
+
+export const ADMIN_ROUTES = {
+	label: 'Admin',
+	href: '/admin/settings',
+	subpaths: [
+		{ label: 'Datasets', href: '/admin/settings/datasets' },
+		{ label: 'Groups', href: '/admin/settings/groups' },
+		{ label: 'Permissions', href: '/admin/settings/permissions' },
+		{ label: 'Registration', href: '/admin/settings/registration' },
+		{ label: 'Users', href: '/admin/settings/users' }
+	]
+}

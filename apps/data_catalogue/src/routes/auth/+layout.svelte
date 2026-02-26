@@ -12,18 +12,3 @@
 	{/snippet}
 </DynamicNav>
 {@render children?.()}
-<div class="tooltip">
-	<Button
-		onclick={() => {
-			debug.status = !debug.status
-		}}>Debug</Button
-	>
-</div>
-
-<style>
-	.tooltip {
-		position: fixed;
-		bottom: 1rem;
-		right: 1rem;
-	}
-</style>

@@ -1,4 +1,5 @@
 import { env } from '$env/dynamic/private'
+import { log } from '$lib/utils/server/logger.js'
 import {
 	BlobServiceClient,
 	newPipeline,
@@ -46,14 +47,14 @@ export const getFiles = async ({
 		const blobs: Partial<BlobItem>[] = []
 		for await (const blob of list_blobs) {
 			blobs.push({ name: blob.name, properties: blob.properties, metadata: blob.metadata })
-			console.log(`Blob: ${blob.name}`)
+			log.debug(`Blob: ${blob.name}`)
 		}
 		return {
 			blobs,
 			container_name
 		}
 	} catch (err) {
-		console.log(err)
+		log.debug(err)
 		return {
 			blobs: [],
 			container_name

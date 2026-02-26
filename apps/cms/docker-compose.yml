@@ -9,7 +9,7 @@ services:
       - ./data/postgres/restore:/home/dump:ro
       - ./data/postgres/backup:/home/data/backup
     env_file:
-      - .env.postgres
+      - .env.docker
     networks:
       - subnet
     ports:
@@ -25,14 +25,15 @@ services:
     build:
       context: .
       target: cms
-      tags: ${SHA:latest}
+      tags:
+        - $${SHA:latest}
     restart: unless-stopped
     volumes:
       - ./data/directus/database:/directus/database:rw
       - ./data/directus/uploads:/directus/uploads:rw
       - ./data/directus/migrations:/directus/migrations:rw
     env_file:
-      - .env.directus
+      - .env.docker
     networks:
       - subnet
     depends_on:

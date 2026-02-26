@@ -2,11 +2,18 @@ import * as Sentry from '@sentry/sveltekit'
 import { env } from '$env/dynamic/private'
 import { verifyOrySession } from '$lib/utils/auth'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
-import { getId, jstr, log } from '@arturoguzman/art-ui'
+import { getId, jstr } from '@arturoguzman/art-ui'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { COOKIES } from '$lib/globals/server'
+import { db } from '$lib/db'
+import { users } from '$lib/db/schema'
+import { eq } from 'drizzle-orm'
+import type { IdentitySession } from '$lib/utils/auth/types'
+import { log } from '$lib/utils/server/logger'
 
+import { runMigration } from '$lib/db/migrate'
+import { DateTime } from 'luxon'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -18,7 +25,7 @@ import { COOKIES } from '$lib/globals/server'
 
 export const init = async () => {
 	if (process.env.BUILD) {
-		console.log('building - skip')
+		log.debug('building - skip')
 		return
 	}
 	if (!env.ACCESS_MODE) {
@@ -26,6 +33,11 @@ export const init = async () => {
 			id: 'server-error',
 			message: `Sorry, you need to specify an access mode before deploying this website.`
 		})
+	}
+	if (env.NODE_ENV === 'production') {
+		log.info('initialising with the following envs')
+		log.info(env)
+		await runMigration()
 	}
 }
 
@@ -45,6 +57,11 @@ const handleAccessMode: Handle = async ({ event, resolve }) => {
 		event.locals.access = true
 	}
 	if (access_mode === 'build') {
+		event.locals.access = true
+	}
+
+	const preauthorised = event.cookies.get('kratos-api') === env.ADMIN_TOKEN
+	if (preauthorised) {
 		event.locals.access = true
 	}
 	if (!event.locals.access && event.url.pathname !== '/access') {
@@ -70,6 +87,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	})
 	const connection = await event.locals.ckan.ping()
 	if (!connection.success) {
+		log.debug(`CKAN is down`)
 		error(503, {
 			message: `Imago is currently down, please check back later!`,
 			id: 'service-unavailable'
@@ -77,41 +95,91 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 	}
 	const response = await resolve(event)
 	if (!event.url.pathname.includes('/assets')) {
-		log({ response: response, event: event, status: response.status })
+		log.debug({
+			pathname: event.url.pathname,
+			ip: event.getClientAddress(),
+			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+		})
 	}
 	return response
 }
 
 const handleAuthentication: Handle = async ({ event, resolve }) => {
 	const auth_cookie = event.cookies.get('ory_kratos_session')
-	if (auth_cookie) {
-		const res = await fetch(`${env.IDENTITY_SERVER}/sessions/whoami`, {
+	/**
+	 * NOTE: login in sets a cookie but must be bypassed if 2fa is enabled
+	 **/
+	if (auth_cookie && !event.url.pathname.startsWith('/auth/login')) {
+		const res = await fetch(`${env.IDENTITY_SERVER_PUBLIC}/sessions/whoami`, {
 			headers: {
 				Accept: 'application/json',
 				Cookie: `ory_kratos_session=${auth_cookie}`
 			}
 		})
-		const session = await res.json()
+		const session = (await res.json()) as IdentitySession
+		// NOTE: check if there is a redirect request, if so, do not set the session
+		if (session.redirect_browser_to) {
+			redirect(303, session.redirect_browser_to)
+			// return resolve(event)
+		}
 		/**
 		 * NOTE: This will need refactoring to revalidate sessions
 		 **/
 		const valid_session = verifyOrySession(session)
+
 		if (session.error || !valid_session) {
+			log.debug(`session error`)
 			if (event.url.pathname === '/') {
 				redirect(307, '/auth/login')
 			}
+			if (session.error?.code === 401) {
+				redirect(307, '/auth/login')
+			}
+		}
+		if (
+			session &&
+			valid_session &&
+			!session.identity.verifiable_addresses.some((va) => va.verified === true) &&
+			event.url.pathname !== '/auth/verification'
+		) {
+			log.debug(`session is valid but account isnt verified`)
+			redirect(307, '/auth/verification')
+		}
+		// NOTE: check if there is a redirect request, if so, do not set the session
+		if (session.redirect_browser_to) {
+			log.debug(`session includes a redirect browser to`)
+			redirect(303, session.redirect_browser_to)
+			// return resolve(event)
 		}
 		event.locals.session = session
 	}
 	return resolve(event)
 }
 
-export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
-	console.log(error)
-	if (status !== 404) {
-		console.log(jstr(error))
+const handleProfile: Handle = async ({ event, resolve }) => {
+	if (event.locals.session && event.locals.session.identity) {
+		const profile = await db
+			.select()
+			.from(users)
+			.where(eq(users.id, event.locals.session.identity.id))
+		if (
+			profile.length === 1 &&
+			profile[0].status === 'preregister' &&
+			event.url.pathname !== `/user/register` &&
+			!event.url.pathname.startsWith('/auth') &&
+			!event.url.pathname.startsWith('/api')
+		) {
+			log.debug(`redirect user to /user/register as profile exists but status is preregister`)
+			redirect(307, `/user/register`)
+		}
 	}
-	log({ status: status, event: event, content: message })
+	return resolve(event)
+}
+
+export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
+	if (status !== 404) {
+		log.error(error)
+	}
 	return {
 		id: getId(),
 		message: status === 404 ? `This page does not exist!` : 'Whoops!'
@@ -121,8 +189,14 @@ export const hooksErrorHandler: HandleServerError = async ({ event, status, mess
 
 export const handle =
 	process.env.NODE_ENV === 'production'
-		? sequence(handleAccessMode, Sentry.sentryHandle(), handleAuthentication, handleCkan)
-		: sequence(handleAccessMode, handleAuthentication, handleCkan)
+		? sequence(
+				handleAccessMode,
+				Sentry.sentryHandle(),
+				handleAuthentication,
+				handleProfile,
+				handleCkan
+			)
+		: sequence(handleAccessMode, handleAuthentication, handleProfile, handleCkan)
 export const handleError =
 	process.env.NODE_ENV === 'production'
 		? Sentry.handleErrorWithSentry(hooksErrorHandler)

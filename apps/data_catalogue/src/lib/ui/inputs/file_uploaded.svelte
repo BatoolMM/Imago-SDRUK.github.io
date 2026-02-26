@@ -16,12 +16,16 @@
 	const ctx = getDataset()
 	let state: 'idle' | 'predelete' = $state('idle')
 	const handleDelete = async () => {
-		await fetch(`/api/v1/resources/${file.id}`, { method: 'DELETE' })
-		notify.send(`${file.name} has been deleted.`)
-		ctx.dataset.resources = [
-			...ctx.dataset.resources.slice(0, index),
-			...ctx.dataset.resources.slice(index + 1)
-		]
+		const res = await fetch(`/api/v1/resources/${file.id}`, { method: 'DELETE' })
+		if (res.status === 201) {
+			notify.send(`${file.name} has been deleted.`)
+			ctx.dataset.resources = [
+				...ctx.dataset.resources.slice(0, index),
+				...ctx.dataset.resources.slice(index + 1)
+			]
+			return
+		}
+		notify.send(res.statusText)
 	}
 </script>
 

@@ -52,7 +52,7 @@
 	section[data-style='base'] {
 		width: min(100lvw - 1rem, 1280px);
 		margin-inline: auto;
-		background-color: var(--bg);
+		background-color: var(--background);
 		padding: 1rem;
 	}
 

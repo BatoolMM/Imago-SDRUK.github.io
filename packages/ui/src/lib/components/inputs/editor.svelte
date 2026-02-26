@@ -15,7 +15,6 @@
 	let bubble_menu: HTMLDivElement | null = $state(null)
 	let element: HTMLDivElement | null = $state(null)
 	let editor_state: { editor: Editor | null } = $state({ editor: null })
-
 	onMount(async () => {
 		if (element) {
 			editor_state.editor = new Editor({

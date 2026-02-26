@@ -1,6 +1,17 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
-	import { BaseCard, Input, Title, Text, type IconsSets, PlayerLottie, Button } from '@imago/ui'
+	import {
+		BaseCard,
+		Subtitle,
+		Input,
+		Title,
+		Text,
+		type IconsSets,
+		PlayerLottie,
+		Button,
+		Notice,
+		Paragraph
+	} from '@imago/ui'
 	let { data } = $props()
 	let search = $state()
 	const search_icon: IconsSets = { icon: 'search', set: 'tabler' }
@@ -35,7 +46,15 @@
 				</Input>
 				<Button umami_event="Search datasets" href="/datasets?search={search}">Search</Button>
 			</div>
+			<Notice level="warning">
+				<Subtitle current_colour>Data Catalogue: "In preview"</Subtitle>
+				<Paragraph current_colour>
+					You are accessing a preview of Imago's Data Catalogue. There may still be a few kinks that
+					need ironing. If you run into one of them, please let us know at imago@liverpool.ac.uk
+				</Paragraph>
+			</Notice>
 		</div>
+
 		<!-- <div class="body"> -->
 		<!-- 	{#each stats as stat} -->
 		<!-- 		<button class="cta-card"> -->

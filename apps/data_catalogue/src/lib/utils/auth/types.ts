@@ -57,23 +57,24 @@ export type IdentitySession = {
 			location: string
 		}
 	]
+	error?: IdentityError
+	redirect_browser_to?: string
 }
 //
 
 export type IdentityFlowTypes = 'registration' | 'verification' | 'recovery'
 
 export type IdentityError = {
-	error: {
-		id: string
-		code: number
-		status: string
-		reason: string
-		details: {
-			redirect_to: string
-			return_to: string
-		}
-		message: string
+	id: string
+	code: number
+	status: string
+	reason: string
+	details: {
+		redirect_browser_to?: string
+		redirect_to?: string
+		return_to?: string
 	}
+	message: string
 }
 
 export type IdentityMessage = {

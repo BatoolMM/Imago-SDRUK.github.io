@@ -249,4 +249,9 @@
 		-webkit-line-clamp: 2;
 		text-align: left;
 	}
+	@media print {
+		.btn {
+			display: none;
+		}
+	}
 </style>

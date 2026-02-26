@@ -1,10 +1,17 @@
 <script lang="ts">
-	import { Title } from '@imago/ui'
-	let { title }: { title?: unknown } = $props()
+	import { Notice, Paragraph, Title } from '@imago/ui'
+	let { title, state }: { title?: unknown; state?: string } = $props()
 </script>
 
 <div class="product-title">
 	<Title size="lg" text={String(title)}></Title>
+	{#if state === 'draft'}
+		<div class="wrapper">
+			<Notice level="warning">
+				<Paragraph current_colour size="sm">Beta version</Paragraph>
+			</Notice>
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -14,6 +21,8 @@
 		padding: 1rem;
 		background-color: var(--background-accent);
 		border-radius: var(--radius);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
 		/* border: 1px solid var(--border); */
 	}
 	.product-title::before {

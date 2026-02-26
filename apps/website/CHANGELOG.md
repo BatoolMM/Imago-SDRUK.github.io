@@ -1,5 +1,42 @@
 # website
 
+## 2.0.23
+### Patch Changes
+
+- a203bdb: fetch full media obj on news slug, add log for news card
+
+## 2.0.22
+### Patch Changes
+
+- 2a22232: get full media obj for news page
+
+## 2.0.21
+### Patch Changes
+
+- cb5a3e4: add boi to routes
+- 1696192: fetch full img object on about page for file transformation
+
+## 2.0.20
+### Patch Changes
+
+- 24cb493: fix build issue
+
+## 2.0.19
+### Patch Changes
+
+- 791a353: link to data website
+
+## 2.0.18
+### Patch Changes
+
+- 78aa436: remove green background from stacks blocks
+- c5f1aa5: change background for stack cards
+
+## 2.0.17
+### Patch Changes
+
+- ffa4dd8: Fix and update UI
+
 ## 2.0.16
 ### Patch Changes
 

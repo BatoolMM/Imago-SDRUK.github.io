@@ -1,6 +1,8 @@
 FROM node:24-alpine AS base
 ENV NODE_ENV=production
 ENV TURBO_TELEMETRY_DISABLED=1
+ENV BUILDING=true
+ENV CI=true
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
@@ -43,8 +45,8 @@ RUN --mount=type=secret,id=TURBO_API \
   export SENTRY_LOG_LEVEL=debug && \
   pnpm build 
 
-RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
-RUN rm -rf ./**/*/src
+# RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
+# RUN rm -rf ./**/*/src
 
 
 FROM base AS sveltekit
@@ -59,6 +61,7 @@ USER svelte
 # COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/node_modules ./node_modules
 
 COPY --chown=svelte:nodejs --from=installer /app/apps/data_catalogue/build ./build
+COPY --chown=svelte:nodejs --from=builder /app/apps/data_catalogue/src/lib/db/migrations ./migrations
 
 EXPOSE 3000
 ENV NODE_ENV=production

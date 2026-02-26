@@ -3,7 +3,6 @@
 	import { notify } from '$lib/stores/notify'
 	import type { FilePreUpload } from '$lib/utils/files/readers'
 	import { Accordion, Button, Icon, Input, Subtitle, Text, Textarea } from '@imago/ui'
-	import { onMount } from 'svelte'
 
 	let {
 		file,
@@ -108,12 +107,6 @@
 		border-radius: var(--radius);
 		position: relative;
 	}
-	.image {
-		height: 200px;
-		width: 200px;
-		background-color: red;
-	}
-
 	.buttons {
 		display: flex;
 		justify-content: space-between;

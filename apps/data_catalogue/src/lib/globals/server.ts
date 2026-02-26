@@ -6,6 +6,7 @@ export const SERVER_ERRORS: { [k: number]: [number, { message: string; id: strin
 			id: 'bad-request'
 		}
 	],
+	401: [401, { message: 'Unauthorised', id: 'unauthorised' }],
 	403: [
 		403,
 		{
@@ -18,6 +19,20 @@ export const SERVER_ERRORS: { [k: number]: [number, { message: string; id: strin
 		{
 			message: `We couldn't find this page or it may have been removed.`,
 			id: 'not-found'
+		}
+	],
+	500: [
+		500,
+		{
+			message: `There's been an error on our side. Please try again.`,
+			id: 'server-error'
+		}
+	],
+	503: [
+		503,
+		{
+			message: `Service is currently offline`,
+			id: 'service-unavailable'
 		}
 	]
 }

@@ -126,7 +126,7 @@ export const upload = async ({
 		})
 	})
 
-	const resource = (await res.json()) as CkanResource
+	const resource = await res.json()
 	return resource
 }
 
@@ -160,15 +160,12 @@ export const xhrUpload = ({
 					upload.status = xhr.status > 0 && xhr.status < 400 ? 'completed' : 'error'
 					upload.value = xhr.responseText
 				}
-				console.log(xhr)
 				return resolve({
 					url
 				})
 			}
 		})
 		xhr.upload.addEventListener('error', () => {
-			console.log(xhr?.responseText)
-			console.error('Request failed')
 			if (upload) {
 				upload.status = 'error'
 				upload.progress.target = 0

@@ -269,4 +269,9 @@
 			transform: translate(0, 0);
 		}
 	}
+	@media print {
+		nav {
+			display: none;
+		}
+	}
 </style>

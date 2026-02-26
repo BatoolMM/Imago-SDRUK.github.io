@@ -27,15 +27,20 @@ export type CkanError = {
 	}
 }
 
+// export type CkanResult<T> = {
+// 	success: true
+// 	result:
+// 		| (T extends Record<PropertyKey, unknown> | Record<PropertyKey, unknown>
+// 				? T & Record<PropertyKey, unknown>
+// 				: Record<PropertyKey, unknown>)
+// 		| (T extends Record<PropertyKey, unknown> | Record<PropertyKey, unknown>
+// 				? T & Record<PropertyKey, unknown>
+// 				: Record<PropertyKey, unknown>)[]
+// }
+
 export type CkanResult<T> = {
 	success: true
-	result:
-		| (T extends Record<PropertyKey, unknown> | Record<PropertyKey, unknown>
-				? T & Record<PropertyKey, unknown>
-				: Record<PropertyKey, unknown>)
-		| (T extends Record<PropertyKey, unknown> | Record<PropertyKey, unknown>
-				? T & Record<PropertyKey, unknown>
-				: Record<PropertyKey, unknown>)[]
+	result: T
 }
 
 export type CkanJSONResponse<T> = {

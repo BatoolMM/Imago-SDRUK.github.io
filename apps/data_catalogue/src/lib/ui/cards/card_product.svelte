@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { BaseCard, Button, Icon, Paragraph, Subtitle } from '@imago/ui'
+	import { BaseCard, Button, Icon, Notice, Paragraph, Subtitle } from '@imago/ui'
 	import Notes from '../text/notes.svelte'
 
 	let { dataset }: { dataset: Record<PropertyKey, unknown> } = $props()
@@ -9,6 +9,13 @@
 	<div class="product-card">
 		<a href={`/datasets/${dataset.name}`} class="title">
 			<Subtitle weight={700} size="lg">{dataset.title}</Subtitle>
+			{#if dataset.state === 'draft'}
+				<div class="wrapper">
+					<Notice level="warning">
+						<Paragraph current_colour size="sm">Beta version</Paragraph>
+					</Notice>
+				</div>
+			{/if}
 		</a>
 		<div class="metadata">
 			{#if dataset.notes && dataset.notes !== ''}
@@ -76,6 +83,8 @@
 		background-color: var(--background);
 		/* border: 1px solid var(--background-accent); */
 		border-radius: var(--radius);
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, max-content);
 	}
 	.title:hover {
 		text-decoration: underline;

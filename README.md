@@ -1,27 +1,63 @@
 # Imago - SDRUK
 
-To add a job follow the following structure:
+## Monorepo for Imago
+
+### Current projects
+
+- [Imago website](https://imago.ac.uk)
+- [Imago data catalogue](https://data.imago.ac.uk)
+- Imago UI package
+- Imago CKAN client
+- Imago CMS configuration (Directus)
+
+### Development
+
+Tools required for development:
+
+- [PNPM](https://pnpm.io/)
+- [NodeJS](https://nodejs.org/en)
+
+For website:
+
+- [Directus](https://directus.io/)
+
+For data catalogue:
+
+- [Postgres](https://www.postgresql.org/)
+- [CKAN](https://ckan.org/)
+- [Ory Keto](https://www.ory.com/keto)
+- [Ory Kratos](https://www.ory.com/kratos)
+- [Docker](https://www.docker.com/)
+- [Docker Compose](https://docs.docker.com/compose/)
+
+## Contributing
+
+### Commits
+
+Follow [angular guidelines](https://github.com/angular/angular/blob/main/contributing-docs/commit-message-guidelines.md):
 
 ```
----
-layout: false
-title: string
-location: string
-salary: string
-hours: string
-contract: string
-posted: string
-closing_date: string
-url: string
----
+<type>(<scope>): <short summary>
+  │       │             │
+  │       │             └─⫸ Summary in present tense. Not capitalized. No period at the end.
+  │       │
+  │       └─⫸ Commit Scope: animations|bazel|benchpress|common|compiler|compiler-cli|core|
+  │                          elements|forms|http|language-service|localize|platform-browser|
+  │                          platform-browser-dynamic|platform-server|router|service-worker|
+  │                          upgrade|zone.js|packaging|changelog|docs-infra|migrations|
+  │                          devtools
+  │
+  └─⫸ Commit Type: build|ci|docs|feat|fix|perf|refactor|test
 
-Write the rest of the content in markdown
+
 ```
 
-And save to ./src/lib/content/jobs/{name}.md
+Scope is optional.
 
-> NOTE: {name} should be a slug! that means, only letters, numbers and "-" / "." / "\_" / "~" eg.
+Before any pull requests run
 
-this-is-a-new-job.md ✅
+```
+pnpm changeset
+```
 
-this is a new job.md ❌
+and follow the instructions.

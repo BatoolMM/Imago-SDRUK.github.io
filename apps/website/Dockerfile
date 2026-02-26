@@ -33,8 +33,8 @@ RUN --mount=type=secret,id=TURBO_API \
   export TURBO_TEAM=$(cat /run/secrets/TURBO_TEAM) && \
   export TURBO_TOKEN=$(cat /run/secrets/TURBO_TOKEN) && \
   pnpm build
-RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
-RUN rm -rf ./**/*/src
+# RUN --mount=type=cache,id=pnpm,target=~/.pnpm-store pnpm prune --prod --no-optional
+# RUN rm -rf ./**/*/src
 # NOTE: If enabling sentry
 # RUN --mount=type=secret,id=TURBO_API \
 #   --mount=type=secret,id=TURBO_TEAM \
