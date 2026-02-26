@@ -1,5 +1,10 @@
 # website
 
+## 2.0.24
+### Patch Changes
+
+- 9eab00b: add new role, add state of imagery to nav, scroll to team on click, open external links in new tab
+
 ## 2.0.23
 ### Patch Changes
 
