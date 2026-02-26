@@ -26,6 +26,7 @@
 {#each data.page as page}
 	<PageSections sections={page.sections}></PageSections>
 {/each}
+<div id="team"></div>
 <MulticolumnsSection columns={4}>
 	{#snippet title()}
 		<Title size="lg" text="Meet the team"></Title>

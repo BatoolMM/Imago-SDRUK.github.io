@@ -7,6 +7,7 @@ export const ROLES: Record<TeamMember['role'], string> = {
 	postdoc: 'Postdoctoral Research Associate',
 	administrator: 'Administrator',
 	co_director: 'Co-Director',
+	deputy_director: 'Deputy Director',
 	data_service_manager: 'Data Service Manager',
 	outreach_officer: 'Outreach and Public Engagement Officer'
 }

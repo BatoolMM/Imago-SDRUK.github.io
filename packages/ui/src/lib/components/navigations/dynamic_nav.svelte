@@ -93,8 +93,8 @@
 							{/snippet}
 							{#snippet children()}
 								<div class="subpaths">
-									{#each subpaths as { href, label }}
-										<Button style="anchor" {href}>{label}</Button>
+									{#each subpaths as { href, label, target }}
+										<Button style="anchor" {href} {target}>{label}</Button>
 									{/each}
 								</div>
 							{/snippet}

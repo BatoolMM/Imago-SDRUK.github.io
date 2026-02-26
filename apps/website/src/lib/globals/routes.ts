@@ -1,4 +1,4 @@
-type Route = { label: string; href: string }
+type Route = { label: string; href: string; target?: string }
 
 export const ROUTES: (Route & { subpaths: Route[] })[] = [
 	{
@@ -10,6 +10,7 @@ export const ROUTES: (Route & { subpaths: Route[] })[] = [
 		label: 'News',
 		href: '/news',
 		subpaths: [
+			{ label: 'Blog', href: '/news' },
 			{
 				label: 'Careers',
 				href: '/careers'
@@ -21,7 +22,8 @@ export const ROUTES: (Route & { subpaths: Route[] })[] = [
 		label: 'Research',
 		href: '/research',
 		subpaths: [
-			{ label: 'Book of Imagery', href: 'https://boi.imago.ac.uk/' }
+			{ label: 'Book of Imagery', href: 'https://boi.imago.ac.uk/', target: '_blank' },
+			{ label: 'State of Imagery', href: 'https://zenodo.org/records/18338437', target: '_blank' }
 
 			// {
 			// 	label: 'Resources',
@@ -35,7 +37,7 @@ export const ROUTES: (Route & { subpaths: Route[] })[] = [
 		href: '/about',
 		subpaths: [
 			// { label: 'Partners', href: '/about/partners' }
-			{ label: 'Team', href: '/about' }
+			{ label: 'Team', href: '/about#team' }
 		]
 	}
 ]

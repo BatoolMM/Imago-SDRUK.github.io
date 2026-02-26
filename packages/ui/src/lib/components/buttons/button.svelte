@@ -5,6 +5,7 @@
 		hover_label,
 		href,
 		download,
+		target,
 		disabled,
 		leftCol,
 		rightCol,
@@ -22,6 +23,7 @@
 		href?: string
 		download?: string | boolean
 		disabled?: boolean
+		target?: HTMLAnchorElement['target']
 		umami_event?: string
 		leftCol?: Snippet
 		rightCol?: Snippet
@@ -49,7 +51,7 @@
 		{onpointerdown}
 		{onpointerup}
 		data-umami-event={umami_event}
-		target={download ? '_blank' : undefined}
+		target={target ? target : download ? '_blank' : undefined}
 	>
 		{@render leftCol?.()}
 		{@render children?.()}
