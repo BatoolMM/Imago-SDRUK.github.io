@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.16
+### Patch Changes
+
+- 9eab00b: add new role, add state of imagery to nav, scroll to team on click, open external links in new tab
+
 ## 1.0.15
 ### Patch Changes
 
