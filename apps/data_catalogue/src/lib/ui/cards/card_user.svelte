@@ -26,78 +26,111 @@
 		subject_id: string
 	}[] = $state([])
 	let selected_group = $state('')
+	let edit = $state(false)
 	let plus_open = $state(false)
 </script>
 
 <BaseCard overflow border rounded>
 	<div class="user-card">
-		<div class="user-information">
-			<Paragraph>{user.id}</Paragraph>
-			<Paragraph>Name: {user.name.first} {user.name.last}</Paragraph>
-			<Paragraph>Email: {user.email}</Paragraph>
-			<Button
-				onclick={() => {
-					toggleDialog(`delete-user-${user.id}`)
-				}}
-			>
-				<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
-			</Button>
-		</div>
-		<Subtitle>Groups</Subtitle>
-		<div class="groups">
-			<div class="left-col">
-				<Subtitle>Member of</Subtitle>
-				<div class="groups-buttons">
-					{#if user.groups && user.groups.length > 0}
-						{#each user.groups ?? [] as group}
-							<Button
-								onclick={() => {
-									selected_group = group.object
-									toggleDialog(`remove-user-group-${user.id}`)
-								}}>{group.object}</Button
-							>
-						{/each}
-					{:else}
-						<Paragraph>User is not in any group</Paragraph>
+		<div class="section">
+			<div class="section-title">
+				<Subtitle>User</Subtitle>
+				<div class="buttons">
+					<Button
+						active={edit}
+						onclick={() => {
+							edit = !edit
+						}}
+					>
+						<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
+					</Button>
+					{#if edit}
+						<Button
+							onclick={() => {
+								toggleDialog(`delete-user-${user.id}`)
+							}}
+						>
+							<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+						</Button>
 					{/if}
+				</div>
+			</div>
+			<div class="user-information">
+				<Paragraph>Name: {user.name.first} {user.name.last}</Paragraph>
+				<Paragraph>Email: {user.email}</Paragraph>
+				<Paragraph>ID: {user.id}</Paragraph>
+			</div>
+		</div>
 
-					<div class="add-groups">
+		<div class="section">
+			<div class="section-title">
+				<Subtitle>Groups</Subtitle>
+				{#if edit}
+					<div class="buttons">
 						<Button
 							onclick={() => {
 								plus_open = !plus_open
 							}}><Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon></Button
 						>
-						{#if plus_open}
-							<div class="add-group-buttons">
-								{#each groups.filter((group) => !user.groups?.find((relation) => relation.object === group)) as group}
+					</div>
+				{/if}
+			</div>
+			<div class="groups">
+				<div class="left-col">
+					<div class="groups-buttons">
+						{#if user.groups && user.groups.length > 0}
+							{#each user.groups ?? [] as group}
+								{#if edit}
 									<Button
-										onclick={async () => {
-											const relationship: Relationship = {
-												namespace: 'Group',
-												object: group,
-												relation: 'users',
-												subject_id: user.id
-											}
-											const res = await fetch(`/api/v1/permissions/Group`, {
-												method: 'POST',
-												body: JSON.stringify(relationship)
-											})
-											const data = await res.json()
-											if (data.message === 'ok') {
-												notify.send({
-													message: `${user.name.first} has been added to ${group} group`
-												})
-												await invalidateAll()
-											}
-										}}>{group}</Button
+										onclick={() => {
+											selected_group = group.object
+											toggleDialog(`remove-user-group-${user.id}`)
+										}}
 									>
-								{/each}
-							</div>
+										<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon> {group.object}</Button
+									>
+								{:else}
+									<div class="groups">
+										<Paragraph>{group.object}</Paragraph>
+									</div>
+								{/if}
+							{/each}
+						{:else}
+							<Paragraph>User is not in any group</Paragraph>
 						{/if}
+						<div class="add-groups">
+							{#if plus_open}
+								<div class="add-group-buttons">
+									{#each groups.filter((group) => !user.groups?.find((relation) => relation.object === group)) as group}
+										<Button
+											onclick={async () => {
+												const relationship: Relationship = {
+													namespace: 'Group',
+													object: group,
+													relation: 'users',
+													subject_id: user.id
+												}
+												const res = await fetch(`/api/v1/permissions/Group`, {
+													method: 'POST',
+													body: JSON.stringify(relationship)
+												})
+												const data = await res.json()
+												if (data.message === 'ok') {
+													notify.send({
+														message: `${user.name.first} has been added to ${group} group`
+													})
+													await invalidateAll()
+												}
+											}}>{group}</Button
+										>
+									{/each}
+								</div>
+							{/if}
+						</div>
 					</div>
 				</div>
+				<div class="right-col"></div>
 			</div>
-			<div class="right-col"></div>
 		</div>
 	</div>
 </BaseCard>
@@ -147,7 +180,7 @@
 				type="button"
 				onclick={() => {
 					selected_group = ''
-					toggleDialog(`remove-user-group-${user.id}`)
+					toggleDialog(`delete-user-${user.id}`)
 				}}>Cancel</Button
 			>
 			<Button
@@ -169,6 +202,18 @@
 <style>
 	.user-card {
 		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.section {
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
+		gap: 0.25rem;
+	}
+	.section-title {
+		display: flex;
+		justify-content: space-between;
 	}
 	.user-information {
 		display: flex;
