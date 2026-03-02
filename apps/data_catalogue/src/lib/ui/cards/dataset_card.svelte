@@ -7,7 +7,6 @@
 	import { notify } from '$lib/stores/notify'
 	import type { CkanDataset, CkanResource } from '$lib/types/ckan'
 	import { AVAILABLE_RELATIONS } from '$lib/globals/auth'
-	import { jstr } from '@arturoguzman/art-ui'
 
 	let {
 		dataset,
@@ -51,43 +50,45 @@
 
 <BaseCard overflow border rounded>
 	<div class="user-card">
-		<div class="user-information">
-			<Paragraph>{dataset.id}</Paragraph>
-			<Paragraph>Name {dataset.name}</Paragraph>
-			<Paragraph>Title {dataset.title}</Paragraph>
+		<div class="section">
+			<div class="section-title">
+				<Subtitle>Dataset</Subtitle>
+			</div>
+			<div class="user-information">
+				<Paragraph>ID: {dataset.id}</Paragraph>
+				<Paragraph>Name: {dataset.name}</Paragraph>
+				<Paragraph>Title: {dataset.title}</Paragraph>
+			</div>
 		</div>
+
 		{#if resources.length > 0}
-			<div class="resources">
-				<Paragraph>Resources</Paragraph>
-				<div class="resources-table">
-					<Paragraph>Name</Paragraph>
-					<Paragraph>Downloads</Paragraph>
-					{#each resources as resource}
-						<div class="resource">
-							<Paragraph>{resource.name}</Paragraph>
-							<Paragraph>{resource.downloads}</Paragraph>
-						</div>
-					{/each}
+			<div class="section">
+				<div class="resources">
+					<Subtitle>Resources</Subtitle>
+					<div class="resources-table">
+						<Paragraph>Name</Paragraph>
+						<Paragraph>Downloads</Paragraph>
+						{#each resources as resource}
+							<div class="resource">
+								<Paragraph>{resource.name}</Paragraph>
+								<Paragraph>{resource.downloads}</Paragraph>
+							</div>
+						{/each}
+					</div>
 				</div>
 			</div>
 		{/if}
-		<Subtitle>Groups</Subtitle>
-		<div class="groups">
-			<div class="left-col">
+		<div class="section">
+			<div class="section-title">
+				<Subtitle>Groups</Subtitle>
+			</div>
+			<div class="groups">
 				{#each available_relations as ar}
-					<Paragraph>{ar}</Paragraph>
-					<div class="buttons">
-						{#if relations}
-							{#if ar in relations}
-								{#each relations[ar] as relation}
-									<Button>{relation.subject_id ?? relation.subject_set?.object}</Button>
-								{/each}
-							{/if}
-						{/if}
+					<div class="relation-title">
+						<Paragraph>{ar}</Paragraph>
 						<Button
 							active={active_related === ar}
 							onclick={() => {
-								console.log(active_related)
 								if (active_related === ar) {
 									active_related = ''
 									return
@@ -96,8 +97,17 @@
 							}}><Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon></Button
 						>
 					</div>
+					<div class="buttons">
+						{#if relations}
+							{#if ar in relations}
+								{#each relations[ar] as relation}
+									<Button>{relation.subject_id ?? relation.subject_set?.object}</Button>
+								{/each}
+							{/if}
+						{/if}
+					</div>
 					{#if active_related === ar}
-						<div class="buttons">
+						<div class="buttons buttons-add">
 							{#each groups.filter((group) => {
 								if (relations && ar in relations && relations[ar].find((relation) => relation.subject_set?.object === group)) {
 									return false
@@ -134,7 +144,6 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="right-col"></div>
 		</div>
 	</div>
 </BaseCard>
@@ -173,7 +182,6 @@
 						toggleDialog(`remove-dataset-group-${dataset.id}`)
 						await invalidateAll()
 					}
-					console.log(data)
 				}}>Remove</Button
 			>
 		</div>
@@ -183,6 +191,18 @@
 <style>
 	.user-card {
 		padding: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.section {
+		display: grid;
+		grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
+		gap: 0.25rem;
+	}
+	.section-title {
+		display: flex;
+		justify-content: space-between;
 	}
 	.user-information {
 		display: flex;
@@ -194,7 +214,6 @@
 		flex-direction: column;
 		gap: 0.25rem;
 	}
-
 	.resources-table {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -212,12 +231,15 @@
 	}
 	.groups {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-	}
-	.groups-buttons {
-		display: flex;
 		gap: 0.25rem;
 	}
+	.relation-title {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		padding: 0;
+	}
+
 	.dialog {
 		display: flex;
 		flex-direction: column;
@@ -228,18 +250,9 @@
 		justify-content: space-between;
 		gap: 1rem;
 	}
-	.add-groups {
-		position: relative;
-	}
-	.add-group-buttons {
-		position: absolute;
-		top: 120%;
-		left: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-	.debug {
-		color: white;
+	.buttons-add {
+		background-color: var(--background-muted);
+		padding: 0.5rem;
+		border-radius: var(--radius);
 	}
 </style>
