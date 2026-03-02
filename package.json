@@ -32,7 +32,8 @@
 			"vue-demi"
 		],
 		"ignoredBuiltDependencies": [
-			"esbuild"
+			"esbuild",
+			"libpq"
 		]
 	}
 }
