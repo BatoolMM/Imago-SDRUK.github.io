@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.4
+### Patch Changes
+
+- 356d7b6: Improve UI, add additional info to err logs
+
 ## 2.1.3
 ### Patch Changes
 
