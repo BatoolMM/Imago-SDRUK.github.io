@@ -1,6 +1,7 @@
 import { SERVER_ERRORS } from '$lib/globals/server'
 import { log } from '$lib/utils/server/logger.js'
 import { error } from '@sveltejs/kit'
+import { DateTime } from 'luxon'
 
 export type DBError = {
 	query: string
@@ -19,7 +20,10 @@ export type DBError = {
 
 export const handleDBError = (err: DBError | string | unknown) => (_err?: DBError) => {
 	if (typeof err === 'object' && err && 'id' in err && 'message' in err) {
-		log.debug(err)
+		log.debug({
+			error: err,
+			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+		})
 		log.debug(_err?.cause)
 		const __err = _err as DBError
 		if (__err.cause.code === 'ECONNREFUSED') {
@@ -28,7 +32,10 @@ export const handleDBError = (err: DBError | string | unknown) => (_err?: DBErro
 		error(500, { id: `${err.id}`, message: `${err.message}` })
 	}
 	if (typeof err === 'string') {
-		log.debug(err)
+		log.debug({
+			error: err,
+			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+		})
 		log.debug(_err?.cause)
 		const __err = _err as DBError
 		if (__err.cause.code === 'ECONNREFUSED') {
@@ -36,7 +43,10 @@ export const handleDBError = (err: DBError | string | unknown) => (_err?: DBErro
 		}
 		error(500, { id: 'unknown error', message: err })
 	}
-	log.debug(_err?.cause)
+	log.debug({
+		error: _err?.cause,
+		datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+	})
 	const __err = (err ? err : _err) as DBError
 	if (__err.cause.code === 'ECONNREFUSED') {
 		error(...SERVER_ERRORS[503])

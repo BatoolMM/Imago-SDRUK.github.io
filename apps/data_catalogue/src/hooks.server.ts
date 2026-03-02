@@ -178,7 +178,13 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 
 export const hooksErrorHandler: HandleServerError = async ({ event, status, message, error }) => {
 	if (status !== 404) {
-		log.error(error)
+		log.error({
+			error,
+			message,
+			ip: event.getClientAddress(),
+			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+			path: event.url.pathname
+		})
 	}
 	return {
 		id: getId(),
