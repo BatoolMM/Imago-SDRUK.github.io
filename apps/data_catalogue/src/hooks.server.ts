@@ -212,7 +212,8 @@ export const hooksErrorHandler: HandleServerError = async ({ event, status, mess
 			message,
 			ip: event.getClientAddress(),
 			datetime: DateTime.now().toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
-			path: event.url.pathname
+			url: event.url,
+			request: event.request
 		})
 	}
 	return {
