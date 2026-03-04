@@ -106,6 +106,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 
 const handleAuthentication: Handle = async ({ event, resolve }) => {
 	const auth_cookie = event.cookies.get('ory_kratos_session')
+	const auth_header = event.request.headers.get('authorization')
 	/**
 	 * NOTE: login in sets a cookie but must be bypassed if 2fa is enabled
 	 **/
@@ -150,6 +151,34 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 			log.debug(`session includes a redirect browser to`)
 			redirect(303, session.redirect_browser_to)
 			// return resolve(event)
+		}
+		event.locals.session = session
+	}
+	if (auth_header && !event.url.pathname.startsWith('/auth/login')) {
+		const res = await fetch(`${env.IDENTITY_SERVER_PUBLIC}/sessions/whoami`, {
+			headers: {
+				Accept: 'application/json',
+				Authorization: auth_header
+			}
+		})
+		const session = (await res.json()) as IdentitySession
+		/**
+		 * NOTE: This will need refactoring to revalidate sessions
+		 **/
+		const valid_session = verifyOrySession(session)
+
+		if (session.error || !valid_session) {
+			log.debug(`session error`)
+			error(400, { message: 'Invalid session', id: 'invalid-session' })
+		}
+		if (
+			session &&
+			valid_session &&
+			!session.identity.verifiable_addresses.some((va) => va.verified === true) &&
+			event.url.pathname !== '/auth/verification'
+		) {
+			log.debug(`session is valid but account isnt verified`)
+			error(400, { message: 'Please verify your account before login in', id: 'unverified' })
 		}
 		event.locals.session = session
 	}
