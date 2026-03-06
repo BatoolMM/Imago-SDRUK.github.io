@@ -1,7 +1,8 @@
 import type {
 	CkanDataset,
+	CkanDatastore,
+	CkanDatastoreField,
 	CkanGroup,
-	CkanOrganisation,
 	CkanResource,
 	CkanTag
 } from '$lib/types/ckan'
@@ -543,6 +544,44 @@ type TagSearch = [
 		offset?: number
 	}
 ]
+type DatastoreInfo = [
+	'datastore_info',
+	{
+		resource_id: string
+		include_meta?: boolean
+		include_fields_schema?: boolean
+	},
+	CkanDatastore
+]
+
+type DatastoreSearch = [
+	'datastore_search',
+	{
+		resource_id: string // resource id that the data is going to be stored under
+		filters?: Record<string, unknown>[] // Filters for matching conditions to select, e.g {“key1”: “a”, “key2”: “b”} (optional)
+		q?: string // full text query. If it’s a string, it’ll search on all fields on each row. If it’s a dictionary as {“key1”: “a”, “key2”: “b”}, it’ll search on each specific field (optional)
+		full_text?: string // full text query. It search on all fields on each row. This should be used in replace of q when performing string search accross all fields
+		distinct?: boolean // return only distinct rows (optional, default: false)
+		plain?: boolean // treat as plain text query (optional, default: true)
+		language?: string // language of the full text query (optional, default: english)
+		limit?: number // maximum number of rows to return (optional, default: 100, unless set in the site’s configuration ckan.datastore.search.rows_default, upper limit: 32000 unless set in site’s configuration ckan.datastore.search.rows_max)
+		offset?: number // offset this number of rows (optional)
+		fields?: string[] // fields to return (optional, default: all fields in original order)
+		sort?: string // comma separated field names with ordering e.g.: “fieldname1, fieldname2 desc nulls last”
+		include_total?: boolean // True to return total matching record count (optional, default: true)
+		total_estimation_threshold?: number // If “include_total” is True and “total_estimation_threshold” is not None and the estimated total (matching record count) is above the “total_estimation_threshold” then this datastore_search will return an estimate of the total, rather than a precise one. This is often good enough, and saves computationally expensive row counting for larger results (e.g. >100000 rows). The estimated total comes from the PostgreSQL table statistics, generated when Express Loader or DataPusher finishes a load, or by autovacuum. NB Currently estimation can’t be done if the user specifies ‘filters’ or ‘distinct’ options. (optional, default: None)
+		records_format?: 'objects' | 'lists' | 'csv' | 'tsv' // the format for the records return value: ‘objects’ (default) list of {fieldname1: value1, …} dicts, ‘lists’ list of [value1, value2, …] lists, ‘csv’ string containing comma-separated values with no header, ‘tsv’ string containing tab-separated values with no header
+	},
+	{
+		fields: CkanDatastoreField[]
+		offset: number
+		limit: number
+		filters: Record<string, unknown>[]
+		total: number
+		total_was_estimated: boolean
+		records: Record<string, unknown>[]
+	}
+]
 
 export type CkanGetActions =
 	| PackageList
@@ -611,3 +650,5 @@ export type CkanGetActions =
 	| ResourceShow
 	| UserFolloweeList
 	| TermTranslationShow
+	| DatastoreInfo
+	| DatastoreSearch

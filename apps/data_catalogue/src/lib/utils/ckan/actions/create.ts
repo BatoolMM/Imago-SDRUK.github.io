@@ -1,3 +1,5 @@
+import type { CkanDatastoreField, CkanResource } from '$lib/types/ckan'
+
 type PackageCreate = [
 	'package_create',
 	{
@@ -176,6 +178,26 @@ type ApiTokenCreate = [
 	{
 		user: string // name or id of the user who owns new API Token
 		name: string // distinctive name for API Token
+	}
+]
+
+export type DatastoreCreate = [
+	'datastore_create',
+	{
+		resource_id: string
+		force?: boolean
+		resource?: CkanResource
+		aliases?: string[]
+		fields?: CkanDatastoreField[]
+		delete_fields?: boolean
+		records?: Record<string, unknown>[]
+		include_records?: boolean
+		primary_key?: string[]
+		indexes?: string[]
+		triggers?: {
+			function: string
+		}[]
+		calculate_record_count?: boolean
 	}
 ]
 

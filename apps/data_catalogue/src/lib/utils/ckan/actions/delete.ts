@@ -208,6 +208,28 @@ type ApiTokenRevoke = [
 	}
 ]
 
+type DatastoreDelete = [
+	'datastore_delete',
+	{
+		resource_id: string
+		force?: boolean
+		filters?: Record<string, unknown>
+		include_deleted_records?: boolean
+		calculate_record_count?: boolean
+	}
+]
+
+type DatastoreRecordsDelete = [
+	'datastore_records_delete',
+	{
+		resource_id: string
+		force?: boolean
+		filters?: Record<string, unknown>
+		include_deleted_records?: boolean
+		calculate_record_count?: boolean
+	}
+]
+
 export type CkanDeleteActions =
 	| UserDelete
 	| PackageDelete
@@ -233,3 +255,5 @@ export type CkanDeleteActions =
 	| JobClear
 	| JobCancel
 	| ApiTokenRevoke
+	| DatastoreDelete
+	| DatastoreRecordsDelete
