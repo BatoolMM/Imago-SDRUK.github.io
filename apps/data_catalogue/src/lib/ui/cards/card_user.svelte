@@ -6,35 +6,41 @@
 	import { toggleDialog } from '$lib/utils/ui'
 	import { invalidateAll } from '$app/navigation'
 	import { notify } from '$lib/stores/notify'
+	import { onMount } from 'svelte'
 
 	let {
 		user,
 		groups
 	}: {
 		user: {
-			name: { first: string; last: string }
 			email: string
+			first_name: string
+			last_name: string
 			id: string
 			groups?: Relationship[]
 		}
 		groups: string[]
 	} = $props()
-	let groups_to_add: {
-		namespace: string
-		object: string
-		relation: string
-		subject_id: string
-	}[] = $state([])
 	let selected_group = $state('')
 	let edit = $state(false)
 	let plus_open = $state(false)
+	let user_groups = $state<Relationship[]>([])
+	onMount(async () => {
+		const res = await fetch(`/api/v1/permissions/Group/relation/users?subject_id=${user.id}`)
+		const data = await res.json()
+		user_groups = data.relation_tuples
+	})
 </script>
 
 <BaseCard overflow border rounded>
 	<div class="user-card">
 		<div class="section">
 			<div class="section-title">
-				<Subtitle>User</Subtitle>
+				<Subtitle size="md">
+					<Icon icon={{ icon: 'user', set: 'tabler' }}></Icon>
+					{user.first_name}
+					{user.last_name}</Subtitle
+				>
 				<div class="buttons">
 					<Button
 						active={edit}
@@ -56,7 +62,6 @@
 				</div>
 			</div>
 			<div class="user-information">
-				<Paragraph>Name: {user.name.first} {user.name.last}</Paragraph>
 				<Paragraph>Email: {user.email}</Paragraph>
 				<Paragraph>ID: {user.id}</Paragraph>
 			</div>
@@ -64,7 +69,10 @@
 
 		<div class="section">
 			<div class="section-title">
-				<Subtitle>Groups</Subtitle>
+				<Subtitle size="md">
+					<Icon icon={{ icon: 'users-group', set: 'tabler' }}></Icon>
+					Groups</Subtitle
+				>
 				{#if edit}
 					<div class="buttons">
 						<Button
@@ -78,8 +86,8 @@
 			<div class="groups">
 				<div class="left-col">
 					<div class="groups-buttons">
-						{#if user.groups && user.groups.length > 0}
-							{#each user.groups ?? [] as group}
+						{#if user_groups && user_groups.length > 0}
+							{#each user_groups ?? [] as group}
 								{#if edit}
 									<Button
 										onclick={() => {
@@ -90,7 +98,7 @@
 										<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon> {group.object}</Button
 									>
 								{:else}
-									<div class="groups">
+									<div class="group-label">
 										<Paragraph>{group.object}</Paragraph>
 									</div>
 								{/if}
@@ -101,7 +109,7 @@
 						<div class="add-groups">
 							{#if plus_open}
 								<div class="add-group-buttons">
-									{#each groups.filter((group) => !user.groups?.find((relation) => relation.object === group)) as group}
+									{#each groups.filter((group) => !user_groups?.find((relation) => relation.object === group)) as group}
 										<Button
 											onclick={async () => {
 												const relationship: Relationship = {
@@ -117,7 +125,7 @@
 												const data = await res.json()
 												if (data.message === 'ok') {
 													notify.send({
-														message: `${user.name.first} has been added to ${group} group`
+														message: `${user.first_name} has been added to ${group} group`
 													})
 													await invalidateAll()
 												}
@@ -137,7 +145,7 @@
 <Dialog id="remove-user-group-{user.id}">
 	<div class="dialog">
 		<Subtitle size="md"
-			>Are you sure you want to remove {user.name.first} from {selected_group}</Subtitle
+			>Are you sure you want to remove {user.first_name} from {selected_group}</Subtitle
 		>
 		<div class="buttons">
 			<Button
@@ -174,7 +182,7 @@
 
 <Dialog id="delete-user-{user.id}">
 	<div class="dialog">
-		<Subtitle size="md">Are you sure you want to delete {user.name.first}?</Subtitle>
+		<Subtitle size="md">Are you sure you want to delete {user.first_name}?</Subtitle>
 		<div class="buttons">
 			<Button
 				type="button"
@@ -204,7 +212,7 @@
 		padding: 1rem;
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 2rem;
 	}
 	.section {
 		display: grid;
@@ -227,6 +235,12 @@
 	.groups-buttons {
 		display: flex;
 		gap: 0.25rem;
+	}
+	.group-label {
+		background: var(--background-muted);
+		padding: 0.25rem 1rem;
+		border-radius: var(--radius);
+		text-transform: capitalize;
 	}
 	.dialog {
 		display: flex;

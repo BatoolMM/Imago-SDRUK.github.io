@@ -3,33 +3,30 @@ import { log } from '$lib/utils/server/logger.js'
 import { authorise, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
-import type { Identity } from '@ory/client-fetch'
-export const load = async ({ locals, fetch }) => {
+import { env } from '$env/dynamic/private'
+export const load = async ({ locals, fetch, url }) => {
 	await authorise({
 		namespace: 'Endpoint',
 		object: '/api/v1/users',
 		relation: 'GET',
 		session: locals.session
 	})
-	const res = await fetch(`/api/v1/users`)
-	const { users } = (await res.json()) as { users: Identity[] }
-	const active_groups = await ketoRead.getRelationships({ namespace: 'Group' })
-	const ckan_groups = await locals.ckan.request(get('group_list'))
-	let groups = [...AUTH_GROUPS]
-	if (ckan_groups.success) {
-		groups = [...groups, ...ckan_groups.result]
+	const built_url = new URL(`${env.ORIGIN ?? 'http://127.0.0.1:5174'}/api/v1/users`)
+	const page_size = url.searchParams.get('page_size')
+	const per_page = url.searchParams.get('per_page') ?? '50'
+	const page = url.searchParams.get('page') ?? '0'
+	if (page_size) built_url.searchParams.append('page_size', page_size)
+	if (per_page) built_url.searchParams.append('per_page', per_page)
+	if (page) built_url.searchParams.append('page', page)
+	const res = await fetch(built_url)
+	const { users } = (await res.json()) as {
+		users: { first_name: string; last_name: string; id: string; email: string }[]
 	}
+	const ckan_groups = await locals.ckan.request(get('group_list'))
+	const groups = [...AUTH_GROUPS, ...(ckan_groups.success ? ckan_groups.result : [])]
 	return {
-		ckan_groups,
 		groups,
-		users: users.map((user) => ({
-			name: user.traits.name,
-			email: user.traits.email,
-			id: user.id,
-			groups: active_groups.relation_tuples?.filter(
-				(relation) => relation.relation === 'users' && relation.subject_id === user.id
-			)
-		}))
+		users
 	}
 }
 

@@ -102,7 +102,7 @@ type GroupList = [
 		include_groups?: boolean
 		include_users?: boolean
 	},
-	CkanGroup[]
+	string[]
 ]
 
 type GroupShow = [
