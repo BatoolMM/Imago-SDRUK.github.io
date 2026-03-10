@@ -1,14 +1,10 @@
 import { db } from '$lib/db/index.js'
 import { resource_versions } from '$lib/db/schema/resources.js'
 import { SERVER_ERRORS } from '$lib/globals/server.js'
+import type { CSVW } from '$lib/types/csvw.js'
 import { authorise } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
-import {
-	csvwToDatastore,
-	datastoreToCsvw,
-	testCSVW,
-	type CSVW
-} from '$lib/utils/datastore/index.js'
+import { csvwToDatastore, datastoreToCsvw, testCSVW } from '$lib/utils/datastore/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { getFields } from '@imago/ui'
@@ -28,7 +24,7 @@ export const load = async ({ locals, params }) => {
 		.where(eq(resource_versions.resource, params.resource))
 		.catch(handleDBError('There are no versions for this resource'))
 	const data = await locals.ckan.request(get('resource_show', { id: params.resource }))
-	if (Array.isArray(data.result) || !data.result || !data.success) {
+	if (!data.success) {
 		return error(...SERVER_ERRORS[404])
 	}
 	const result = getFields(data.result, [
