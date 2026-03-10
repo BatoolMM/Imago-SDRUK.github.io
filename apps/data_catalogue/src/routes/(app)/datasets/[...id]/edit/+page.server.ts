@@ -95,13 +95,14 @@ export const actions = {
 		}
 	},
 
-	update_resource: async ({ request, locals, params }) => {
+	update_resource: async ({ request, fetch }) => {
 		const form = await request.formData()
 		const parsed = parseForm(form)
-		const dataset = await locals.ckan.request(
-			patch('resource_patch', { id: parsed.id }, { ...parsed, id: parsed.id })
-		)
-		log.debug(jstr(dataset))
+		const resource = await fetch(`/api/v1/resources/${parsed.id}`, {
+			method: 'PATCH',
+			body: JSON.stringify(parsed)
+		})
+		log.debug(jstr(resource))
 		return {
 			message: `Resource successfully updated`
 		}

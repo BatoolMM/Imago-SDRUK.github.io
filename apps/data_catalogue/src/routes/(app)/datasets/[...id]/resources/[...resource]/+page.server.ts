@@ -1,12 +1,18 @@
 import { db } from '$lib/db/index.js'
 import { resource_versions } from '$lib/db/schema/resources.js'
 import { SERVER_ERRORS } from '$lib/globals/server.js'
-import { authorise, checkPermission } from '$lib/utils/auth/index.js'
+import { authorise } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
+import {
+	csvwToDatastore,
+	datastoreToCsvw,
+	testCSVW,
+	type CSVW
+} from '$lib/utils/datastore/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
+import { jstr } from '@arturoguzman/art-ui'
 import { getFields } from '@imago/ui'
-import { redirect } from '@sveltejs/kit'
-import { error } from '@sveltejs/kit'
+import { error, redirect } from '@sveltejs/kit'
 import { eq } from 'drizzle-orm'
 export const load = async ({ locals, params }) => {
 	await authorise({
@@ -34,12 +40,22 @@ export const load = async ({ locals, params }) => {
 		'package_id',
 		'last_modified',
 		'hash',
-		'download_url',
+		// 'download_url',
 		'description',
 		'state',
 		'size',
 		'created',
-		'url'
+		'url',
+		'datastore_active'
 	])
-	return { data: { ...data, result }, versions }
+	let datastore: CSVW | null = null
+	if (result.datastore_active) {
+		const res = await locals.ckan.request(get('datastore_info', { resource_id: params.resource }))
+		console.log(jstr(res))
+		if (res.success) {
+			datastore = datastoreToCsvw(res.result)
+		}
+	}
+	const test = csvwToDatastore({ id: data.result.id, csvw: testCSVW })
+	return { data: { ...data, result }, versions, datastore, test }
 }

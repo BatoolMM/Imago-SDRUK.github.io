@@ -3,14 +3,16 @@ import { downloads } from '$lib/db/schema/downloads.js'
 import { resource_versions, resources } from '$lib/db/schema/resources.js'
 import { SERVER_ERRORS } from '$lib/globals/server.js'
 import { authorise, ketoWrite } from '$lib/utils/auth/index.js'
-import { remove } from '$lib/utils/ckan/ckan.js'
+import { patch, remove } from '$lib/utils/ckan/ckan.js'
 import { handleDBError } from '$lib/utils/db/index.js'
 import {
 	deleteBlob,
 	getSignedDownloadUrl,
 	loadStorageClient
 } from '$lib/utils/files/azure/index.js'
-import { error } from '@sveltejs/kit'
+import { log } from '$lib/utils/server/logger.js'
+import { jstr } from '@arturoguzman/art-ui'
+import { error, json } from '@sveltejs/kit'
 import { redirect } from '@sveltejs/kit'
 import { and, desc, eq, sql } from 'drizzle-orm'
 
@@ -55,6 +57,17 @@ export const GET = async ({ params, locals, url }) => {
 	 * NOTE: this will open the resource on the same tab
 	 **/
 	// return redirect(303, signed_url)
+}
+
+export const PATCH = async ({ request, params, locals }) => {
+	const form = (await request.json()) as Record<PropertyKey, unknown>
+	const dataset = await locals.ckan.request(
+		patch('resource_patch', { id: params.id }, { ...form, id: params.id })
+	)
+	log.debug(jstr(dataset))
+	return json({
+		message: `Resource successfully updated`
+	})
 }
 
 export const DELETE = async ({ params, locals }) => {
