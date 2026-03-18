@@ -85,4 +85,11 @@
 		display: block;
 		color: var(--text);
 	}
+
+	:global(.wx-row:not(.wx-selected) .wx-cell) {
+		background: var(--background-muted);
+	}
+	:global(.wx-row:not(.wx-selected) .wx-cell) {
+		background: var(--background-accent);
+	}
 </style>
