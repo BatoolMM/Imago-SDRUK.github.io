@@ -1,10 +1,88 @@
 <script lang="ts">
+	import { type IColumnConfig } from '@svar-ui/svelte-grid'
 	import { debug } from '$lib/globals/dev.svelte.js'
+	import type { CkanDataset } from '$lib/types/ckan/index.js'
 	import DatasetCard from '$lib/ui/cards/dataset_card.svelte'
+	import BaseTable from '$lib/ui/tables/base_table.svelte'
 	import { BaseSection, Title, Paragraph, Button } from '@imago/ui'
 	import { onMount } from 'svelte'
+	import CellText from '$lib/ui/tables/cell_text.svelte'
+	import CellTags from '$lib/ui/tables/cell_tags.svelte'
 	let { data } = $props()
 	let selected = $state(-1)
+	const columns: (IColumnConfig & { id: keyof CkanDataset })[] = [
+		{
+			id: 'name',
+			header: 'Name',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+
+		{
+			id: 'title',
+			header: 'Title',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'version',
+			header: 'Version',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'type',
+			header: 'Type',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'author',
+			header: 'Author',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'groups',
+			header: 'Groups',
+			sort: true,
+			cell: CellTags,
+			resize: true
+		},
+		{
+			id: 'tags',
+			header: 'tags',
+			sort: true,
+			cell: CellTags,
+			resize: true
+		},
+		{
+			id: 'isopen',
+			header: 'Is open',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'private',
+			header: 'Private',
+			sort: true,
+			cell: CellText,
+			resize: true
+		},
+		{
+			id: 'organization',
+			header: 'Organisation',
+			sort: true,
+			cell: CellText,
+			resize: true
+		}
+	]
 	onMount(() => {
 		debug.data = data
 	})
@@ -13,21 +91,21 @@
 <BaseSection>
 	<div class="page">
 		<Title>Datasets</Title>
-		<div class="datasets">
+		<div class="datasets" data-open={selected !== -1 ? true : undefined}>
 			{#if !Array.isArray(data.datasets.result)}
 				<div class="left-col">
-					{#each data.datasets.result.results as dataset, index}
-						<Button
-							active={selected === index}
-							onclick={() => {
-								if (selected === index) {
-									selected = -1
-								} else {
-									selected = index
-								}
-							}}><Paragraph>{dataset.title}</Paragraph></Button
-						>
-					{/each}
+					<BaseTable
+						data={data.datasets.result.results}
+						{columns}
+						apiFn={(api) => {
+							api.on('select-row', (row) => {
+								const index = data.datasets.result.results.findIndex(
+									(record) => record.id === row.id
+								)
+								selected = index
+							})
+						}}
+					></BaseTable>
 				</div>
 				<div class="right-col">
 					{#if selected >= 0 && selected < data.datasets.result.results.length}
@@ -57,8 +135,13 @@
 	}
 	.datasets {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		/* grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); */
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
 		gap: 1rem;
+		transition: all 0.3s ease-in-out;
+	}
+	.datasets[data-open] {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
 	}
 	.left-col {
 		display: flex;
