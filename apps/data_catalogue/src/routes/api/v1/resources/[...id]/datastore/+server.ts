@@ -12,14 +12,13 @@ export const POST = async ({ params, locals }) => {
 	const tables = csvwToDatastore({ id: params.id, csvw: testCSVW, force: true })
 
 	// upload parsed obj to datastore api
-
-	const uploaded = await Promise.all(
-		tables.map((table) => {
-			console.log(jstr(table))
-			return locals.ckan.request(create('datastore_create', table))
-		})
-	)
-	console.log(jstr(uploaded))
+	console.log(jstr(tables))
+	// const uploaded = await Promise.all(
+	// 	tables.map((table) => {
+	// 		return locals.ckan.request(create('datastore_create', table))
+	// 	})
+	// )
+	// console.log(jstr(uploaded))
 	// log.debug(jstr(uploaded))
-	return json(uploaded)
+	return json(tables)
 }
