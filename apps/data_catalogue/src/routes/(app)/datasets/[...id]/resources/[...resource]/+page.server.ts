@@ -47,11 +47,9 @@ export const load = async ({ locals, params }) => {
 	let datastore: CSVW | null = null
 	if (result.datastore_active) {
 		const res = await locals.ckan.request(get('datastore_info', { resource_id: params.resource }))
-		console.log(jstr(res))
 		if (res.success) {
 			datastore = datastoreToCsvw(res.result)
 		}
 	}
-	const test = csvwToDatastore({ id: data.result.id, csvw: testCSVW })
-	return { data: { ...data, result }, versions, datastore, test }
+	return { data: { ...data, result }, versions, datastore, structural_metadata: datastore }
 }

@@ -1,12 +1,38 @@
 <script lang="ts">
+	import { type IColumnConfig } from '@svar-ui/svelte-grid'
 	import { debug } from '$lib/globals/dev.svelte'
+	import BaseTable from '$lib/ui/tables/base_table.svelte'
 	import Notes from '$lib/ui/text/notes.svelte'
 	import { jstr } from '@arturoguzman/art-ui'
 	import { BaseSection, Button, Subtitle, Paragraph, Icon, formatBytes, Title } from '@imago/ui'
 	import { DateTime } from 'luxon'
+	import type { CSVWColumn } from '$lib/types/csvw.js'
 
 	let { data } = $props()
 	let result = $derived(data.data.result)
+
+	const columns: (IColumnConfig & { id: keyof CSVWColumn })[] = [
+		{
+			id: 'name',
+			header: 'Name'
+		},
+		{
+			id: 'title',
+			header: 'Title'
+		},
+		{
+			id: 'description',
+			header: 'Description'
+		},
+		{
+			id: 'dataType',
+			header: 'Type'
+		},
+		{
+			id: 'propertyURL',
+			header: 'Property URL'
+		}
+	]
 </script>
 
 <BaseSection>
@@ -66,6 +92,7 @@
 			</div>
 		</div>
 		<div class="right-col">
+			<Subtitle size="md">Downloads</Subtitle>
 			{#if Array.isArray(result) === false && typeof result.url === 'string'}
 				<div class="latest">
 					<Subtitle>Latest:</Subtitle>
@@ -87,6 +114,19 @@
 					{/each}
 				</div>
 			</div>
+			{#if data.structural_metadata?.tables}
+				<div class="structural-metadata">
+					<Subtitle size="md">Structural metadata</Subtitle>
+					<div class="tables">
+						{#each data.structural_metadata?.tables as table}
+							<div class="table">
+								<Subtitle>{table['dc:title']}</Subtitle>
+								<BaseTable data={table.tableSchema.columns ?? []} {columns}></BaseTable>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
 		</div>
 	</div>
 </BaseSection>
@@ -131,5 +171,28 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+	}
+	.structural-metadata {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.tables {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.table {
+		background-color: var(--background-accent);
+		padding: 1rem;
+		border-radius: var(--radius);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	@media (min-width: 1024px) {
+		.resource-section {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+		}
 	}
 </style>
