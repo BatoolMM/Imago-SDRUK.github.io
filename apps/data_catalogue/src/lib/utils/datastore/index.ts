@@ -16,50 +16,6 @@ const handleColumnToFieldID = ({
 const handleFieldIDToColumnName = ({ id, split }: { id: string; split: string }) =>
 	id.split(split)[0]
 
-export const testCSVW: CSVW = {
-	'@context': 'http://www.w3.org/ns/csvw',
-	'@type': 'TableGroup',
-	tables: [
-		{
-			'dc:title': 'table_1',
-			keywords: '',
-			tableSchema: {
-				columns: [
-					{
-						name: 'column_1',
-						dataType: 'text',
-						description: '',
-						title: '',
-						propertyURL: ''
-					},
-					{
-						name: 'column_2',
-						dataType: 'text',
-						description: '',
-						title: '',
-						propertyURL: ''
-					}
-				]
-			}
-		},
-		{
-			'dc:title': 'table_2',
-			keywords: '',
-			tableSchema: {
-				columns: [
-					{
-						name: 'column_3',
-						dataType: 'text',
-						description: '',
-						title: '',
-						propertyURL: ''
-					}
-				]
-			}
-		}
-	]
-}
-
 const CSVWColumnToDatastoreField = ({
 	column,
 	table,
@@ -79,7 +35,7 @@ const CSVWColumnToDatastoreField = ({
 		keywords
 	},
 	schema: {
-		native_type: column.dataType,
+		native_type: column.dataType === '' ? 'text' : column.dataType,
 		notnull: false,
 		index_name: null,
 		is_index: false,
@@ -90,11 +46,13 @@ const CSVWColumnToDatastoreField = ({
 export function csvwToDatastore({
 	id,
 	csvw,
-	force
+	force,
+	delete_fields
 }: {
 	csvw: CSVW
 	id: string
 	force?: boolean
+	delete_fields?: boolean
 }): CkanDatastoreCreate[] {
 	const columns = csvw.tables.map((table) => {
 		const column: CkanDatastoreCreate['fields'] = table.tableSchema.columns.map((column) => {
@@ -108,6 +66,7 @@ export function csvwToDatastore({
 			resource_id: id,
 			fields: column,
 			force,
+			delete_fields,
 			filters: {
 				title: table['dc:title'],
 				keywords: table.keywords
