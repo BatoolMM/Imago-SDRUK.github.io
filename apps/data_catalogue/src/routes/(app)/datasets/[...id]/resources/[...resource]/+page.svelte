@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type IColumnConfig } from '@svar-ui/svelte-grid'
+	import { type IApi, type IColumnConfig } from '@svar-ui/svelte-grid'
 	import { debug } from '$lib/globals/dev.svelte'
 	import BaseTable from '$lib/ui/tables/base_table.svelte'
 	import Notes from '$lib/ui/text/notes.svelte'
@@ -39,6 +39,11 @@
 			cell: CellText
 		}
 	]
+	const apiFn = (api: IApi) => {
+		api.exec('resize-column', { id: 'title', auto: 'data' })
+		api.exec('resize-column', { id: 'description', auto: 'data' })
+		api.exec('resize-column', { id: 'propertyURL', auto: 'data' })
+	}
 </script>
 
 <BaseSection>
@@ -127,7 +132,7 @@
 						{#each data.structural_metadata?.tables as table}
 							<div class="table">
 								<Subtitle>{table['dc:title']}</Subtitle>
-								<BaseTable data={table.tableSchema.columns ?? []} {columns}></BaseTable>
+								<BaseTable data={table.tableSchema.columns ?? []} {columns} {apiFn}></BaseTable>
 							</div>
 						{/each}
 					</div>
@@ -187,9 +192,11 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		background-color: var(--background-muted);
+		padding: 2rem;
 	}
 	.table {
-		background-color: var(--background-accent);
+		background-color: var(--background);
 		padding: 1rem;
 		border-radius: var(--radius);
 		display: flex;
