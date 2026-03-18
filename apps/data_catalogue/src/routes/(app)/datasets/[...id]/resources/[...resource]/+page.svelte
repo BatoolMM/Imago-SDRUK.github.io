@@ -7,30 +7,36 @@
 	import { BaseSection, Button, Subtitle, Paragraph, Icon, formatBytes, Title } from '@imago/ui'
 	import { DateTime } from 'luxon'
 	import type { CSVWColumn } from '$lib/types/csvw.js'
+	import CellText from '$lib/ui/tables/cell_text.svelte'
 
 	let { data } = $props()
 	let result = $derived(data.data.result)
 
 	const columns: (IColumnConfig & { id: keyof CSVWColumn })[] = [
-		{
-			id: 'name',
-			header: 'Name'
-		},
+		// {
+		// 	id: 'name',
+		// 	header: 'Column name',
+		// 	cell: CellText
+		// },
 		{
 			id: 'title',
-			header: 'Title'
+			header: 'Column title',
+			cell: CellText
 		},
 		{
 			id: 'description',
-			header: 'Description'
+			header: 'Description',
+			cell: CellText
 		},
 		{
 			id: 'dataType',
-			header: 'Type'
+			header: 'Type',
+			cell: CellText
 		},
 		{
 			id: 'propertyURL',
-			header: 'Property URL'
+			header: 'Property URL',
+			cell: CellText
 		}
 	]
 </script>
