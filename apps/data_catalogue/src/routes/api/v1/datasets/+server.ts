@@ -19,6 +19,7 @@ export const POST = async ({ locals, request }) => {
 	if (!form.title || !form.group) {
 		error(400, { message: `Please provide the requested data`, id: 'bad-request' })
 	}
+	const group = JSON.parse(form.group) as { id: string; name: string }
 	const name = slugify(form.title)
 	const owner_org = 'imago'
 	const dataset = await locals.ckan.request(
@@ -47,7 +48,8 @@ export const POST = async ({ locals, request }) => {
 	await ketoWrite.patchRelationships({
 		relationshipPatch: getDatasetBasePermissions({
 			object: dataset.result.name,
-			owner: locals.session?.identity.id
+			owner: locals.session?.identity.id,
+			group: group.name
 		}).map((relation) => ({ action: 'insert', relation_tuple: relation }))
 	})
 	return json({ message: 'ok', data: { url: `/datasets/${dataset.result.name}/edit` } })
