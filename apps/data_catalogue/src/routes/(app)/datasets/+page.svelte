@@ -36,6 +36,7 @@
 							<!-- HACK: replace fixed dataset with fn to strip required searchparams -->
 							<Button
 								href={handleSearchParams({
+									url: page.url,
 									add: [{ key: 'offset', value: offset - 10, set: true }],
 									remove: offset - 10 <= 0 ? ['offset'] : undefined
 								})}
@@ -51,6 +52,7 @@
 							</div>
 							<Button
 								href={handleSearchParams({
+									url: page.url,
 									add: [{ key: 'offset', value: offset + 10, set: true }]
 								})}
 							>
@@ -69,7 +71,12 @@
 							</div>
 							{#if datasets.length > 10}
 								<div class="button-wrapper">
-									<Button href={handleSearchParams({ add: [{ key: 'offset', value: 10 }] })}>
+									<Button
+										href={handleSearchParams({
+											add: [{ key: 'offset', value: 10 }],
+											url: page.url
+										})}
+									>
 										<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
 									</Button>
 								</div>
