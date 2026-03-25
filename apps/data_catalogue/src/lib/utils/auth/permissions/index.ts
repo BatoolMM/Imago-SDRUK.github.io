@@ -2,10 +2,12 @@ import type { Relationship } from '@ory/client-fetch'
 
 export const getDatasetBasePermissions = ({
 	object,
-	owner
+	owner,
+	group
 }: {
 	object: string
 	owner?: string
+	group?: string
 }): Relationship[] => {
 	const namespace = 'Dataset'
 	const base = [
@@ -40,6 +42,18 @@ export const getDatasetBasePermissions = ({
 			}
 		}
 	]
+	if (group) {
+		base.push({
+			namespace,
+			object: object,
+			relation: 'viewers',
+			subject_set: {
+				namespace: 'Group',
+				object: group,
+				relation: 'users'
+			}
+		})
+	}
 	if (owner) {
 		return [
 			...base,
@@ -149,6 +163,24 @@ export const getAnswerBasePermissions = ({
 			object: answer_id,
 			relation: 'owners',
 			subject_id: user_id
+		}
+	]
+}
+
+export const getGroupBasePermissions = ({
+	object,
+	owner
+}: {
+	object: string
+	owner?: string
+}): Relationship[] => {
+	const namespace = 'Group'
+	return [
+		{
+			namespace,
+			object: object,
+			relation: 'users',
+			subject_id: owner
 		}
 	]
 }

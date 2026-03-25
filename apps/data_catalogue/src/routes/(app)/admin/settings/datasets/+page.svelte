@@ -4,26 +4,37 @@
 	import type { CkanDataset } from '$lib/types/ckan/index.js'
 	import DatasetCard from '$lib/ui/cards/dataset_card.svelte'
 	import BaseTable from '$lib/ui/tables/base_table.svelte'
-	import { BaseSection, Title, Paragraph, Button } from '@imago/ui'
+	import { Title, Button, SectionEdit, ActionBar, Icon } from '@imago/ui'
 	import { onMount } from 'svelte'
 	import CellText from '$lib/ui/tables/cell_text.svelte'
 	import CellTags from '$lib/ui/tables/cell_tags.svelte'
+	import { page } from '$app/state'
+	import CellEditor from '$lib/ui/tables/cell_editor.svelte'
+	import CellGroups from '$lib/ui/tables/cell_groups.svelte'
+	import CellBoolean from '$lib/ui/tables/cell_boolean.svelte'
+	import CellStatus from '$lib/ui/tables/cell_status.svelte'
 	let { data } = $props()
-	let selected = $state(-1)
-	const columns: (IColumnConfig & { id: keyof CkanDataset })[] = [
-		{
-			id: 'name',
-			header: 'Name',
-			sort: true,
-			cell: CellText,
-			resize: true
-		},
+	let selected = $derived(
+		data.datasets.result.results?.findIndex(
+			(dataset) => dataset.id === page.url.searchParams.get('edit')
+		) ?? -1
+	)
 
+	const columns: (IColumnConfig & { id: keyof CkanDataset })[] = [
 		{
 			id: 'title',
 			header: 'Title',
 			sort: true,
-			cell: CellText,
+			cell: CellEditor,
+			resize: true,
+			width: 600
+		},
+
+		{
+			id: 'state',
+			header: 'Status',
+			sort: true,
+			cell: CellStatus,
 			resize: true
 		},
 		{
@@ -51,7 +62,7 @@
 			id: 'groups',
 			header: 'Groups',
 			sort: true,
-			cell: CellTags,
+			cell: CellGroups,
 			resize: true
 		},
 		{
@@ -65,21 +76,14 @@
 			id: 'isopen',
 			header: 'Is open',
 			sort: true,
-			cell: CellText,
+			cell: CellBoolean,
 			resize: true
 		},
 		{
 			id: 'private',
 			header: 'Private',
 			sort: true,
-			cell: CellText,
-			resize: true
-		},
-		{
-			id: 'organization',
-			header: 'Organisation',
-			sort: true,
-			cell: CellText,
+			cell: CellBoolean,
 			resize: true
 		}
 	]
@@ -88,26 +92,29 @@
 	})
 </script>
 
-<BaseSection>
-	<div class="page">
-		<Title>Datasets</Title>
-		<div class="datasets" data-open={selected !== -1 ? true : undefined}>
-			{#if !Array.isArray(data.datasets.result)}
-				<div class="left-col">
-					<BaseTable
-						data={data.datasets.result.results}
-						{columns}
-						apiFn={(api) => {
-							api.on('select-row', (row) => {
-								const index = data.datasets.result.results.findIndex(
-									(record) => record.id === row.id
-								)
-								selected = index
-							})
-						}}
-					></BaseTable>
-				</div>
-				<div class="right-col">
+{#if !Array.isArray(data.datasets.result)}
+	<SectionEdit open={selected !== -1 ? true : undefined}>
+		{#snippet leftCol()}
+			<Title>Datasets</Title>
+			<div class="left-col">
+				<BaseTable data={data.datasets.result.results} {columns}></BaseTable>
+			</div>
+		{/snippet}
+		{#snippet rightCol()}
+			<ActionBar>
+				{#snippet left()}
+					<Button width="auto" href={page.url.pathname}>
+						<Icon icon={{ icon: 'arrow-narrow-left', set: 'tabler' }}></Icon>
+					</Button>
+				{/snippet}
+				{#snippet right()}
+					<Button width="auto">
+						<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+					</Button>
+				{/snippet}
+			</ActionBar>
+			{#if selected > -1}
+				<div class="edit">
 					{#if selected >= 0 && selected < data.datasets.result.results.length}
 						{@const dataset = data.datasets.result.results[selected]}
 						<DatasetCard
@@ -123,33 +130,12 @@
 					{/if}
 				</div>
 			{/if}
-		</div>
-	</div>
-</BaseSection>
+		{/snippet}
+	</SectionEdit>
+{/if}
 
 <style>
-	.page {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.datasets {
-		display: grid;
-		/* grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); */
-		grid-template-columns: minmax(0, 1fr) minmax(0, 0fr);
-		gap: 1rem;
-		transition: all 0.3s ease-in-out;
-	}
-	.datasets[data-open] {
-		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-	}
 	.left-col {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-
-	.right-col {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
