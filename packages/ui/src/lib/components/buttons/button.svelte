@@ -17,7 +17,8 @@
 		style = 'base',
 		type,
 		line_clamp,
-		umami_event
+		umami_event,
+		width = 'auto'
 	}: {
 		hover_label?: string
 		href?: string
@@ -32,8 +33,9 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square' | 'tag'
+		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square' | 'tag' | 'nav'
 		type?: 'button' | 'submit' | 'reset' | null
+		width?: 'full' | 'auto'
 		line_clamp?: boolean
 	} = $props()
 </script>
@@ -51,6 +53,7 @@
 		{onpointerdown}
 		{onpointerup}
 		data-umami-event={umami_event}
+		data-width={width}
 		target={target ? target : download ? '_blank' : undefined}
 	>
 		{@render leftCol?.()}
@@ -70,6 +73,7 @@
 		{type}
 		{onpointerdown}
 		{onpointerup}
+		data-width={width}
 		data-umami-event={umami_event}
 	>
 		{@render leftCol?.()}
@@ -178,7 +182,6 @@
 	.btn[data-style='clean-full'] {
 		justify-content: space-between;
 		align-items: center;
-		width: 100%;
 	}
 	.btn[data-style='square'] {
 		border: 1px solid var(--background-accent);
@@ -187,7 +190,6 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: var(--radius);
-		width: 100%;
 		aspect-ratio: 1 / 1;
 	}
 	.btn[data-style='square']:hover {
@@ -197,7 +199,6 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: var(--radius);
-		width: 100%;
 		aspect-ratio: 1 / 1;
 	}
 	.btn[data-style='square'].active {
@@ -212,7 +213,6 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: var(--radius);
-		width: 100%;
 	}
 	.btn[data-style='tag']:hover {
 		border: 1px solid var(--border-muted);
@@ -220,12 +220,23 @@
 		justify-content: center;
 		align-items: center;
 		border-radius: var(--radius);
-		width: 100%;
 	}
 	.btn[data-style='tag'].active {
 		color: var(--background-muted);
 		background-color: var(--border);
 		border: 1px solid var(--border);
+	}
+	.btn[data-style='nav'] {
+		padding: 0.25rem 0.5rem;
+		border-radius: var(--radius);
+	}
+	.btn[data-style='nav']:hover {
+		color: var(--background-muted);
+		background-color: var(--border-accent);
+		border-radius: var(--radius);
+	}
+	.btn[data-style='nav'].active {
+		background-color: var(--background-muted);
 	}
 	.btn[data-hover-label] {
 		position: relative;
@@ -239,7 +250,6 @@
 		transform: translate(0, -100%);
 		padding: 0.15rem;
 		border-radius: 0.15rem;
-		width: 100%;
 	}
 	.line-clamp {
 		overflow: hidden;
@@ -249,6 +259,10 @@
 		-webkit-line-clamp: 2;
 		text-align: left;
 	}
+	.btn[data-width='full'] {
+		width: 100%;
+	}
+
 	@media print {
 		.btn {
 			display: none;
