@@ -1,26 +1,27 @@
 <script lang="ts">
 	import { type ICellProps } from '@svar-ui/svelte-grid'
 	import { Paragraph } from '@imago/ui'
+	import { capitalise } from '@arturoguzman/art-ui'
 	import BaseCell from './base_cell.svelte'
-	import type { CkanGroup } from '$lib/types/ckan'
 	let { column, row }: ICellProps = $props()
 	const key = $derived(String(column['id']))
 </script>
 
 <BaseCell>
-	{#each row[key] as group}
-		<div class="label">
-			<Paragraph>
-				{group.display_name}
-			</Paragraph>
-		</div>
-	{/each}
+	<div class="label {row[key]}">
+		<Paragraph>{capitalise(row[key])}</Paragraph>
+	</div>
 </BaseCell>
 
 <style>
 	.label {
-		background-color: var(--background-muted);
+		padding: 0 0.25rem;
 		border-radius: var(--radius);
-		padding: 0 0.5rem;
+	}
+	.draft {
+		background-color: var(--warning-muted);
+	}
+	.active {
+		background-color: var(--positive-muted);
 	}
 </style>

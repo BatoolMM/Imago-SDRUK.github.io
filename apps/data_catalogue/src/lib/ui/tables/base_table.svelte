@@ -51,7 +51,7 @@
 		</div>
 	</div>
 	<div class="table">
-		<Grid {columns} data={filtered} {init}></Grid>
+		<Grid autoRowHeight {columns} data={filtered} {init}></Grid>
 	</div>
 {/if}
 
@@ -70,7 +70,7 @@
 		--wx-table-select-focus-background: var(--background-muted);
 		--wx-table-select-color: var(--text);
 		--wx-table-border: var(--border);
-		--wx-table-select-border: inset 3px 0 var(--border-accent);
+		/* --wx-table-select-border: inset 3px 0 var(--border-accent); */
 		--wx-table-header-border: var(--border-muted);
 		--wx-table-header-cell-border: var(--border);
 		--wx-table-footer-cell-border: var(--border);
@@ -85,11 +85,11 @@
 		display: block;
 		color: var(--text);
 	}
-
-	:global(.wx-row:not(.wx-selected) .wx-cell) {
-		background: var(--background-muted);
-	}
-	:global(.wx-row:not(.wx-selected) .wx-cell) {
-		background: var(--background-accent);
-	}
+	/**/
+	/* :global(.wx-row:not(.wx-selected) .wx-cell) { */
+	/* 	background: var(--background-muted); */
+	/* } */
+	/* :global(.wx-row:not(.wx-selected) .wx-cell) { */
+	/* 	background: var(--background-accent); */
+	/* } */
 </style>

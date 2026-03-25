@@ -18,11 +18,15 @@
 </script>
 
 <BaseCell>
-	<Paragraph size="sm"
-		>{key === 'status'
-			? statuses.find((status) => status.value === row[key])?.label
-			: String(row[key])}</Paragraph
-	>
+	{#if row[key] !== undefined && row[key] !== null}
+		<Paragraph size="sm"
+			>{key === 'status'
+				? statuses.find((status) => status.value === row[key])?.label
+				: String(row[key])}</Paragraph
+		>
+	{:else}
+		<Paragraph size="sm">-</Paragraph>
+	{/if}
 </BaseCell>
 
 <style>

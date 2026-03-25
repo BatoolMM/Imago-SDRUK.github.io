@@ -2,22 +2,29 @@
 	import { type ICellProps } from '@svar-ui/svelte-grid'
 	import { Paragraph } from '@imago/ui'
 	import BaseCell from './base_cell.svelte'
-	import type { CkanGroup } from '$lib/types/ckan'
+	import { jstr } from '@arturoguzman/art-ui'
 	let { column, row }: ICellProps = $props()
 	const key = $derived(String(column['id']))
 </script>
 
 <BaseCell>
-	{#each row[key] as group}
-		<div class="label">
-			<Paragraph>
-				{group.display_name}
-			</Paragraph>
-		</div>
-	{/each}
+	<div class="labels">
+		{#each row[key] as group}
+			<div class="label">
+				<Paragraph>
+					{group.title ?? group.object}
+				</Paragraph>
+			</div>
+		{/each}
+	</div>
 </BaseCell>
 
 <style>
+	.labels {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
 	.label {
 		background-color: var(--background-muted);
 		border-radius: var(--radius);
