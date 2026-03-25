@@ -72,7 +72,7 @@
 <style>
 	main {
 		min-height: calc(100lvh - var(--footer-height));
-		overflow-x: hidden;
+		/* overflow-x: hidden; */
 	}
 	.remaining {
 		position: fixed;
