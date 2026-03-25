@@ -77,7 +77,8 @@
 			active={true}
 			line_clamp
 			href={handleSearchParams({
-				remove: ['search']
+				remove: ['search'],
+				url: page.url
 			})}>Clear search</Button
 		>
 	{/if}
@@ -99,24 +100,6 @@
 							></Icon>
 						{/snippet}
 					</Button>
-
-					<!-- {#if filter.limit < filter.filters.result.length} -->
-					<!-- 	<Button -->
-					<!-- 		onclick={() => { -->
-					<!-- 			filter.limit = 999 -->
-					<!-- 		}} -->
-					<!-- 	> -->
-					<!-- 		+</Button -->
-					<!-- 	> -->
-					<!-- {:else} -->
-					<!-- 	<Button -->
-					<!-- 		onclick={() => { -->
-					<!-- 			filter.limit = 10 -->
-					<!-- 		}} -->
-					<!-- 	> -->
-					<!-- 		-</Button -->
-					<!-- 	> -->
-					<!-- {/if} -->
 				{/snippet}
 				{#if Array.isArray(filter.filters.result)}
 					<div class="accordion-buttons">
@@ -131,7 +114,8 @@
 										line_clamp
 										href={handleSearchParams({
 											add: [{ key: filter.query, value: result }],
-											remove: active ? [{ key: filter.query, value: result }] : undefined
+											remove: active ? [{ key: filter.query, value: result }] : undefined,
+											url: page.url
 										})}>{result}</Button
 									>
 								{/if}
@@ -148,7 +132,8 @@
 												add: [{ key: filter.query, value: result[filter.field] }],
 												remove: active
 													? [{ key: filter.query, value: result[filter.field] }]
-													: undefined
+													: undefined,
+												url: page.url
 											})}>{result.title}</Button
 										>
 									{/if}
