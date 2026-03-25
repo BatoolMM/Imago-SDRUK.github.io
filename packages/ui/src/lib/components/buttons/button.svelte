@@ -175,6 +175,10 @@
 		border-radius: var(--radius);
 		padding: 0.25rem;
 	}
+
+	.btn[data-style='clean']:hover {
+		background-color: var(--background);
+	}
 	.btn[data-style='clean'].active {
 		color: var(--background);
 		background-color: var(--quarternary);

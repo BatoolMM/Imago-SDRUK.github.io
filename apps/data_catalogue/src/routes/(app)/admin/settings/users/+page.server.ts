@@ -12,13 +12,16 @@ export const load = async ({ locals, fetch, url }) => {
 		relation: 'GET',
 		session: locals.session
 	})
-	const res = await fetch(`/api/v1/users`)
-	const { users } = (await res.json()) as { users: Identity[] }
-	const active_groups = await ketoRead.getRelationships({ namespace: 'Group' })
-	const ckan_groups = await locals.ckan.request(get('group_list'))
-	let groups = [...AUTH_GROUPS]
-	if (ckan_groups.success) {
-		groups = [...groups, ...ckan_groups.result]
+	const built_url = new URL(`${env.ORIGIN ?? 'http://127.0.0.1:5174'}/api/v1/users`)
+	const page_size = url.searchParams.get('page_size')
+	const per_page = url.searchParams.get('per_page') ?? '50'
+	const page = url.searchParams.get('page') ?? '0'
+	if (page_size) built_url.searchParams.append('page_size', page_size)
+	if (per_page) built_url.searchParams.append('per_page', per_page)
+	if (page) built_url.searchParams.append('page', page)
+	const res = await fetch(built_url)
+	const { users } = (await res.json()) as {
+		users: { first_name: string; last_name: string; id: string; email: string }[]
 	}
 	const edit = url.searchParams.get('edit')
 	let user = null
@@ -37,7 +40,6 @@ export const load = async ({ locals, fetch, url }) => {
 		answers = await fetch(`/api/v1/users/${edit}/answers`).then((res) => res.json())
 	}
 	return {
-		ckan_groups,
 		groups,
 		users: users.map((user) => ({
 			first_name: user.traits.name.first,

@@ -278,6 +278,16 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		overflow: scroll;
+		height: calc(100lvh - var(--footer-height));
+	}
+	.user-buttons {
+		display: flex;
+		flex-direction: column;
+		border-radius: var(--radius);
+		gap: 0.5rem;
+		background-color: var(--background-muted);
+		padding: 1rem;
 	}
 
 	.details {
@@ -306,5 +316,13 @@
 		gap: 0.5rem;
 		padding: 1rem;
 		border-radius: var(--radius);
+	}
+	.cards {
+		position: sticky;
+		top: 6rem;
+		left: 0;
+	}
+	.footer {
+		display: flex;
 	}
 </style>

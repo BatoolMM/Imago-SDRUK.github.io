@@ -16,8 +16,22 @@ export const GET = async ({ locals }) => {
 		object: '/api/v1/users',
 		relation: 'GET'
 	})
-	const users = await kratosRead.listIdentities()
-	return json({ users })
+	// const page_size = url.searchParams.get('page_size')
+	const page = url.searchParams.get('page')
+	const per_page = url.searchParams.get('per_page')
+	const users = await kratosRead.listIdentities({
+		page: page === null ? undefined : parseInt(page),
+		perPage: per_page === null ? undefined : parseInt(per_page)
+		// pageSize: page_size === null ? undefined : parseInt(page_size)
+	})
+	return json({
+		users: users.map((user) => ({
+			id: user.id,
+			email: user.traits.email,
+			first_name: user.traits.name.first,
+			last_name: user.traits.name.last
+		}))
+	})
 }
 
 export const POST = async ({ locals, request, cookies }) => {
