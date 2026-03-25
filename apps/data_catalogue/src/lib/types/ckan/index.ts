@@ -124,6 +124,14 @@ export type CkanDataset = {
 export type CkanDatastoreField = {
 	id: string
 	type: string
+	info: {
+		label: string
+		notes: string
+		type_override?: string
+		table_name?: string
+		propertyURL?: string
+		keywords?: string
+	}
 	schema: {
 		native_type: string
 		notnull: boolean
@@ -146,4 +154,21 @@ export type CkanDatastoreMetadata = {
 export type CkanDatastore = {
 	meta: CkanDatastoreMetadata
 	fields: CkanDatastoreField[]
+}
+
+export type CkanDatastoreCreate = {
+	resource_id: string // resource id that the data is going to be stored against
+	force?: boolean // set to True to edit a read-only table
+	resource?: {
+		package_id: string
+	} // resource dictionary that is passed to resource_create(). Use instead of resource_id (optional)
+	aliases?: string[] // names for read only aliases of the resource. (optional)
+	fields?: CkanDatastoreField[] // fields/columns and their extra metadata. (optional)
+	delete_fields?: boolean // set to True to remove existing fields not passed
+	records?: { [key: string]: string }[] // the data, eg: [{“dob”: “2005”, “some_stuff”: [“a”, “b”]}] (optional)
+	include_records?: boolean // return the full values of inserted records (optional, default: False)
+	primary_key?: string[] // fields that represent a unique key (optional)
+	indexes?: string[] // indexes on table (optional)
+	triggers?: { function: string }[] // trigger functions to apply to this table on update/insert. functions may be created with datastore_function_create(). eg: [ {“function”: “trigger_clean_reference”}, {“function”: “trigger_check_codes”}]
+	calculate_record_count?: boolean // updates the stored count of records, used to optimize datastore_search in combination with the total_estimation_threshold parameter. If doing a series of requests to change a resource, you only need to set this to True on the last request.
 }

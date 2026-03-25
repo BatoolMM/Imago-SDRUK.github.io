@@ -1,14 +1,10 @@
 import { db } from '$lib/db/index.js'
 import { resource_versions } from '$lib/db/schema/resources.js'
 import { SERVER_ERRORS } from '$lib/globals/server.js'
+import type { CSVW } from '$lib/types/csvw.js'
 import { authorise } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
-// import {
-// 	csvwToDatastore,
-// 	datastoreToCsvw,
-// 	testCSVW,
-// 	type CSVW
-// } from '$lib/utils/datastore/index.js'
+import { csvwToDatastore, datastoreToCsvw, testCSVW } from '$lib/utils/datastore/index.js'
 import { handleDBError } from '$lib/utils/db/index.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { getFields } from '@imago/ui'
@@ -48,14 +44,12 @@ export const load = async ({ locals, params }) => {
 		'url',
 		'datastore_active'
 	])
-	// let datastore: CSVW | null = null
-	// if (result.datastore_active) {
-	// 	const res = await locals.ckan.request(get('datastore_info', { resource_id: params.resource }))
-	// 	console.log(jstr(res))
-	// 	if (res.success) {
-	// 		datastore = datastoreToCsvw(res.result)
-	// 	}
-	// }
-	// const test = csvwToDatastore({ id: data.result.id, csvw: testCSVW })
-	return { data: { ...data, result }, versions }
+	let datastore: CSVW | null = null
+	if (result.datastore_active) {
+		const res = await locals.ckan.request(get('datastore_info', { resource_id: params.resource }))
+		if (res.success) {
+			datastore = datastoreToCsvw(res.result)
+		}
+	}
+	return { data: { ...data, result }, versions, datastore, structural_metadata: datastore }
 }

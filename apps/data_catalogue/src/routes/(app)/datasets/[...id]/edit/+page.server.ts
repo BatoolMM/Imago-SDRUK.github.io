@@ -4,7 +4,7 @@ import { authorise } from '$lib/utils/auth/index.js'
 import { create, get, patch, update } from '$lib/utils/ckan/ckan.js'
 import { jstr } from '@arturoguzman/art-ui'
 import slugify from '@sindresorhus/slugify'
-import { error } from '@sveltejs/kit'
+import { error, fail } from '@sveltejs/kit'
 
 export const load = async ({ params, locals }) => {
 	await authorise({
@@ -105,6 +105,20 @@ export const actions = {
 		log.debug(jstr(resource))
 		return {
 			message: `Resource successfully updated`
+		}
+	},
+
+	update_datastore: async ({ request, fetch }) => {
+		const form = await request.formData()
+		const id = form.get('id')
+		const res = await fetch(`/api/v1/resources/${id}/datastore`, {
+			method: 'POST',
+			body: form
+		})
+		const data = await res.json()
+		log.debug(jstr(data))
+		return {
+			message: data.message
 		}
 	}
 }

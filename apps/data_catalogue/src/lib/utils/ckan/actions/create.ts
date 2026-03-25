@@ -1,4 +1,9 @@
-import type { CkanDatastoreField, CkanResource } from '$lib/types/ckan'
+import type {
+	CkanDatastore,
+	CkanDatastoreCreate,
+	CkanDatastoreField,
+	CkanResource
+} from '$lib/types/ckan'
 
 type PackageCreate = [
 	'package_create',
@@ -181,25 +186,7 @@ type ApiTokenCreate = [
 	}
 ]
 
-export type DatastoreCreate = [
-	'datastore_create',
-	{
-		resource_id: string
-		force?: boolean
-		resource?: CkanResource
-		aliases?: string[]
-		fields?: CkanDatastoreField[]
-		delete_fields?: boolean
-		records?: Record<string, unknown>[]
-		include_records?: boolean
-		primary_key?: string[]
-		indexes?: string[]
-		triggers?: {
-			function: string
-		}[]
-		calculate_record_count?: boolean
-	}
-]
+export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate]
 
 export type CkanCreateActions =
 	| PackageCreate
@@ -217,3 +204,4 @@ export type CkanCreateActions =
 	| FollowDataset
 	| FollowGroup
 	| ApiTokenCreate
+	| DatastoreCreate
