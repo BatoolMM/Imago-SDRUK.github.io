@@ -37,20 +37,6 @@
 			var(--background-accent),
 			var(--background)
 		);
-		/* background: linear-gradient( */
-		/* 	to right, */
-		/* 	var(--quinary-muted) 0%, */
-		/* 	var(--quinary) 10%, */
-		/* 	var(--quinary-accent) 20%, */
-		/* 	var(--secondary-muted) 30%, */
-		/* 	var(--secondary) 40%, */
-		/* 	var(--secondary-accent) 50%, */
-		/* 	var(--quinary-accent) 60%, */
-		/* 	var(--secondary-accent) 70%, */
-		/* 	var(--secondary-muted) 80%, */
-		/* 	var(--quinary) 90%, */
-		/* 	var(--quinary-muted) 100% */
-		/* ); */
 		background-size: 200% 100%;
 		animation: moveGradient 1s linear infinite;
 		transform: translateY(0%);
