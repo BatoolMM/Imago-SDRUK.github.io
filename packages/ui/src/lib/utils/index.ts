@@ -19,17 +19,62 @@ export function formatBytes(bytes: number, decimals = 2) {
 	return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
+// export const handleSearchParams = ({
+// 	add,
+// 	remove
+// }: {
+// 	add?: { key: string; value: unknown; set?: boolean }[]
+// 	remove?: string[] | { key: string; value: unknown }[]
+// }) => {
+// 	const params = new URLSearchParams(page.url.searchParams.toString())
+// 	add?.forEach(({ key, value, set }) => {
+// 		if (params.has(key) && !set) {
+// 			params.append(key, String(value))
+// 		} else {
+// 			params.set(key, String(value))
+// 		}
+// 	})
+// 	remove?.forEach((key) => {
+// 		if (typeof key === 'string') {
+// 			params.delete(key)
+// 		} else {
+// 			const to_restore = params.getAll(key.key).filter((value) => value !== key.value)
+// 			params.delete(key.key)
+// 			to_restore.forEach((value) => params.append(key.key, value))
+// 		}
+// 	})
+// 	if (params.size > 0) {
+// 		return `?${params.toString()}`
+// 	}
+// 	return page.url.pathname
+// }
+
+/**
+ * Handle URL search parameters
+ **/
+
 export const handleSearchParams = ({
+	url,
 	add,
+	toggle,
 	remove
 }: {
+	url: URL
 	add?: { key: string; value: unknown; set?: boolean }[]
+	toggle?: { key: string; value: unknown }[]
 	remove?: string[] | { key: string; value: unknown }[]
 }) => {
-	const params = new URLSearchParams(page.url.searchParams.toString())
+	const params = new URLSearchParams(url.searchParams.toString())
 	add?.forEach(({ key, value, set }) => {
 		if (params.has(key) && !set) {
 			params.append(key, String(value))
+		} else {
+			params.set(key, String(value))
+		}
+	})
+	toggle?.forEach(({ key, value }) => {
+		if (params.has(key) && params.get(key) === value) {
+			params.delete(key)
 		} else {
 			params.set(key, String(value))
 		}
@@ -46,5 +91,5 @@ export const handleSearchParams = ({
 	if (params.size > 0) {
 		return `?${params.toString()}`
 	}
-	return page.url.pathname
+	return url.pathname
 }

@@ -1,3 +1,12 @@
+import type {
+	CkanDataset,
+	CkanDatastore,
+	CkanDatastoreCreate,
+	CkanDatastoreField,
+	CkanGroup,
+	CkanResource
+} from '$lib/types/ckan'
+
 type PackageCreate = [
 	'package_create',
 	{
@@ -22,7 +31,8 @@ type PackageCreate = [
 		relationships_as_subject?: Array<unknown> // relationship dictionaries
 		groups?: Array<{ id?: string; name?: string }> // the groups to which the dataset belongs
 		owner_org?: string // the id of the dataset's owning organization
-	}
+	},
+	CkanDataset
 ]
 
 type ResourceCreate = [
@@ -113,7 +123,8 @@ type GroupCreate = [
 		packages?: Array<{ name: string; title?: string }> // datasets that belong to the group
 		groups?: Array<{ name: string; capacity?: string }> // groups that belong to the group
 		users?: Array<{ name: string; capacity?: string }> // users that belong to the group
-	}
+	},
+	CkanGroup
 ]
 
 type OrganizationCreate = [
@@ -179,6 +190,8 @@ type ApiTokenCreate = [
 	}
 ]
 
+export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate]
+
 export type CkanCreateActions =
 	| PackageCreate
 	| ResourceCreate
@@ -195,3 +208,4 @@ export type CkanCreateActions =
 	| FollowDataset
 	| FollowGroup
 	| ApiTokenCreate
+	| DatastoreCreate

@@ -6,6 +6,21 @@ import { handleDBError } from '$lib/utils/db/index.js'
 import { error } from '@sveltejs/kit'
 import { json } from '@sveltejs/kit'
 
+export const GET = async ({ locals }) => {
+	await authorise({
+		namespace: 'Endpoint',
+		object: '/api/v1/questions',
+		relation: 'GET',
+		session: locals.session
+	})
+
+	const questions_data = await db
+		.select()
+		.from(questions)
+		.catch(handleDBError('Error reading questions'))
+	return json(questions_data)
+}
+
 export const POST = async ({ request, locals }) => {
 	await authorise({
 		namespace: 'Endpoint',

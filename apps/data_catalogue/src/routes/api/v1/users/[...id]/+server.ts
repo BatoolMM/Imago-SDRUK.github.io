@@ -5,7 +5,28 @@ import { users } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { handleDBError } from '$lib/utils/db'
 import { json } from '@sveltejs/kit'
-import { authorise, ketoRead, ketoWrite, kratosWrite } from '$lib/utils/auth'
+import { authorise, ketoRead, ketoWrite, kratosRead, kratosWrite } from '$lib/utils/auth'
+
+export const GET = async ({ locals, params }) => {
+	await authorise({
+		session: locals.session,
+		namespace: 'Endpoint',
+		object: '/api/v1/users',
+		relation: 'GET'
+	})
+	const user = await kratosRead.getIdentity({ id: params.id })
+	const user_metadata = await db.select().from(users).where(eq(users.id, params.id))
+	return json({
+		first_name: user.traits.name.first,
+		last_name: user.traits.name.last,
+		email: user.traits.email,
+		id: user.id,
+		preferences: user_metadata[0].preferences,
+		created_at: user_metadata[0].created_at,
+		updated_at: user_metadata[0].updated_at,
+		deleted_at: user_metadata[0].deleted_at
+	})
+}
 
 export const DELETE: RequestHandler = async ({ locals, params }) => {
 	await authorise({

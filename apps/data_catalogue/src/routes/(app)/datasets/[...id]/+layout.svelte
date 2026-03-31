@@ -12,7 +12,7 @@
 <div class="dataset-layout">
 	<nav>
 		{#each data.subroutes as { href, label }}
-			<Button {href}>{label}</Button>
+			<Button active={page.url.pathname === href} {href}>{label}</Button>
 		{/each}
 
 		{#if data.subroutes.length > 0}

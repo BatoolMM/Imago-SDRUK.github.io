@@ -6,6 +6,7 @@ import { log } from '$lib/utils/server/logger.js'
 import { db } from '$lib/db/index.js'
 import { resource_versions, resources } from '$lib/db/schema/resources.js'
 import { eq } from 'drizzle-orm'
+import { formGetStringOrUndefined } from '$lib/utils/forms/index.js'
 export const load = async ({ locals }) => {
 	if (!locals.session) {
 		return redirect(307, '/')
@@ -43,6 +44,57 @@ export const load = async ({ locals }) => {
 }
 
 export const actions = {
+	add_group: async ({ request, fetch }) => {
+		const form = await request.formData()
+		const relationship = {
+			namespace: 'Dataset',
+			object: formGetStringOrUndefined({ form, field: 'object' }),
+			relation: formGetStringOrUndefined({ form, field: 'relation' }),
+			subject_set: {
+				namespace: 'Group',
+				object: formGetStringOrUndefined({ form, field: 'subject_set_object' }),
+				relation: 'users'
+			}
+		}
+		const res = await fetch(`/api/v1/permissions/Dataset`, {
+			method: 'POST',
+			body: JSON.stringify(relationship)
+		})
+
+		if (res.ok) {
+			return {
+				message: `Added group ${relationship.subject_set.object} as ${relationship.relation} to dataset ${relationship.object}`
+			}
+		}
+		const error = await res.json()
+		return fail(res.status, { message: error.message })
+	},
+	remove_group: async ({ request, fetch }) => {
+		const form = await request.formData()
+		const relationship = {
+			namespace: 'Dataset',
+			object: formGetStringOrUndefined({ form, field: 'object' }),
+			relation: formGetStringOrUndefined({ form, field: 'relation' }),
+			subject_set: {
+				namespace: 'Group',
+				object: formGetStringOrUndefined({ form, field: 'subject_set_object' }),
+				relation: 'users'
+			}
+		}
+		const res = await fetch(`/api/v1/permissions/Dataset`, {
+			method: 'DELETE',
+			body: JSON.stringify(relationship)
+		})
+
+		if (res.ok) {
+			return {
+				message: `Removed group ${relationship.subject_set.object} as ${relationship.relation} to dataset ${relationship.object}`
+			}
+		}
+		const error = await res.json()
+		return fail(res.status, { message: error.message })
+		// return fail(res.status, { message: res.statusText })
+	},
 	edit_dataset_relationship: async ({ locals, request }) => {
 		if (!locals.session) {
 			return fail(401, { message: 'Unauthorised' })

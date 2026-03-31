@@ -108,3 +108,19 @@ const parseObject = (result: Record<PropertyKey, unknown | unknown[]>) =>
 			return acc
 		}, [])
 	)
+
+export const formGetStringOrNull = ({ form, field }: { form: FormData; field: string }) => {
+	const value = form.get(field)
+	if (typeof value !== 'string') {
+		return null
+	}
+	return value
+}
+
+export const formGetStringOrUndefined = ({ form, field }: { form: FormData; field: string }) => {
+	const value = form.get(field)
+	if (typeof value !== 'string') {
+		return undefined
+	}
+	return value
+}

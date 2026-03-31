@@ -83,7 +83,10 @@ export const get =
 	}
 
 export const create =
-	<T extends CkanCreateActions[0]>(action: T, body: Extract<CkanCreateActions, [T, unknown]>[1]) =>
+	<T extends CkanCreateActions[0]>(
+		action: T,
+		body: Extract<CkanCreateActions, [T, unknown, unknown]>[1]
+	) =>
 	async (client: CkanClient) => {
 		const url = processURL(client.url, `/api/3/action/${action}`)
 
@@ -100,7 +103,7 @@ export const create =
 			_body = JSON.stringify(body)
 		}
 		const res = await fetch(url, { method: 'POST', headers, body: _body })
-		const data = await handleCKANResponse(res)
+		const data = await handleCKANResponse<Extract<CkanCreateActions, [T, unknown, unknown]>[2]>(res)
 		return data
 	}
 

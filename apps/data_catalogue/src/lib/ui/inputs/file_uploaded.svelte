@@ -3,8 +3,10 @@
 	import { enhance } from '$app/forms'
 	import { invalidateAll } from '$app/navigation'
 	import { notify } from '$lib/stores/notify'
-	import { Accordion, Button, Icon, Input, Subtitle, Text, Textarea } from '@imago/ui'
+	import { Accordion, Button, Checkbox, Icon, Input, Subtitle, Text, Textarea } from '@imago/ui'
 	import { getDataset } from '$lib/context/dataset.svelte'
+	import Upload from './upload.svelte'
+	import FileInput from './file_input.svelte'
 
 	let {
 		file,
@@ -89,41 +91,81 @@
 					{/if}
 				</div>
 			{/snippet}
-			<form
-				method="post"
-				action="?/update_resource"
-				use:enhance={() => {
-					return async ({ result }) => {
-						if ('data' in result) {
-							notify.send(String(result.data.message))
+			<div class="forms">
+				<form
+					method="post"
+					action="?/update_resource"
+					use:enhance={() => {
+						return async ({ result }) => {
+							if ('data' in result) {
+								notify.send(String(result.data.message))
+							}
+							await invalidateAll()
 						}
-						await invalidateAll()
-					}
-				}}
-			>
-				<input type="text" hidden bind:value={file.id} name="id" />
+					}}
+				>
+					<input type="text" hidden bind:value={file.id} name="id" />
 
-				<div class="inputs">
-					<Input label="Name">
-						<Text name="name" bind:value={file.name}></Text>
-					</Input>
-					<Input label="Description">
-						<Textarea name="description" bind:value={file.description}></Textarea>
-					</Input>
-					<Input label="Format">
-						<Text name="format" bind:value={file.format}></Text>
-					</Input>
-				</div>
-				<div class="buttons">
-					<Button
-						type="button"
-						onclick={() => {
-							invalidateAll()
-						}}>Cancel</Button
-					>
-					<Button>Submit</Button>
-				</div>
-			</form>
+					<div class="inputs">
+						<Input label="Name">
+							<Text name="name" bind:value={file.name}></Text>
+						</Input>
+						<Input label="Description">
+							<Textarea name="description" bind:value={file.description}></Textarea>
+						</Input>
+						<Input label="Format">
+							<Text name="format" bind:value={file.format}></Text>
+						</Input>
+					</div>
+					<div class="buttons">
+						<Button
+							type="button"
+							onclick={() => {
+								invalidateAll()
+							}}>Cancel</Button
+						>
+						<Button>Submit</Button>
+					</div>
+				</form>
+				<form
+					method="post"
+					action="?/update_datastore"
+					enctype="multipart/form-data"
+					use:enhance={() => {
+						return async ({ result }) => {
+							if ('data' in result) {
+								notify.send(String(result.data.message))
+							}
+							await invalidateAll()
+						}
+					}}
+				>
+					<input type="text" hidden bind:value={file.id} name="id" />
+					<div class="inputs">
+						<FileInput label="Structural metadata" name="file" enable_previews={false}></FileInput>
+						<Input label="Override fields">
+							<Checkbox name="override"></Checkbox>
+						</Input>
+					</div>
+					<div class="buttons">
+						<Button
+							type="button"
+							onclick={() => {
+								invalidateAll()
+							}}>Cancel</Button
+						>
+						<Button>Submit</Button>
+					</div>
+				</form>
+			</div>
+			<!-- <Button -->
+			<!-- 	onclick={async () => { -->
+			<!-- 		await fetch(`/api/v1/resources/${file.id}/datastore`, { method: 'POST' }) -->
+			<!-- 			.then((res) => res.json()) -->
+			<!-- 			.then((res) => console.log(res)) -->
+			<!-- 			.catch((err) => console.log(err)) -->
+			<!-- 	}}>Upload datastore</Button -->
+			<!-- > -->
 		</Accordion>
 	</div>
 </div>
@@ -150,5 +192,10 @@
 		display: flex;
 		justify-content: space-between;
 		gap: 0.5rem;
+	}
+	.forms {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
 	}
 </style>

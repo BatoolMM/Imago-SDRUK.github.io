@@ -1,12 +1,11 @@
 <script lang="ts">
-	import { BaseCard, Paragraph, Button, Icon, Subtitle } from '@imago/ui'
+	import { Paragraph, Button, Icon, Subtitle, ActionBar } from '@imago/ui'
 	import type { Relationship, Relationships } from '@ory/client-fetch'
-	import Dialog from './dialog.svelte'
-	import { toggleDialog } from '$lib/utils/ui'
-	import { invalidateAll } from '$app/navigation'
 	import { notify } from '$lib/stores/notify'
 	import type { CkanDataset, CkanResource } from '$lib/types/ckan'
 	import { AVAILABLE_RELATIONS } from '$lib/globals/auth'
+	import { capitalise, jstr } from '@arturoguzman/art-ui'
+	import { applyAction, enhance } from '$app/forms'
 
 	let {
 		dataset,
@@ -19,14 +18,14 @@
 		relationships: Relationships['relation_tuples']
 		resources: (CkanResource & { downloads?: number })[]
 	} = $props()
-	let selected_group = $state('')
-	const available_relations = [
-		...new Set([
-			...(relationships?.map((relation) => relation.relation) ?? []),
-			...AVAILABLE_RELATIONS
-		])
-	].sort()
-	let relation: 'admins' | 'viewers' | 'editors' | '' = ''
+	const available_relations = $derived(
+		[
+			...new Set([
+				...(relationships?.map((relation) => relation.relation) ?? []),
+				...AVAILABLE_RELATIONS
+			])
+		].sort()
+	)
 	const getRelationshipGroups = (relationships: Relationships['relation_tuples']) => {
 		return relationships?.reduce(
 			(acc, relationship) => {
@@ -44,149 +43,163 @@
 			{} as { [k: string]: Relationship[] }
 		)
 	}
-	let relations = getRelationshipGroups(relationships)
+	let relations = $derived.by(() => getRelationshipGroups(relationships))
 	let active_related = $state('')
 </script>
 
-<BaseCard overflow border rounded>
-	<div class="user-card">
-		<div class="section">
-			<div class="section-title">
-				<Subtitle>Dataset</Subtitle>
-			</div>
-			<div class="user-information">
-				<Paragraph>ID: {dataset.id}</Paragraph>
-				<Paragraph>Name: {dataset.name}</Paragraph>
-				<Paragraph>Title: {dataset.title}</Paragraph>
-			</div>
+<div class="user-card">
+	<div class="section">
+		<div class="section-title">
+			<Subtitle size="lg">Dataset</Subtitle>
 		</div>
+		<div class="user-information">
+			<Paragraph>ID: {dataset.id}</Paragraph>
+			<Paragraph>Name: {dataset.name}</Paragraph>
+			<Paragraph>Title: {dataset.title}</Paragraph>
+		</div>
+	</div>
 
-		{#if resources.length > 0}
-			<div class="section">
-				<div class="resources">
-					<Subtitle>Resources</Subtitle>
-					<div class="resources-table">
-						<Paragraph>Name</Paragraph>
-						<Paragraph>Downloads</Paragraph>
-						{#each resources as resource}
-							<div class="resource">
-								<Paragraph>{resource.name}</Paragraph>
-								<Paragraph>{resource.downloads}</Paragraph>
-							</div>
-						{/each}
-					</div>
+	{#if resources.length > 0}
+		<div class="section">
+			<div class="resources">
+				<Subtitle>Resources</Subtitle>
+				<div class="resources-table">
+					<Paragraph>Name</Paragraph>
+					<Paragraph>Downloads</Paragraph>
+					{#each resources as resource}
+						<div class="resource">
+							<Paragraph>{resource.name}</Paragraph>
+							<Paragraph>{resource.downloads}</Paragraph>
+						</div>
+					{/each}
 				</div>
 			</div>
-		{/if}
-		<div class="section">
-			<div class="section-title">
-				<Subtitle>Groups</Subtitle>
-			</div>
-			<div class="groups">
-				{#each available_relations as ar}
-					<div class="relation-title">
-						<Paragraph>{ar}</Paragraph>
-						<Button
-							active={active_related === ar}
-							onclick={() => {
-								if (active_related === ar) {
-									active_related = ''
-									return
-								}
-								active_related = ar
-							}}><Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon></Button
-						>
-					</div>
+		</div>
+	{/if}
+	<div class="section">
+		<div class="section-title">
+			<Subtitle>Groups</Subtitle>
+		</div>
+		<div class="groups">
+			{#each available_relations as ar}
+				<div class="relation-group">
+					<ActionBar>
+						{#snippet left()}
+							<Paragraph>{capitalise(ar)}</Paragraph>
+						{/snippet}
+						{#snippet right()}
+							<Button
+								width="auto"
+								active={active_related === ar}
+								onclick={() => {
+									if (active_related === ar) {
+										active_related = ''
+										return
+									}
+									active_related = ar
+								}}><Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon></Button
+							>
+						{/snippet}
+					</ActionBar>
 					<div class="buttons">
-						{#if relations}
-							{#if ar in relations}
-								{#each relations[ar] as relation}
-									<Button>{relation.subject_id ?? relation.subject_set?.object}</Button>
+						{#if active_related !== ar}
+							<div class="relations">
+								{#if relations}
+									{#if ar in relations}
+										{#each relations[ar] as relation}
+											<div class="wrapper">
+												<Paragraph style="label">
+													{relation.subject_id ?? relation.subject_set?.object}
+												</Paragraph>
+											</div>
+										{/each}
+									{/if}
+								{/if}
+							</div>
+						{/if}
+						{#if active_related === ar}
+							<Paragraph>Existing groups</Paragraph>
+							<div class="editing">
+								{#if relations}
+									{#if ar in relations}
+										{#each relations[ar] as relation}
+											<form
+												action="?/remove_group"
+												method="post"
+												use:enhance={() => {
+													return async ({ result, update }) => {
+														if ('data' in result && result.data) {
+															if ('errors' in result.data) {
+																notify.send(String(jstr(result.data.errors)))
+															}
+															if ('message' in result.data) {
+																notify.send(String(result.data.message))
+															}
+														}
+														if (result.type === 'redirect') {
+															applyAction(result)
+														}
+														await update({ reset: true, invalidateAll: true })
+													}
+												}}
+											>
+												<input type="hidden" value={dataset.name} name="object" />
+												<input type="hidden" value={ar} name="relation" />
+												<input
+													type="hidden"
+													value={relation.subject_id ?? relation.subject_set?.object}
+													name="subject_set_object"
+												/>
+												<Button width="auto" style="tag" onclick={() => {}}
+													>{relation.subject_id ?? relation.subject_set?.object}</Button
+												>
+											</form>
+										{/each}
+									{/if}
+								{/if}
+							</div>
+							<Paragraph>Available groups</Paragraph>
+							<div class="editing">
+								{#each groups.filter((group) => {
+									if (relations && ar in relations && relations[ar].find((relation) => relation.subject_set?.object === group)) {
+										return false
+									}
+									return true
+								}) as group}
+									<form
+										action="?/add_group"
+										method="post"
+										use:enhance={() => {
+											return async ({ result, update }) => {
+												if ('data' in result && result.data) {
+													if ('errors' in result.data) {
+														notify.send(String(jstr(result.data.errors)))
+													}
+													if ('message' in result.data) {
+														notify.send(String(result.data.message))
+													}
+												}
+												if (result.type === 'redirect') {
+													applyAction(result)
+												}
+												await update({ reset: true, invalidateAll: true })
+											}
+										}}
+									>
+										<input type="hidden" value={dataset.name} name="object" />
+										<input type="hidden" value={ar} name="relation" />
+										<input type="hidden" value={group} name="subject_set_object" />
+										<Button width="auto">{group}</Button>
+									</form>
 								{/each}
-							{/if}
+							</div>
 						{/if}
 					</div>
-					{#if active_related === ar}
-						<div class="buttons buttons-add">
-							{#each groups.filter((group) => {
-								if (relations && ar in relations && relations[ar].find((relation) => relation.subject_set?.object === group)) {
-									return false
-								}
-								return true
-							}) as group}
-								<Button
-									onclick={async () => {
-										const relationship: Relationship = {
-											namespace: 'Dataset',
-											object: dataset.name,
-											relation: ar,
-											subject_set: {
-												namespace: 'Group',
-												object: group,
-												relation: 'users'
-											}
-										}
-										const res = await fetch(`/api/v1/permissions/Dataset`, {
-											method: 'POST',
-											body: JSON.stringify(relationship)
-										})
-										const data = await res.json()
-										if (data.message === 'ok') {
-											notify.send({
-												message: `${group} has been added as a ${relation} to dataset ${dataset.title}`
-											})
-											await invalidateAll()
-										}
-									}}>{group}</Button
-								>
-							{/each}
-						</div>
-					{/if}
-				{/each}
-			</div>
+				</div>
+			{/each}
 		</div>
 	</div>
-</BaseCard>
-<Dialog id="remove-dataset-group-{dataset.id}">
-	<div class="dialog">
-		<Subtitle size="md"
-			>Are you sure you want to remove {dataset.name} from {selected_group}</Subtitle
-		>
-		<div class="buttons">
-			<Button
-				type="button"
-				onclick={() => {
-					selected_group = ''
-					toggleDialog(`remove-dataset-group-${dataset.id}`)
-				}}>Cancel</Button
-			>
-			<Button
-				onclick={async () => {
-					const relationship: Relationship = {
-						namespace: 'Dataset',
-						object: dataset.id,
-						relation: relation,
-						subject_set: {
-							namespace: 'Group',
-							object: 'grrrr',
-							relation: 'users'
-						}
-					}
-					const res = await fetch(`/api/v1/permissions/Dataset`, {
-						method: 'DELETE',
-						body: JSON.stringify(relationship)
-					})
-					const data = await res.json()
-					if (data.message === 'ok') {
-						selected_group = ''
-						toggleDialog(`remove-dataset-group-${dataset.id}`)
-						await invalidateAll()
-					}
-				}}>Remove</Button
-			>
-		</div>
-	</div>
-</Dialog>
+</div>
 
 <style>
 	.user-card {
@@ -233,26 +246,30 @@
 		display: grid;
 		gap: 0.25rem;
 	}
-	.relation-title {
-		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		padding: 0;
-	}
-
-	.dialog {
+	.relation-group {
+		/* background-color: var(--background-muted); */
+		padding: 1rem;
+		border-radius: var(--radius);
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 	}
+
 	.buttons {
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
 		gap: 1rem;
 	}
-	.buttons-add {
+	.editing {
 		background-color: var(--background-muted);
-		padding: 0.5rem;
+		display: flex;
+		gap: 0.5rem;
+		padding: 1rem;
 		border-radius: var(--radius);
+		flex-wrap: wrap;
+	}
+	.relations {
+		display: flex;
+		gap: 0.5rem;
 	}
 </style>

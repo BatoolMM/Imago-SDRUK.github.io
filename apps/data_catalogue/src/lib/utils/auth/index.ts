@@ -11,6 +11,7 @@ import {
 } from '@ory/client-fetch'
 import { error } from '@sveltejs/kit'
 import { DateTime } from 'luxon'
+import { jstr } from '@arturoguzman/art-ui'
 
 export const handleOryResponse = async (response: Response) => {
 	const contentType = response.headers.get('content-type')
@@ -114,17 +115,16 @@ export const authorise = async ({
 		}
 		error(...SERVER_ERRORS[401])
 	}
-	// log.debug(
-	// 	`EVALUATING: ${jstr({
-	// 		session,
-	// 		namespace,
-	// 		object,
-	// 		relation,
-	// 		subjectSetNamespace,
-	// 		subjectSetObject,
-	// 		subjectSetRelation
-	// 	})}`
-	// )
+	log.trace({
+		message: `Evaluating`,
+		session,
+		namespace,
+		object,
+		relation,
+		subjectSetNamespace,
+		subjectSetObject,
+		subjectSetRelation
+	})
 	if (subjectSetNamespace) {
 		const permission = await ketoCheck
 			.checkPermission({
@@ -169,4 +169,10 @@ export const authorise = async ({
 		log.debug(permission)
 		error(...SERVER_ERRORS[401])
 	}
+}
+
+export const handleKetoError = async (err: { response: Response }) => {
+	const _error = await err.response.json()
+	log.error(_error)
+	error(err.response.status, { message: err.response.statusText, id: 'ory-error' })
 }

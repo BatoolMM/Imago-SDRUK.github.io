@@ -6,13 +6,15 @@
 		text,
 		size = 'md',
 		current_colour,
-		align = 'left'
+		align = 'left',
+		style = 'base'
 	}: {
 		text?: string
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
 		align?: 'left' | 'centre' | 'right'
 		children?: Snippet
 		current_colour?: boolean
+		style?: 'base' | 'label'
 	} = $props()
 </script>
 
@@ -20,6 +22,7 @@
 	<span
 		class="paragraph prose"
 		data-size={size}
+		data-style={style}
 		data-current-colour={current_colour ? current_colour : undefined}
 		data-align={align ? align : undefined}
 	>
@@ -30,6 +33,7 @@
 	<p
 		class="paragraph prose"
 		data-size={size}
+		data-style={style}
 		data-current-colour={current_colour ? current_colour : undefined}
 		data-align={align ? align : undefined}
 	>
@@ -85,5 +89,10 @@
 	}
 	.paragraph[data-align='right'] {
 		text-align: right;
+	}
+	.paragraph[data-style='label'] {
+		background-color: var(--background-muted);
+		border-radius: var(--radius);
+		padding: 0.25rem 0.5rem;
 	}
 </style>

@@ -33,8 +33,10 @@
 	let {
 		style,
 		children
-	}: { children?: Snippet; style?: 'base' | 'bleed' | 'break' | 'full-page' | 'slim' | 'large' } =
-		$props()
+	}: {
+		children?: Snippet
+		style?: 'base' | 'bleed' | 'break' | 'full-page' | 'slim' | 'large' | 'extra-large'
+	} = $props()
 </script>
 
 <section data-style={style} in:fly={{ y: 40 }}>
@@ -86,6 +88,12 @@
 	section[data-style='large'] {
 		width: min(100lvw - 1rem, 1440px);
 		margin-inline: auto;
+	}
+
+	section[data-style='extra-large'] {
+		width: min(100lvw - 1rem, 1980px);
+		margin-inline: auto;
+		min-height: 100lvh;
 	}
 
 	@media (min-width: 768px) {

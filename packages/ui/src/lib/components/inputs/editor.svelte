@@ -11,7 +11,7 @@
 	let {
 		content = $bindable(),
 		style = 'border'
-	}: { content?: string; style?: 'border' | 'floating' } = $props()
+	}: { content?: string | null; style?: 'border' | 'floating' } = $props()
 	let bubble_menu: HTMLDivElement | null = $state(null)
 	let element: HTMLDivElement | null = $state(null)
 	let editor_state: { editor: Editor | null } = $state({ editor: null })

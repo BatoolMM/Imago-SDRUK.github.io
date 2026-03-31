@@ -4,17 +4,6 @@
 	let { data } = $props()
 </script>
 
-<BaseSection>
-	<div class="page">
-		<Title>Admin settings</Title>
-		<div class="routes">
-			{#each data.routes.filter((route) => route.href === page.url.pathname)[0].subpaths as route}
-				<Button href={route.href}>{route.label}</Button>
-			{/each}
-		</div>
-	</div>
-</BaseSection>
-
 <style>
 	.page {
 		display: flex;

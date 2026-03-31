@@ -251,6 +251,19 @@ type ConfigOptionUpdate = [
 	}
 ]
 
+type DatastoreUpsert = [
+	'datastore_upsert',
+	{
+		resource_id: string // resource id that the data is going to be stored under
+		force?: boolean // set to True to edit a read-only table
+		records?: Record<string, unknown>[] // the data, eg: [{“dob”: “2005”, “some_stuff”: [“a”,”b”]}] (optional)
+		include_records?: boolean // return the full values of inserted records (optional, default: False)
+		method?: 'upsert' | 'insert' | 'update' // the method to use to put the data into the datastore. Possible options are: upsert, insert, update (optional, default: upsert)
+		calculate_record_count?: boolean // updates the stored count of records, used to optimize datastore_search in combination with the total_estimation_threshold parameter. If doing a series of requests to change a resource, you only need to set this to True on the last request.
+		dry_run?: boolean // set to True to abort transaction instead of committing, e.g. to check for validation or type errors.
+	}
+]
+
 export type CkanUpdateActions =
 	| ResourceUpdate
 	| ResourceViewUpdate
@@ -272,3 +285,4 @@ export type CkanUpdateActions =
 	| BulkUpdatePublic
 	| BulkUpdateDelete
 	| ConfigOptionUpdate
+	| DatastoreUpsert

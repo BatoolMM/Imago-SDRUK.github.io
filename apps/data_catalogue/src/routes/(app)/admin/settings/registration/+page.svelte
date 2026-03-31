@@ -35,50 +35,48 @@
 	}
 </script>
 
-<BaseSection>
-	<div class="page">
-		<div class="left-col">
-			<Title size="lg">Add a question</Title>
-			<form
-				class="form"
-				action="?/create_question"
-				method="post"
-				use:enhance={() => {
-					return async ({ result, update }) => {
-						if ('data' in result && result.data) {
-							if ('errors' in result.data) {
-								notify.send(String(jstr(result.data.errors)))
-							}
-							if ('message' in result.data) {
-								notify.send(String(result.data.message))
-							}
+<div class="page">
+	<div class="left-col">
+		<Title>Add a question</Title>
+		<form
+			class="form"
+			action="?/create_question"
+			method="post"
+			use:enhance={() => {
+				return async ({ result, update }) => {
+					if ('data' in result && result.data) {
+						if ('errors' in result.data) {
+							notify.send(String(jstr(result.data.errors)))
 						}
-						if (result.type === 'redirect') {
-							applyAction(result)
+						if ('message' in result.data) {
+							notify.send(String(result.data.message))
 						}
-
-						await update({ reset: true, invalidateAll: true })
-						resetQuestion()
 					}
-				}}
-			>
-				<div class="inputs">
-					<QuestionInputs questions={data.questions} bind:question bind:type></QuestionInputs>
-				</div>
-				<div class="buttons">
-					<Button type="reset">Clear</Button>
-					<Button type="submit">Save</Button>
-				</div>
-			</form>
-		</div>
-		<div class="right-col">
-			<Title size="md">Existing questions</Title>
-			{#each questions as question, index (question.id)}
-				<CardQuestion {questions} bind:question={questions[index]}></CardQuestion>
-			{/each}
-		</div>
+					if (result.type === 'redirect') {
+						applyAction(result)
+					}
+
+					await update({ reset: true, invalidateAll: true })
+					resetQuestion()
+				}
+			}}
+		>
+			<div class="inputs">
+				<QuestionInputs questions={data.questions} bind:question bind:type></QuestionInputs>
+			</div>
+			<div class="buttons">
+				<Button type="reset">Clear</Button>
+				<Button type="submit">Save</Button>
+			</div>
+		</form>
 	</div>
-</BaseSection>
+	<div class="right-col">
+		<Title size="md">Existing questions</Title>
+		{#each questions as question, index (question.id)}
+			<CardQuestion {questions} bind:question={questions[index]}></CardQuestion>
+		{/each}
+	</div>
+</div>
 
 <style>
 	.page {

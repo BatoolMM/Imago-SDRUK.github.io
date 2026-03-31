@@ -2,7 +2,7 @@
 	import { debug } from '$lib/globals/dev.svelte'
 	import Debug from '$lib/ui/cards/debug.svelte'
 	import Logos from '$lib/ui/cards/logos.svelte'
-	import { Button, DynamicNav, Footer } from '@imago/ui'
+	import { Button, DynamicNav } from '@imago/ui'
 	let { children, data } = $props()
 </script>
 

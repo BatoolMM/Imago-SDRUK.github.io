@@ -4,7 +4,21 @@ import { jstr } from '@arturoguzman/art-ui'
 import slugify from '@sindresorhus/slugify'
 import { error, json } from '@sveltejs/kit'
 
-export const DELETE = async ({ locals, request, params }) => {
+export const GET = async ({ locals, params }) => {
+	await authorise({
+		namespace: 'Group',
+		session: locals.session,
+		object: params.id,
+		relation: 'users'
+	})
+	const group = await locals.ckan.request(get('group_show', { id: params.id }))
+	if (!group.success) {
+		error(400, { message: 'Error reading group', id: 'reading-group' })
+	}
+	return json(group)
+}
+
+export const DELETE = async ({ locals, params }) => {
 	await authorise({
 		namespace: 'Endpoint',
 		session: locals.session,
