@@ -124,3 +124,12 @@ export const formGetStringOrUndefined = ({ form, field }: { form: FormData; fiel
 	}
 	return value
 }
+
+export const safeJSONParse = (value: string) => {
+	try {
+		return JSON.parse(value)
+	} catch (err) {
+		console.log(err)
+		return null
+	}
+}
