@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.5
+### Patch Changes
+
+- 9ac9e19: Revamp admin page, add tables for data, move fetch operations to forms, move form logic to endpoint for future rest/cli integration
+
 ## 2.1.4
 ### Patch Changes
 

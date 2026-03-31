@@ -1,5 +1,10 @@
 # website
 
+## 2.0.25
+### Patch Changes
+
+- abe3b84: feat: add new role
+
 ## 2.0.24
 ### Patch Changes
 
