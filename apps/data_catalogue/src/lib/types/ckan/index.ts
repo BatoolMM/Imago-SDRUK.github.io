@@ -88,6 +88,93 @@ export type CkanOrganisation = {
 	state: string
 }
 
+export type CkanDatasetRequest = {
+	/**
+	 * must be between 2 and 100 characters long and contain only lowercase alphanumeric characters, - and _
+	 **/
+	name: string
+	/**
+	 *  the title of the dataset (optional, default: same as name)
+	 **/
+	title?: string
+	/**
+	 * If true creates a private dataset
+	 **/
+	private?: boolean
+	/**
+	 *  the name of the dataset's author
+	 **/
+	author?: string
+	/**
+	 *  the email address of the dataset's author
+	 **/
+	author_email?: string
+	/**
+	 *  the name of the dataset's maintainer
+	 **/
+	maintainer?: string
+	/**
+	 *  the email address of the dataset's maintainer
+	 **/
+	maintainer_email?: string
+	/**
+	 *  the id of the dataset's license
+	 **/
+	license_id?: string
+	/**
+	 *  a description of the dataset
+	 **/
+	notes?: string
+	/**
+	 *  a URL for the dataset's source
+	 **/
+	url?: string
+	/**
+	 *  no longer than 100 characters
+	 **/
+	version?: string
+	/**
+	 *  the current state of the dataset, e.g. 'active' or 'deleted'
+	 **/
+	state?: string
+	/**
+	 *  the type of the dataset
+	 **/
+	type?: string
+	/**
+	 *  the dataset's resources
+	 **/
+	resources?: unknown[]
+	/**
+	 *  the dataset's tags
+	 **/
+	tags?: unknown[]
+	/**
+	 *  the dataset's extras (arbitrary key:value metadata)
+	 **/
+	extras?: { key: string; value: string }[]
+	/**
+	 *  private package data belonging to plugins
+	 **/
+	plugin_data?: Record<string, unknown>
+	/**
+	 *  relationship dictionaries
+	 **/
+	relationships_as_object?: unknown[]
+	/**
+	 *  relationship dictionaries
+	 **/
+	relationships_as_subject?: unknown[]
+	/**
+	 *  the groups to which the dataset belongs
+	 **/
+	groups?: { id?: string; name?: string }[]
+	/**
+	 *  the id of the dataset's owning organization
+	 **/
+	owner_org?: string
+}
+
 export type CkanDataset = {
 	author?: string | null
 	author_email?: string | null
