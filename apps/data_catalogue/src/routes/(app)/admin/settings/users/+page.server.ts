@@ -1,10 +1,9 @@
-import { error, fail } from '@sveltejs/kit'
+import { fail } from '@sveltejs/kit'
 import { log } from '$lib/utils/server/logger.js'
 import { authorise, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
+import { formGetStringOrUndefined } from '$lib/utils/forms/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
-import type { Identity } from '@ory/client-fetch'
-import { formGetStringOrUndefined } from '$lib/utils/forms/index.js'
 export const load = async ({ locals, fetch, url }) => {
 	await authorise({
 		namespace: 'Endpoint',
@@ -12,14 +11,14 @@ export const load = async ({ locals, fetch, url }) => {
 		relation: 'GET',
 		session: locals.session
 	})
-	const built_url = new URL(`${env.ORIGIN ?? 'http://127.0.0.1:5174'}/api/v1/users`)
+	const built_url = new URL(`https://127.0.0.1/api/v1/users`)
 	const page_size = url.searchParams.get('page_size')
 	const per_page = url.searchParams.get('per_page') ?? '50'
 	const page = url.searchParams.get('page') ?? '0'
 	if (page_size) built_url.searchParams.append('page_size', page_size)
 	if (per_page) built_url.searchParams.append('per_page', per_page)
 	if (page) built_url.searchParams.append('page', page)
-	const res = await fetch(built_url)
+	const res = await fetch(built_url.pathname)
 	const { users } = (await res.json()) as {
 		users: { first_name: string; last_name: string; id: string; email: string }[]
 	}
@@ -39,17 +38,23 @@ export const load = async ({ locals, fetch, url }) => {
 		}
 		answers = await fetch(`/api/v1/users/${edit}/answers`).then((res) => res.json())
 	}
+	const ckan_groups = await locals.ckan.request(get('group_list'))
+	const groups = [...AUTH_GROUPS, ...(ckan_groups.success ? ckan_groups.result : [])]
 	return {
 		groups,
-		users: users.map((user) => ({
-			first_name: user.traits.name.first,
-			last_name: user.traits.name.last,
-			email: user.traits.email,
-			id: user.id,
-			groups: active_groups.relation_tuples?.filter(
-				(relation) => relation.relation === 'users' && relation.subject_id === user.id
+		users: await Promise.all(
+			users.map((user) =>
+				fetch(`/api/v1/users/${user.id}/groups`)
+					.then((res) => res.json())
+					.then((groups) => ({
+						first_name: user.first_name,
+						last_name: user.last_name,
+						email: user.email,
+						id: user.id,
+						groups: groups?.['relation_tuples'] ?? []
+					}))
 			)
-		})),
+		),
 		user,
 		answers
 	}

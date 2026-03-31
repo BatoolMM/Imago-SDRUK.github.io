@@ -9,7 +9,7 @@ import { log } from '$lib/utils/server/logger.js'
 import { json } from '@sveltejs/kit'
 import { error } from '@sveltejs/kit'
 
-export const GET = async ({ locals }) => {
+export const GET = async ({ locals, url }) => {
 	await authorise({
 		session: locals.session,
 		namespace: 'Endpoint',
