@@ -4,7 +4,7 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import licenses from '$lib/utils/ckan/licenses.json'
 
 import { ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
-import { SERVER_ERRORS } from '$lib/globals/server.js'
+import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
@@ -112,20 +112,43 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 }
 
 export const actions = {
-	create: async ({ locals, request, fetch }) => {
+	create: async ({ request, fetch }) => {
 		const form = await request.formData()
-		const title = String(form.get('title'))
-		const group = String(form.get('group'))
+		const group = formGetStringOrUndefined({ form, field: 'group' })
+		const file = form.get('file')
+		let payload = {
+			title: formGetStringOrUndefined({ form, field: 'title' }),
+			groups: group ? [JSON.parse(group)] : undefined
+		}
+		if (file && file instanceof File && file.size > 0) {
+			if (file.type !== 'application/json') {
+				return fail(400, { message: 'File must be a json file' })
+			}
+			if (file.size > 2000000) {
+				return fail(400, { message: 'File must be less than 2MB' })
+			}
+			const file_text = await file.text()
+			const text_parse = await safeJSONParse(file_text)
+			if (!text_parse) {
+				return fail(400, { message: 'File must be a valid json file' })
+			}
+			if (typeof text_parse !== 'object' && text_parse !== null) {
+				return fail(400, { message: 'File must be a valid json file' })
+			}
+			if (Object.keys(text_parse).length === 0) {
+				return fail(400, { message: 'File must contain data' })
+			}
+			payload = text_parse
+		}
 		const res = await fetch(`/api/v1/datasets`, {
 			method: 'POST',
-			body: JSON.stringify({ title, group })
+			body: JSON.stringify(payload)
 		})
 		const data = await res.json()
 		if (res.ok) {
 			redirect(307, data.data.url)
 		}
-		error(...SERVER_ERRORS[500])
-		// return redirect(307, `/datasets/${dataset.result.name}/edit`)
+		return fail(res.status, data)
 	},
 
 	delete: async ({ locals, request }) => {
