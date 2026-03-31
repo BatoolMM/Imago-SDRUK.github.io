@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte'
-	import type { ChangeEventHandler } from 'svelte/elements'
+	import type { ChangeEventHandler, DragEventHandler } from 'svelte/elements'
 	import { Input, Subtitle } from '@imago/ui'
-	import { getId, jstr } from '@arturoguzman/art-ui'
+	import { getId } from '@arturoguzman/art-ui'
 	import { addFiles, readFile, type FilePreUpload } from '$lib/utils/files/readers'
 	import FilePreview from './file_preview.svelte'
 	let {
@@ -10,12 +10,15 @@
 		name,
 		value = null,
 		status = $bindable('idle'),
-		enable_previews = true
+		enable_previews = true,
+		onchange,
+		ondrop
 	}: {
 		label?: string
 		name?: string
 		children?: Snippet
 		onchange?: ChangeEventHandler<HTMLInputElement>
+		ondrop?: DragEventHandler<HTMLDivElement>
 		value?: string | null
 		status?: 'idle' | 'completed' | 'error' | 'uploading'
 		enable_previews?: boolean
@@ -90,6 +93,7 @@
 				const input = document.querySelector(`#drop-${name}-${id}`) as HTMLInputElement | null
 				if (input) {
 					input.files = e.dataTransfer ? e.dataTransfer.files : null
+					ondrop?.(e)
 					handleChange(input)
 				}
 			}}
@@ -102,6 +106,7 @@
 						name={enable_previews ? undefined : name}
 						multiple
 						onchange={async (e) => {
+							onchange?.(e)
 							handleChange(e.currentTarget)
 						}}
 						class="input-file"
