@@ -1,3 +1,5 @@
+import type { CkanDatasetRequest } from '$lib/types/ckan'
+
 export const METADATA_KEYS = [
 	{
 		key: 'source',
@@ -69,4 +71,18 @@ export const METADATA_LABELS = {
 	lineage: 'Lineage',
 	data_source: 'Data source',
 	data_quality: 'Data quality'
+}
+
+export const generateExtrasFromPayload = (payload: Partial<CkanDatasetRequest>) => {
+	const metadata = structuredClone(METADATA_KEYS)
+	const extras = payload.extras
+	if (extras) {
+		extras
+			.filter((extra) => METADATA_KEYS.find((me) => me.key === extra.key))
+			.forEach((extra) => {
+				const index = metadata.findIndex((me) => me.key === extra.key)
+				metadata[index].value = extra.value
+			})
+	}
+	return metadata
 }
