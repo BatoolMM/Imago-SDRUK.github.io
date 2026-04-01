@@ -3,6 +3,7 @@ import { authorise } from '$lib/utils/auth/index.js'
 import { create, get, remove } from '$lib/utils/ckan/ckan.js'
 import { csvwToDatastore } from '$lib/utils/datastore/index.js'
 import { log } from '$lib/utils/server/logger.js'
+import { jstr } from '@arturoguzman/art-ui'
 import { error, json } from '@sveltejs/kit'
 import { unknown } from 'arktype/internal/keywords/ts.ts'
 
@@ -81,9 +82,17 @@ export const POST = async ({ request, locals, params, fetch }) => {
 		force: true
 	})
 	const uploaded = await Promise.all(
-		record.map((table, index) => {
-			return locals.ckan.request(create('datastore_create', table))
-		})
+		record.map((table) =>
+			locals.ckan.request(create('datastore_create', table)).then((res) => {
+				if ('error' in res) {
+					if ('fields' in res.error) {
+						error(400, { message: String(res.error.fields[0]), id: 'err' })
+					}
+					error(500, { message: String(res.error.message), id: 'err' })
+				}
+				return res
+			})
+		)
 	)
 	return json({ data: uploaded, message: `Structural metadata updated` })
 }
