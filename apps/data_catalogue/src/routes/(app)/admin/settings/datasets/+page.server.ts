@@ -18,7 +18,7 @@ export const load = async ({ locals }) => {
 		groups = [...groups, ...ckan_groups.result]
 	}
 	const datasets = await locals.ckan.request(
-		get('package_search', { include_private: true, include_drafts: true })
+		get('package_search', { include_private: true, include_drafts: true, include_deleted: true })
 	)
 	if (!datasets.success) {
 		return error(500, { message: 'err', id: 'err' })
