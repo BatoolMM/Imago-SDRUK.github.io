@@ -52,6 +52,9 @@ export const users = pgTable(
 	]
 )
 
+export type UserRequest = typeof users.$inferInsert
+export type User = typeof users.$inferSelect
+
 // NOTE: this breaks shared timestamps
 // export const userAnswers = relations(users, ({ many }) => ({
 // 	answers: many(answers)
