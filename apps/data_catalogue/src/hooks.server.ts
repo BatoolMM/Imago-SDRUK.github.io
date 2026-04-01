@@ -14,6 +14,8 @@ import { log } from '$lib/utils/server/logger'
 
 import { runMigration } from '$lib/db/migrate'
 import { DateTime } from 'luxon'
+import { validateInsert } from '$lib/db/validation'
+import { createUser } from '$lib/modules/user/application/usecase/user_create'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -191,6 +193,17 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 			.select()
 			.from(users)
 			.where(eq(users.id, event.locals.session.identity.id))
+		if (profile.length === 0) {
+			const payload = validateInsert(users, {
+				id: event.locals.session.identity.id,
+				status: 'preregister'
+			})
+			if (!payload.success) {
+				error(400, { message: String(payload.errors), id: 'err' })
+			}
+			await createUser({ payload: payload.data })
+			redirect(307, `/user/register`)
+		}
 		if (
 			profile.length === 1 &&
 			profile[0].status === 'preregister' &&
@@ -198,7 +211,7 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 			!event.url.pathname.startsWith('/auth') &&
 			!event.url.pathname.startsWith('/api')
 		) {
-			log.debug(`redirect user to /user/register as profile exists but status is preregister`)
+			log.warn(`redirect user to /user/register as profile exists but status is preregister`)
 			redirect(307, `/user/register`)
 		}
 	}

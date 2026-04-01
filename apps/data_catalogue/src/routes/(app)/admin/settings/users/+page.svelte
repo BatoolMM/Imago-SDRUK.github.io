@@ -1,9 +1,17 @@
 <script lang="ts">
-	import type { Identity, Relationship } from '@ory/client-fetch'
 	import { type IColumnConfig } from '@svar-ui/svelte-grid'
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import BaseTable from '$lib/ui/tables/base_table.svelte'
-	import { SectionEdit, Title, Subtitle, Button, Paragraph, Icon, ActionBar } from '@imago/ui'
+	import {
+		SectionEdit,
+		Title,
+		Subtitle,
+		Button,
+		Paragraph,
+		Icon,
+		ActionBar,
+		handleSearchParams
+	} from '@imago/ui'
 	import { onMount } from 'svelte'
 	import CellText from '$lib/ui/tables/cell_text.svelte'
 	import { capitalise, jstr } from '@arturoguzman/art-ui'
@@ -15,7 +23,6 @@
 	import { toggleDialog } from '$lib/utils/ui/index.js'
 	import { applyAction, enhance } from '$app/forms'
 	import { notify } from '$lib/stores/notify.js'
-	import { invalidateAll } from '$app/navigation'
 	let { data } = $props()
 	const columns: (IColumnConfig & {
 		id: 'first_name' | 'last_name' | 'id' | 'email' | 'groups'
@@ -33,7 +40,8 @@
 		{
 			id: 'email',
 			header: 'Email',
-			cell: CellText
+			cell: CellText,
+			width: 300
 		},
 		{
 			id: 'groups',
@@ -52,29 +60,70 @@
 		debug.data = data
 	})
 	let selected = $derived(
-		data.users.findIndex((group) => group.id === page.url.searchParams.get('edit')) ?? -1
+		data.users.items.findIndex((group) => group.id === page.url.searchParams.get('edit')) ?? -1
 	)
 	let show_groups = $state(false)
 </script>
 
 <SectionEdit open={selected > -1 ? true : undefined}>
 	{#snippet leftCol()}
-		<Title>Users</Title>
-		<BaseTable data={data.users} {columns}></BaseTable>
+		<div class="section">
+			<Title>Users</Title>
+			<BaseTable data={data.users.items} {columns}></BaseTable>
+			<div class="buttons">
+				{#if data.users.first}
+					<Button
+						href={handleSearchParams({
+							add: [
+								{ key: 'page_size', value: data.users.first.page_size, set: true },
+								{ key: 'page_token', value: data.users.first.page_token, set: true }
+							],
+							remove: ['edit'],
+							url: page.url
+						})}>First</Button
+					>
+				{/if}
+
+				{#if data.users.next}
+					<Button
+						href={handleSearchParams({
+							add: [
+								{ key: 'page_size', value: data.users.next.page_size, set: true },
+								{ key: 'page_token', value: data.users.next.page_token, set: true }
+							],
+							remove: ['edit'],
+							url: page.url
+						})}>Next</Button
+					>
+				{/if}
+			</div>
+		</div>
 	{/snippet}
 	{#snippet rightCol()}
-		{#if selected > -1 && data.user}
+		{#if !data.user}
 			<div class="edit">
 				<ActionBar>
 					{#snippet left()}
-						<Button href={page.url.pathname}>
+						<Button href={handleSearchParams({ remove: ['edit'], url: page.url })}>
+							<Icon icon={{ icon: 'arrow-narrow-left', set: 'tabler' }}></Icon>
+						</Button>
+					{/snippet}
+				</ActionBar>
+				<Paragraph>User hasn't completed registration</Paragraph>
+			</div>
+		{/if}
+		{#if data.user !== null}
+			<div class="edit">
+				<ActionBar>
+					{#snippet left()}
+						<Button href={handleSearchParams({ remove: ['edit'], url: page.url })}>
 							<Icon icon={{ icon: 'arrow-narrow-left', set: 'tabler' }}></Icon>
 						</Button>
 					{/snippet}
 					{#snippet right()}
 						<Button
 							onclick={() => {
-								toggleDialog(`delete-${data.users[selected]}`)
+								toggleDialog(`delete-${data.user?.id}`)
 							}}
 						>
 							<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
@@ -104,109 +153,104 @@
 					</div>
 				</div>
 
-				{#if data.users[selected]?.groups?.length ?? 0 > 0}
-					{@const user_id = data.users[selected].id}
-					<div class="section">
-						<ActionBar>
-							{#snippet left()}
-								<Subtitle>Groups</Subtitle>
-							{/snippet}
-							{#snippet right()}
-								<Button
-									active={show_groups}
-									onclick={() => {
-										show_groups = !show_groups
-									}}
-								>
-									<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
-								</Button>
-							{/snippet}
-						</ActionBar>
-						{#if !show_groups}
+				<div class="section">
+					<ActionBar>
+						{#snippet left()}
+							<Subtitle>Groups</Subtitle>
+						{/snippet}
+						{#snippet right()}
+							<Button
+								active={show_groups}
+								onclick={() => {
+									show_groups = !show_groups
+								}}
+							>
+								<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
+							</Button>
+						{/snippet}
+					</ActionBar>
+					{#if !show_groups}
+						<div class="groups">
+							{#each data.users.items[selected]?.groups as group}
+								<div class="wrapper">
+									<Paragraph style="label">{capitalise(group)}</Paragraph>
+								</div>
+							{/each}
+						</div>
+					{/if}
+					{#if show_groups}
+						<div class="editing-groups">
+							<Paragraph>Existing groups</Paragraph>
 							<div class="groups">
-								{#each data.users[selected]?.groups as group}
+								{#each data.user.groups as group}
 									<div class="wrapper">
-										<Paragraph style="label">{capitalise(group.object)}</Paragraph>
+										<form
+											action="?/remove_group"
+											method="post"
+											use:enhance={() => {
+												return async ({ result, update }) => {
+													if ('data' in result && result.data) {
+														if ('errors' in result.data) {
+															notify.send(String(jstr(result.data.errors)))
+														}
+														if ('message' in result.data) {
+															notify.send(String(result.data.message))
+														}
+													}
+													if (result.type === 'redirect') {
+														applyAction(result)
+													}
+
+													await update({ reset: true, invalidateAll: true })
+												}
+											}}
+										>
+											<input type="hidden" value={group} name="object" />
+											<input type="hidden" value={data.user.id} name="subject_id" />
+											<Button style="tag" onclick={async () => {}}>{capitalise(group)}</Button>
+										</form>
 									</div>
 								{/each}
 							</div>
-						{/if}
-						{#if show_groups}
-							<div class="editing-groups">
-								<Paragraph>Existing groups</Paragraph>
-								<div class="groups">
-									{#each data.users[selected]?.groups as group}
-										<div class="wrapper">
-											<form
-												action="?/remove_group"
-												method="post"
-												use:enhance={() => {
-													return async ({ result, update }) => {
-														if ('data' in result && result.data) {
-															if ('errors' in result.data) {
-																notify.send(String(jstr(result.data.errors)))
-															}
-															if ('message' in result.data) {
-																notify.send(String(result.data.message))
-															}
+						</div>
+						<div class="editing-groups">
+							<Paragraph>Available groups</Paragraph>
+							<div class="groups">
+								{#each data.groups.filter((group) => !data.user?.groups?.find((ug) => ug === group)) as group}
+									<div class="wrapper">
+										<form
+											action="?/add_group"
+											method="post"
+											use:enhance={() => {
+												return async ({ result, update }) => {
+													if ('data' in result && result.data) {
+														if ('errors' in result.data) {
+															notify.send(String(jstr(result.data.errors)))
 														}
-														if (result.type === 'redirect') {
-															applyAction(result)
+														if ('message' in result.data) {
+															notify.send(String(result.data.message))
 														}
-
-														await update({ reset: true, invalidateAll: true })
 													}
-												}}
-											>
-												<input type="hidden" value={group.object} name="object" />
-												<input type="hidden" value={user_id} name="subject_id" />
-												<Button style="tag" onclick={async () => {}}
-													>{capitalise(group.object)}</Button
-												>
-											</form>
-										</div>
-									{/each}
-								</div>
-							</div>
-							<div class="editing-groups">
-								<Paragraph>Available groups</Paragraph>
-								<div class="groups">
-									{#each data.groups.filter((group) => !data.users[selected].groups?.find((relation) => relation.object === group)) as group}
-										<div class="wrapper">
-											<form
-												action="?/add_group"
-												method="post"
-												use:enhance={() => {
-													return async ({ result, update }) => {
-														if ('data' in result && result.data) {
-															if ('errors' in result.data) {
-																notify.send(String(jstr(result.data.errors)))
-															}
-															if ('message' in result.data) {
-																notify.send(String(result.data.message))
-															}
-														}
-														if (result.type === 'redirect') {
-															applyAction(result)
-														}
-
-														await update({ reset: true, invalidateAll: true })
+													if (result.type === 'redirect') {
+														applyAction(result)
 													}
-												}}
-											>
-												<input type="hidden" value={group} name="object" />
-												<input type="hidden" value={user_id} name="subject_id" />
-												<Button style="tag">{capitalise(group)}</Button>
-											</form>
-										</div>
-									{/each}
-								</div>
-							</div>
-						{/if}
-					</div>
-				{/if}
 
-				{#if data.answers.filter((answer) => answer.answer !== null && answer.question !== null).length > 0}
+													await update({ reset: true, invalidateAll: true })
+												}
+											}}
+										>
+											<input type="hidden" value={group} name="object" />
+											<input type="hidden" value={data.user.id} name="subject_id" />
+											<Button style="tag">{capitalise(group)}</Button>
+										</form>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				{#if data.answers?.filter((answer) => answer.answer !== null && answer.question !== null).length ?? 0 > 0}
 					<div class="section">
 						<Subtitle>Answers</Subtitle>
 						{#each data.answers as answer}
@@ -226,8 +270,8 @@
 	{/snippet}
 </SectionEdit>
 
-{#if selected > -1 && data.user}
-	<Dialog id="delete-{data.users[selected]}">
+{#if data.user}
+	<Dialog id="delete-{data.user.id}">
 		<form
 			action="?/delete"
 			method="post"
@@ -249,16 +293,16 @@
 				}
 			}}
 		>
-			<input type="hidden" value={data.users[selected].id} name="id" />
+			<input type="hidden" value={data.user} name="id" />
 			<Paragraph
-				>Are you sure you want to delete {data.users[selected].first_name}
-				{data.users[selected].last_name}?</Paragraph
+				>Are you sure you want to delete {data.user}
+				{data.user}?</Paragraph
 			>
 			<div class="buttons">
 				<Button
 					type="button"
 					onclick={() => {
-						toggleDialog(`delete-${data.users[selected]}`)
+						toggleDialog(`delete-${data.user}`)
 					}}>Cancel</Button
 				>
 				<Button>Delete</Button>
@@ -278,16 +322,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
-		overflow: scroll;
-		height: calc(100lvh - var(--footer-height));
-	}
-	.user-buttons {
-		display: flex;
-		flex-direction: column;
-		border-radius: var(--radius);
-		gap: 0.5rem;
-		background-color: var(--background-muted);
-		padding: 1rem;
 	}
 
 	.details {
@@ -303,6 +337,7 @@
 	.buttons {
 		display: flex;
 		gap: 1rem;
+		justify-content: space-between;
 	}
 	.groups {
 		display: flex;
@@ -316,13 +351,5 @@
 		gap: 0.5rem;
 		padding: 1rem;
 		border-radius: var(--radius);
-	}
-	.cards {
-		position: sticky;
-		top: 6rem;
-		left: 0;
-	}
-	.footer {
-		display: flex;
 	}
 </style>

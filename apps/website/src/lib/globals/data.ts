@@ -9,7 +9,8 @@ export const ROLES: Record<TeamMember['role'], string> = {
 	co_director: 'Co-Director',
 	deputy_director: 'Deputy Director',
 	data_service_manager: 'Data Service Manager',
-	outreach_officer: 'Outreach and Public Engagement Officer'
+	outreach_officer: 'Outreach and Public Engagement Officer',
+	partnerships_officer: 'Partnerships and Impact Officer'
 }
 
 export const INSTITUTIONS: Record<
