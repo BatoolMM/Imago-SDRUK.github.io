@@ -165,7 +165,7 @@ type ApiTokenCreate = [
 	}
 ]
 
-export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate]
+export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate, undefined]
 
 export type CkanCreateActions =
 	| PackageCreate
