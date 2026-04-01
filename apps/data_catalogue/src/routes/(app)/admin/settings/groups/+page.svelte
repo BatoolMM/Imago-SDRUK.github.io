@@ -6,6 +6,7 @@
 	import {
 		ActionBar,
 		Button,
+		handleSearchParams,
 		Icon,
 		Input,
 		Paragraph,
@@ -221,6 +222,14 @@
 						<!-- </Button> -->
 						<BaseTable data={relations} columns={auth_groups_columns}></BaseTable>
 					{/each}
+					{#if data.auth_groups.next_page_token}
+						<Button
+							href={handleSearchParams({
+								add: [{ key: 'page_token', value: data.auth_groups.next_page_token, set: true }],
+								url: page.url
+							})}>Next</Button
+						>
+					{/if}
 				</div>
 			{/if}
 		{/snippet}
