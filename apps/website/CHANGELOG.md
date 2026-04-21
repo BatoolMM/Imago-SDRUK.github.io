@@ -1,5 +1,10 @@
 # website
 
+## 2.0.27
+### Patch Changes
+
+- 86fde60: fix load media information
+
 ## 2.0.26
 ### Patch Changes
 
