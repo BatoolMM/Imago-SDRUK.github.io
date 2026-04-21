@@ -1,5 +1,10 @@
 # website
 
+## 2.0.26
+### Patch Changes
+
+- cd93b22: add carousel to events page
+
 ## 2.0.25
 ### Patch Changes
 
