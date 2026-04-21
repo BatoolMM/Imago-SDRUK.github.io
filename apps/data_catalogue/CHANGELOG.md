@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 2.1.6
+### Patch Changes
+
+- 00b9e81: handle incomplete user registration, paginate users and groups on admin page
+
 ## 2.1.5
 ### Patch Changes
 
