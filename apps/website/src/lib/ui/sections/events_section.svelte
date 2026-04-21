@@ -65,12 +65,14 @@
 					{/if}
 				</div>
 			</div>
-			{#if media}
-				<Carousel {media}></Carousel>
-			{/if}
-			<Paragraph>
-				{@html content}
-			</Paragraph>
+			<div class="content">
+				{#if media}
+					<Carousel {media}></Carousel>
+				{/if}
+				<Paragraph>
+					{@html content}
+				</Paragraph>
+			</div>
 		</div>
 	</div>
 </BaseSection>
@@ -115,6 +117,12 @@
 		border: 1px solid var(--theme-colour-secondary);
 		padding: 0.25rem 1rem;
 		border-radius: 0.35rem;
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
 	}
 
 	@media (min-width: 768px) {
