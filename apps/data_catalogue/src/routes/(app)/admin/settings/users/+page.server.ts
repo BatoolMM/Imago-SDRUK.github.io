@@ -4,6 +4,8 @@ import { authorise, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
 import { formGetStringOrUndefined } from '$lib/utils/forms/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { AUTH_GROUPS } from '$lib/globals/auth.js'
+import type { LinkPagination } from '$lib/types/ory/kratos/index.js'
+import type { Answer } from '$lib/db/schema/questions.js'
 export const load = async ({ locals, fetch, url }) => {
 	await authorise({
 		namespace: 'Endpoint',
@@ -12,15 +14,13 @@ export const load = async ({ locals, fetch, url }) => {
 		session: locals.session
 	})
 	const built_url = new URL(`https://127.0.0.1/api/v1/users`)
-	const page_size = url.searchParams.get('page_size')
-	const per_page = url.searchParams.get('per_page') ?? '50'
-	const page = url.searchParams.get('page') ?? '0'
+	const page_size = url.searchParams.get('page_size') ?? '10'
+	const page_token = url.searchParams.get('page_token')
 	if (page_size) built_url.searchParams.append('page_size', page_size)
-	if (per_page) built_url.searchParams.append('per_page', per_page)
-	if (page) built_url.searchParams.append('page', page)
-	const res = await fetch(built_url.pathname)
-	const { users } = (await res.json()) as {
-		users: { first_name: string; last_name: string; id: string; email: string }[]
+	if (page_token) built_url.searchParams.append('page_token', page_token)
+	const res = await fetch(built_url.pathname + built_url.search)
+	const users = (await res.json()) as LinkPagination & {
+		items: { first_name: string; last_name: string; id: string; email: string; groups: string[] }[]
 	}
 	const edit = url.searchParams.get('edit')
 	let user = null
@@ -35,26 +35,19 @@ export const load = async ({ locals, fetch, url }) => {
 			created_at: string
 			updated_at: string
 			deleted_at: string
+			groups: string[]
 		}
-		answers = await fetch(`/api/v1/users/${edit}/answers`).then((res) => res.json())
+		answers = (await fetch(`/api/v1/users/${edit}/answers`).then((res) =>
+			res.json()
+		)) as (Answer & {
+			question: { id: string; title: string; description: string | null } | null
+		})[]
 	}
 	const ckan_groups = await locals.ckan.request(get('group_list'))
 	const groups = [...AUTH_GROUPS, ...(ckan_groups.success ? ckan_groups.result : [])]
 	return {
 		groups,
-		users: await Promise.all(
-			users.map((user) =>
-				fetch(`/api/v1/users/${user.id}/groups`)
-					.then((res) => res.json())
-					.then((groups) => ({
-						first_name: user.first_name,
-						last_name: user.last_name,
-						email: user.email,
-						id: user.id,
-						groups: groups?.['relation_tuples'] ?? []
-					}))
-			)
-		),
+		users,
 		user,
 		answers
 	}

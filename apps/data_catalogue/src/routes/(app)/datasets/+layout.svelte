@@ -3,7 +3,9 @@
 	import { page } from '$app/state'
 	import { notify } from '$lib/stores/notify'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
-	import { Button, Input, Paragraph, Select, Subtitle, Text } from '@imago/ui'
+	import FileInput from '$lib/ui/inputs/file_input.svelte'
+	import FileUploaded from '$lib/ui/inputs/file_uploaded.svelte'
+	import { Button, Input, Paragraph, Select, Subtitle, Text, Title } from '@imago/ui'
 	let { data, children } = $props()
 	const toggleDialog = (id: string) => {
 		const dialog = document.getElementById(id) as HTMLDialogElement | null
@@ -15,6 +17,7 @@
 			dialog.close()
 		}
 	}
+	let manual_form_required = $state(true)
 </script>
 
 <div class="dataset-layout">
@@ -34,50 +37,79 @@
 	</div>
 </div>
 <Dialog id="datasets-dialog">
-	<Subtitle size="md">Create dataset</Subtitle>
-	<form
-		action="?/create"
-		method="post"
-		use:enhance={() => {
-			return async ({ result }) => {
-				if (result.type === 'redirect') {
-					notify.send(`Dataset successfully created`)
-				}
-				if ('data' in result) {
-					notify.send(String(result.data?.message))
-				}
-
-				applyAction(result)
-				toggleDialog('datasets-dialog')
-			}
-		}}
-	>
-		<div class="fields">
-			<Input required label="Title">
-				<Text required name="title"></Text>
-			</Input>
-			{#if Array.isArray(data.groups.result)}
-				<Input required label="Group">
-					<Select
-						name="group"
-						options={data.groups.result.map((result) => ({
-							label: result.title,
-							value: JSON.stringify({ id: result.id, name: result.name })
-						}))}
-					></Select>
-				</Input>
-			{/if}
-		</div>
-		<div class="buttons">
-			<Button
-				type="button"
-				onclick={() => {
+	<div class="dialog">
+		<Title>Create dataset</Title>
+		<form
+			action="?/create"
+			method="post"
+			enctype="multipart/form-data"
+			use:enhance={() => {
+				return async ({ result }) => {
+					if (result.type === 'redirect') {
+						notify.send(`Dataset successfully created`)
+					}
+					if ('data' in result) {
+						notify.send(String(result.data?.message))
+						return
+					}
+					applyAction(result)
 					toggleDialog('datasets-dialog')
-				}}>Cancel</Button
-			>
-			<Button>Create</Button>
-		</div>
-	</form>
+				}
+			}}
+		>
+			<div class="fields">
+				<div class="fields-block">
+					<Subtitle>Create manually</Subtitle>
+					<Input required={manual_form_required} label="Title">
+						<Text name="title"></Text>
+					</Input>
+					{#if Array.isArray(data.groups.result)}
+						<Input required={manual_form_required} label="Group">
+							<Select
+								name="group"
+								options={data.groups.result.map((result) => ({
+									label: result.title,
+									value: JSON.stringify({ id: result.id, name: result.name })
+								}))}
+							></Select>
+						</Input>
+					{/if}
+				</div>
+				<Paragraph align="centre">or</Paragraph>
+				<div class="fields-block">
+					<Subtitle>Upload a metadata JSON file</Subtitle>
+					<FileInput
+						label="Metadata file"
+						name="file"
+						enable_previews={false}
+						onchange={(e) => {
+							if (e.currentTarget.files && e.currentTarget.files.length > 0) {
+								manual_form_required = false
+								return
+							}
+							manual_form_required = true
+						}}
+						ondrop={(e) => {
+							if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+								manual_form_required = false
+								return
+							}
+							manual_form_required = true
+						}}
+					></FileInput>
+				</div>
+			</div>
+			<div class="buttons">
+				<Button
+					type="button"
+					onclick={() => {
+						toggleDialog('datasets-dialog')
+					}}>Cancel</Button
+				>
+				<Button>Create</Button>
+			</div>
+		</form>
+	</div>
 </Dialog>
 
 <style>
@@ -101,5 +133,24 @@
 		display: flex;
 		justify-content: space-between;
 		gap: 1rem;
+	}
+
+	.dialog {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.fields {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.fields-block {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding: 1rem;
+		background-color: var(--background-muted);
+		border-radius: var(--radius);
 	}
 </style>

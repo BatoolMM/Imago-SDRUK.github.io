@@ -3,16 +3,20 @@ import { authorise, ketoRead } from '$lib/utils/auth/index.js'
 import { get } from '$lib/utils/ckan/ckan.js'
 import { error } from '@sveltejs/kit'
 import { parseForm } from '$lib/utils/forms/index.js'
+// import { AUTH_GROUPS } from '$lib/globals/auth.js'
 
-export const load = async ({ locals }) => {
+export const load = async ({ locals, url }) => {
 	await authorise({
 		namespace: 'Group',
 		relation: 'users',
 		session: locals.session,
 		object: 'admin'
 	})
-
-	const auth_groups = await ketoRead.getRelationships({ namespace: 'Group' })
+	const auth_groups = await ketoRead.getRelationships({
+		namespace: 'Group',
+		pageToken: url.searchParams.get('page_token') ?? undefined,
+		pageSize: 25
+	})
 	// const missing_groups = AUTH_GROUPS.filter((group) =>
 	// 	relationships.relation_tuples?.findIndex((tuple) => tuple.subject_id === group)
 	// )

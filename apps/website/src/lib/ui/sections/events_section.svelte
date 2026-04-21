@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { Title, Fact, Button, Subtitle, Paragraph } from '@imago/ui'
 	import type { Event } from '$lib/types/directus'
+	import Carousel from '$lib/ui/components/carousel.svelte'
+	import { Title, Fact, Button, Subtitle, Paragraph } from '@imago/ui'
 	import { BaseSection } from '@imago/ui'
 	import { DateTime } from 'luxon'
 	let { event }: { event: Event } = $props()
 	const { title, content, location, date_start, date_end, media, type, subtitle, id, agenda, url } =
-		event
+		$derived(event)
 </script>
 
 <BaseSection>
@@ -64,6 +65,9 @@
 					{/if}
 				</div>
 			</div>
+			{#if media}
+				<Carousel {media}></Carousel>
+			{/if}
 			<Paragraph>
 				{@html content}
 			</Paragraph>

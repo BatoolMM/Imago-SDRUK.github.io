@@ -2,7 +2,6 @@
 	import { type ICellProps } from '@svar-ui/svelte-grid'
 	import { Paragraph } from '@imago/ui'
 	import BaseCell from './base_cell.svelte'
-	import { jstr } from '@arturoguzman/art-ui'
 	let { column, row }: ICellProps = $props()
 	const key = $derived(String(column['id']))
 </script>
@@ -12,7 +11,11 @@
 		{#each row[key] as group}
 			<div class="label">
 				<Paragraph>
-					{group.title ?? group.object}
+					{#if typeof group === 'string'}
+						{group}
+					{:else}
+						{group.title ?? group.object}
+					{/if}
 				</Paragraph>
 			</div>
 		{/each}

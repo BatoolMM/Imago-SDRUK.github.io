@@ -1,5 +1,6 @@
 import type {
 	CkanDataset,
+	CkanDatasetRequest,
 	CkanDatastore,
 	CkanDatastoreCreate,
 	CkanDatastoreField,
@@ -7,33 +8,7 @@ import type {
 	CkanResource
 } from '$lib/types/ckan'
 
-type PackageCreate = [
-	'package_create',
-	{
-		name: string // must be between 2 and 100 characters long and contain only lowercase alphanumeric characters, - and _
-		title?: string // the title of the dataset (optional, default: same as name)
-		private?: boolean // If true creates a private dataset
-		author?: string // the name of the dataset's author
-		author_email?: string // the email address of the dataset's author
-		maintainer?: string // the name of the dataset's maintainer
-		maintainer_email?: string // the email address of the dataset's maintainer
-		license_id?: string // the id of the dataset's license
-		notes?: string // a description of the dataset
-		url?: string // a URL for the dataset's source
-		version?: string // no longer than 100 characters
-		state?: string // the current state of the dataset, e.g. 'active' or 'deleted'
-		type?: string // the type of the dataset
-		resources?: Array<unknown> // the dataset's resources
-		tags?: Array<unknown> // the dataset's tags
-		extras?: Array<{ key: string; value: string }> // the dataset's extras (arbitrary key:value metadata)
-		plugin_data?: Record<string, unknown> // private package data belonging to plugins
-		relationships_as_object?: Array<unknown> // relationship dictionaries
-		relationships_as_subject?: Array<unknown> // relationship dictionaries
-		groups?: Array<{ id?: string; name?: string }> // the groups to which the dataset belongs
-		owner_org?: string // the id of the dataset's owning organization
-	},
-	CkanDataset
-]
+type PackageCreate = ['package_create', CkanDatasetRequest, CkanDataset]
 
 type ResourceCreate = [
 	'resource_create',
@@ -190,7 +165,7 @@ type ApiTokenCreate = [
 	}
 ]
 
-export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate]
+export type DatastoreCreate = ['datastore_create', CkanDatastoreCreate, undefined]
 
 export type CkanCreateActions =
 	| PackageCreate

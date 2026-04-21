@@ -116,9 +116,14 @@ export const actions = {
 			body: form
 		})
 		const data = await res.json()
-		log.debug(jstr(data))
-		return {
-			message: data.message
+		if (res.ok) {
+			log.debug(jstr(data))
+			return {
+				message: data.message
+			}
 		}
+		return fail(res.status, {
+			message: data.message
+		})
 	}
 }

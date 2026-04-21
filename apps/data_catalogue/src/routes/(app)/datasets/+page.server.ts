@@ -4,8 +4,12 @@ import { error, fail, redirect } from '@sveltejs/kit'
 import licenses from '$lib/utils/ckan/licenses.json'
 
 import { ketoCheck, ketoRead, ketoWrite } from '$lib/utils/auth/index.js'
-import { SERVER_ERRORS } from '$lib/globals/server.js'
+import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
+import { getSolrSearchParams } from '$lib/utils/ckan/datasets/index.js'
 export const load = async ({ locals, url }: PageServerLoadEvent) => {
+	/**
+	 * NOTE: solr endpoint only as private and drafts are not available through ckan endpoints
+	 **/
 	// get query parameters
 	const search = url.searchParams.get('search') ?? undefined
 	const offset = url.searchParams.get('offset') ? Number(url.searchParams.get('offset')) : 0
@@ -14,32 +18,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 		url.searchParams.delete('offset')
 	}
 
-	// identify if search is enabled as this will hit the solr endpoint
-	// if (search) {
-	const fq = ['tags', 'organization', 'groups', 'res_format', 'license_id']
-		.map((key) => ({
-			key,
-			value: url.searchParams.getAll(key)
-		}))
-		.filter(({ value }) => value !== null)
-		.reduce((str: string | null = null, { key, value }) => {
-			const split = value
-			let built = ''
-			if (split.length === 0) return str
-			if (split.length === 1) {
-				built = `${key}:${split[0]}`
-			} else {
-				built = `${key}:(${value.join(' AND ')})`
-			}
-			if (!str) {
-				str = ''
-			} else {
-				// str += '&fg='
-				str += ' '
-			}
-			str += built
-			return str
-		}, null)
+	const fq = getSolrSearchParams(url)
 	const data = await locals.ckan.request(
 		get('package_search', {
 			q: search,
@@ -76,11 +55,6 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	}
 	// }
 
-	/**
-	 * NOTE: current_package_list_with_resources returns a dictionary with all the datasets, so feature parity cant be implemented with ckan and solr
-	 * Internally, ckan actually divides these endpoints as dataset and search, have to evaluate how the dataset works and how it is fetching data from the db
-	 **/
-
 	// const data = await locals.ckan.request(
 	// 	get('current_package_list_with_resources', {
 	// 		offset: offset <= 0 ? 0 : offset,
@@ -112,20 +86,43 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 }
 
 export const actions = {
-	create: async ({ locals, request, fetch }) => {
+	create: async ({ request, fetch }) => {
 		const form = await request.formData()
-		const title = String(form.get('title'))
-		const group = String(form.get('group'))
+		const group = formGetStringOrUndefined({ form, field: 'group' })
+		const file = form.get('file')
+		let payload = {
+			title: formGetStringOrUndefined({ form, field: 'title' }),
+			groups: group ? [JSON.parse(group)] : undefined
+		}
+		if (file && file instanceof File && file.size > 0) {
+			if (file.type !== 'application/json') {
+				return fail(400, { message: 'File must be a json file' })
+			}
+			if (file.size > 2000000) {
+				return fail(400, { message: 'File must be less than 2MB' })
+			}
+			const file_text = await file.text()
+			const text_parse = await safeJSONParse(file_text)
+			if (!text_parse) {
+				return fail(400, { message: 'File must be a valid json file' })
+			}
+			if (typeof text_parse !== 'object' && text_parse !== null) {
+				return fail(400, { message: 'File must be a valid json file' })
+			}
+			if (Object.keys(text_parse).length === 0) {
+				return fail(400, { message: 'File must contain data' })
+			}
+			payload = text_parse
+		}
 		const res = await fetch(`/api/v1/datasets`, {
 			method: 'POST',
-			body: JSON.stringify({ title, group })
+			body: JSON.stringify(payload)
 		})
 		const data = await res.json()
 		if (res.ok) {
 			redirect(307, data.data.url)
 		}
-		error(...SERVER_ERRORS[500])
-		// return redirect(307, `/datasets/${dataset.result.name}/edit`)
+		return fail(res.status, data)
 	},
 
 	delete: async ({ locals, request }) => {

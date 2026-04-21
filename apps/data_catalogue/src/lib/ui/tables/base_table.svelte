@@ -51,7 +51,7 @@
 		</div>
 	</div>
 	<div class="table">
-		<Grid autoRowHeight {columns} data={filtered} {init}></Grid>
+		<Grid {columns} data={filtered} {init}></Grid>
 	</div>
 {/if}
 

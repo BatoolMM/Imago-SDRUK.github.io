@@ -51,6 +51,7 @@ type PackageSearch = [
 		include_drafts?: boolean
 		include_private?: boolean
 		use_default_schema?: boolean
+		include_deleted?: boolean
 	},
 	{ count: number; facets: Record<PropertyKey, unknown>; results: CkanDataset[] }
 ]

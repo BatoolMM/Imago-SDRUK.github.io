@@ -5,7 +5,14 @@ import { users } from '$lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { handleDBError } from '$lib/utils/db'
 import { json } from '@sveltejs/kit'
-import { authorise, ketoRead, ketoWrite, kratosRead, kratosWrite } from '$lib/utils/auth'
+import {
+	authorise,
+	handleKetoError,
+	ketoRead,
+	ketoWrite,
+	kratosRead,
+	kratosWrite
+} from '$lib/utils/auth'
 
 export const GET = async ({ locals, params }) => {
 	await authorise({
@@ -15,13 +22,28 @@ export const GET = async ({ locals, params }) => {
 		relation: 'GET'
 	})
 	const user = await kratosRead.getIdentity({ id: params.id })
-	const user_metadata = await db.select().from(users).where(eq(users.id, params.id))
+	const user_metadata = await db
+		.select()
+		.from(users)
+		.where(eq(users.id, params.id))
+		.catch(handleDBError('Error fetching the user'))
+	if (user_metadata.length === 0) {
+		return json(null)
+	}
+	const groups = await ketoRead
+		.getRelationships({
+			namespace: 'Group',
+			relation: 'users',
+			subjectId: params.id
+		})
+		.catch(handleKetoError)
 	return json({
 		first_name: user.traits.name.first,
 		last_name: user.traits.name.last,
 		email: user.traits.email,
 		id: user.id,
-		preferences: user_metadata[0].preferences,
+		groups: groups.relation_tuples?.map((group) => group.object),
+		preferences: user_metadata[0]?.preferences,
 		created_at: user_metadata[0].created_at,
 		updated_at: user_metadata[0].updated_at,
 		deleted_at: user_metadata[0].deleted_at
