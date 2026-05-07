@@ -1,24 +1,25 @@
+import type { AppContext } from '$lib/server/application/context'
 import type { TagsService } from '$lib/server/application/services/tags'
 import { err, ok } from '$lib/server/entities/errors'
-import type { Session } from '$lib/server/entities/models/identity'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
 
 export const tagCreateUseCase = async ({
 	tag,
-	vocabulary_id = 'general',
+	vocabulary_name = 'general',
 	tags_service,
-	session
+	session,
+	configuration
 }: {
-	vocabulary_id?: string
+	vocabulary_name?: string
 	tag: string
 	tags_service: TagsService
-	session: Session
-}) => {
+} & AppContext) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
 		namespace: 'Action',
 		object: 'datasets',
 		permits: 'create',
-		actor: session.identity.id
+		actor: session.identity.id,
+		configuration
 	})
 	if (errors) {
 		return err(errors)
@@ -26,36 +27,32 @@ export const tagCreateUseCase = async ({
 	if (!permission.allowed) {
 		return err({ reason: 'Unauthorised' })
 	}
-	const [errs, result] = await tags_service
-		.getVocabulary({ vocabulary_id })
-		.then((res) => ok(res))
-		.catch((_err) => err({ reason: 'Unexpected', error: _err }))
-	let vocabulary = result
-	if (errs !== null) {
-		return err(errs)
+	const [vocabulary_errors, vocabularies] = await tags_service.getVocabularies()
+	if (vocabulary_errors !== null) {
+		return err(vocabulary_errors)
 	}
+
+	let vocabulary = vocabularies?.find((v) => v.name === vocabulary_name)
+
 	if (!vocabulary) {
-		const [errs] = await tags_service
-			.createVocabulary({
-				vocabulary: {
-					name: vocabulary_id
-				}
-			})
-			.then((res) => ok(res))
-			.catch((_err) => err({ reason: 'Unexpected', error: _err }))
+		const [errs, voc] = await tags_service.createVocabulary({
+			vocabulary: {
+				name: vocabulary_name
+			}
+		})
 		if (errs !== null) {
 			return err(errs)
 		}
-		const [errs_nv, res] = await tags_service
-			.getVocabulary({ vocabulary_id })
-			.then((res) => ok(res))
-			.catch((_err) => err({ reason: 'Unexpected', error: _err }))
+		if (voc === null) {
+			return err({ reason: 'Unexpected', error: voc })
+		}
+		const [errs_nv, res] = await tags_service.getVocabulary({ vocabulary_id: voc.id })
 
 		if (errs_nv !== null) {
 			return err(errs_nv)
 		}
 		if (res === null) {
-			return err({ reason: 'Not Found' })
+			return err({ reason: 'Not Found', message: `Voc err` })
 		}
 		vocabulary = res
 	}

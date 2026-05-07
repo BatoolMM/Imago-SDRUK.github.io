@@ -124,6 +124,17 @@
 			{/each}
 		</div>
 	</div>
+	<CardBlock>
+		{#snippet header()}
+			<Paragraph>Migrate tags</Paragraph>
+		{/snippet}
+		{#snippet content()}
+			<form action="?/migrate_tags" method="post" use:enhance={handleEnhance()}>
+				<input type="hidden" value={dataset.id} name="dataset_id" />
+				<Button>Migrate</Button>
+			</form>
+		{/snippet}
+	</CardBlock>
 	<div class="section">
 		<div class="section-title"></div>
 		<div class="groups">
