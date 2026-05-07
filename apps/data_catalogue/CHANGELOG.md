@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.6
+### Patch Changes
+
+- cf23e95: move to slim img
+
 ## 3.0.5
 ### Patch Changes
 
