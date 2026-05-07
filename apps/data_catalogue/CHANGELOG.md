@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.5
+### Patch Changes
+
+- 1b5bf25: revert img
+
 ## 3.0.4
 ### Patch Changes
 
