@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.1
+### Patch Changes
+
+- e2173d5: sort by created desc, add dataset migrate tags action
+
 ## 3.0.0
 ### Major Changes
 
