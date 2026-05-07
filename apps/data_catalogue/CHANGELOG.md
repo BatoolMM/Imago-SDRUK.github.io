@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.2
+### Patch Changes
+
+- a6ee7d8: disallow all robots
+
 ## 3.0.1
 ### Patch Changes
 
