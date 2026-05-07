@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.3
+### Patch Changes
+
+- 4cb0d40: pass dataset id instead of param id
+
 ## 3.0.2
 ### Patch Changes
 
