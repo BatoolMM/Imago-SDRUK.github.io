@@ -31,6 +31,7 @@
 	import { goto } from '$app/navigation'
 	import CellEditorCtx from '$lib/ui/tables/cell_editor_ctx.svelte'
 	import { handleEnhance } from '$lib/utils/forms/index.js'
+	import CardBlock from '$lib/ui/cards/card_block.svelte'
 	let { data } = $props()
 	let dataset_selected = $derived(
 		data.datasets.items?.findIndex(

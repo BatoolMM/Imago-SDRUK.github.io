@@ -87,12 +87,14 @@ const getDatasets: DatasetService['getDatasets'] = async ({ page_size, offset, s
 				q: search,
 				start: offset <= 0 ? 0 : offset,
 				rows: limit,
+				sort: `metadata_created desc`,
 				fq,
 				include_private: true,
 				include_drafts: true
 			})
 		)
 		if (!data.success) {
+			console.log(data)
 			return err(handleCkanError(data, 'getDatasets'))
 		}
 		const max_pages = Math.floor(data.result.count / page_size)

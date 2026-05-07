@@ -34,6 +34,7 @@ import type {
 	Resource as ResourceRepo
 } from '$lib/server/entities/models/resources.js'
 import type { CSVW } from '$lib/server/entities/models/datastore.js'
+import { tagsMigrateController } from '$lib/server/interface/adapters/controllers/tags/update.js'
 export const load = async ({ locals, url }) => {
 	const offset = url.searchParams.get('offset') ? Number(url.searchParams.get('offset')) : 0
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 10
@@ -353,6 +354,21 @@ export const actions = {
 		}
 		return {
 			message: `Metadata group created`
+		}
+	},
+	migrate_tags: async ({ request, locals }) => {
+		const form = await request.formData()
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
+		const [errors] = await tagsMigrateController({
+			configuration: locals.configuration,
+			session: locals.session,
+			dataset_id
+		})
+		if (errors !== null) {
+			return fail(500, { message: errors.message ?? errors.type })
+		}
+		return {
+			message: 'ok'
 		}
 	}
 }

@@ -97,7 +97,7 @@ export const datasetAddTagUseCase = async ({
 	if (!t_record) {
 		const [tag_errors, _tag] = await tags_service.createTag({ tag: { name: tag, vocabulary_id } })
 		if (tag_errors !== null) {
-			return tag_errors
+			return err(tag_errors)
 		}
 		t_record = _tag
 	}
