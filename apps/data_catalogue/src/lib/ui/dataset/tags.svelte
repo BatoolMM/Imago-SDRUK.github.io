@@ -26,6 +26,7 @@
 	<div class="wrapper"></div>
 </div>
 <form action="?/add_tag" method="POST" use:enhance={handleEnhance()}>
+	<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
 	<div class="fields">
 		<div class="search">
 			<Input label="Search or add a tag">
@@ -103,6 +104,7 @@
 			}}
 		>
 			<div class="tag">
+				<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
 				<input type="hidden" hidden value={tag.display_name} name="tag" />
 				<Button hover_label={`Click to delete ${tag.display_name}`} style="tag">
 					<Paragraph>{tag.display_name}</Paragraph>

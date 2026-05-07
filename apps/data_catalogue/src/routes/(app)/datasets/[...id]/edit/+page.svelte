@@ -46,6 +46,7 @@
 				<div class="form">
 					<Subtitle size="lg">Dataset information</Subtitle>
 					<form action="?/update" method="POST" use:enhance={handleEnhance()}>
+						<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
 						<input type="hidden" value={JSON.stringify(ctx.dataset)} name="dataset" />
 						<div class="fields">
 							<InputBlock>
