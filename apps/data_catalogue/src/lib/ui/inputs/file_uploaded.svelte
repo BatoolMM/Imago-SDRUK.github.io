@@ -110,6 +110,7 @@
 			{#if state === 'edit'}
 				<div class="forms">
 					<form method="post" action="?/update_resource" use:enhance={handleEnhance()}>
+						<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
 						<input type="text" hidden bind:value={file.id} name="id" />
 
 						<div class="inputs">

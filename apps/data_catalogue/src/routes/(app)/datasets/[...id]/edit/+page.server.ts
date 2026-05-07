@@ -60,9 +60,10 @@ const parseForm = (form: FormData) => {
 }
 
 export const actions = {
-	add_tag: async ({ locals, params, request }) => {
+	add_tag: async ({ locals, request }) => {
 		const form = await request.formData()
 		const tag = formGetStringOrUndefined({ form, field: 'tag' })
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
 		const [errs, vocabularies] = await tagsGetVocabulariesController()
 		if (errs !== null) {
 			return fail(400, { message: `Error finding the vocabulary general` })
@@ -74,7 +75,7 @@ export const actions = {
 		const [errors] = await datasetAddTagController({
 			configuration: locals.configuration,
 			session: locals.session,
-			id: params.id,
+			id: dataset_id,
 			vocabulary_id: vocabulary_id.id,
 			tag: String(tag)
 		})
@@ -83,14 +84,15 @@ export const actions = {
 		}
 		return { message: `Tag ${tag} added` }
 	},
-	remove_tag: async ({ locals, params, request }) => {
+	remove_tag: async ({ locals, request }) => {
 		const form = await request.formData()
 		const tag = formGetStringOrUndefined({ form, field: 'tag' })
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
 		const vocabulary_id = 'general'
 		const [errors] = await datasetRemoveTagController({
 			configuration: locals.configuration,
 			session: locals.session,
-			id: params.id,
+			id: dataset_id,
 			tag_id: tag,
 			vocabulary_id
 		})
@@ -100,13 +102,14 @@ export const actions = {
 		return { message: `Tag ${tag} removed` }
 	},
 
-	update: async ({ request, locals, params }) => {
+	update: async ({ request, locals }) => {
 		const form = await request.formData()
 		const data = safeJSONParse(formGetStringOrUndefined({ form, field: 'dataset' }))
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
 		const [errors, result] = await datasetUpdateController({
 			configuration: locals.configuration,
 			data,
-			id: params.id,
+			id: dataset_id,
 			session: locals.session
 		})
 		if (errors !== null) {
@@ -117,12 +120,13 @@ export const actions = {
 		}
 	},
 
-	update_resource: async ({ request, params, locals }) => {
+	update_resource: async ({ request, locals }) => {
 		const form = await request.formData()
 		const parsed = parseForm(form)
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
 		await resourceUpdateController({
 			configuration: locals.configuration,
-			id: params.id,
+			id: dataset_id,
 			session: locals.session,
 			data: parsed
 		})
