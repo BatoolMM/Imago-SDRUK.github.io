@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.4
+### Patch Changes
+
+- 01688ae: trigger build
+
 ## 3.0.3
 ### Patch Changes
 
