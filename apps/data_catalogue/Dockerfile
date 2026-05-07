@@ -1,4 +1,4 @@
-FROM node:24-slim AS base
+FROM node:24-alpine AS base
 ENV NODE_ENV=production
 ENV TURBO_TELEMETRY_DISABLED=1
 ENV BUILDING=true
