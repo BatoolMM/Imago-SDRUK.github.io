@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.7
+### Patch Changes
+
+- 5db3a31: revert to alpine, fix  build
+
 ## 3.0.6
 ### Patch Changes
 
