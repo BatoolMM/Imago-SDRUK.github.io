@@ -4,8 +4,7 @@
 	import { notify } from '$lib/stores/notify'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
 	import { toggleDialog } from '$lib/utils/ui/index.js'
-	import { jstr } from '@arturoguzman/art-ui'
-	import { Button, Input, Paragraph, Select, Subtitle, Text } from '@imago/ui'
+	import { Button, Paragraph, Subtitle } from '@imago/ui'
 	let { data, children } = $props()
 </script>
 

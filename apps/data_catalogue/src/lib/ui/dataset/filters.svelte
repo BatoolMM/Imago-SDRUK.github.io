@@ -1,61 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/state'
-	import type { Tag } from '$lib/server/entities/models/datasets'
-	import type { CkanGroup } from '$lib/types/ckan'
+	import type { DatasetsFilter } from '$lib/types/filters'
 	import { Accordion, Button, handleSearchParams, Icon, Subtitle } from '@imago/ui'
-	let {
-		groups,
-		tags,
-		resources
-	}: {
-		groups: (string | CkanGroup)[]
-		tags: (string | Tag)[]
-		resources: { result: string[] }
-	} = $props()
-	let filters: {
-		title: string
-		filters: { key: string; value: string }[]
-		query: string
-		limit: number
-		transform: (id: string) => { label: string; href: string }
-	}[] = $derived([
-		{
-			title: 'Groups',
-			filters: groups.map((group) =>
-				typeof group === 'string'
-					? { key: group, value: group }
-					: { key: group.title, value: group.name }
-			),
-			query: 'groups',
-			limit: 10,
-			transform: (id: string) => {
-				return { label: id, href: `?groups=${id}` }
-			}
-		},
-		{
-			title: 'Tags',
-			filters: tags.map((tag) =>
-				typeof tag === 'string'
-					? { key: tag, value: tag }
-					: { key: tag.display_name, value: tag.name }
-			),
-			// query: 'vocab_Topics',
-			query: 'vocab_general',
-			limit: 10,
-			transform: (id: string) => {
-				return { label: id, href: `?tags=${id}` }
-			}
-		},
-		{
-			title: 'Resources',
-			filters: resources.result.map((resource) => ({ key: resource, value: resource })),
-			query: 'res_format',
-			limit: 10,
-			transform: (id: string) => {
-				return { label: id, href: `?res_format=${id}` }
-			}
-		}
-	])
+	let { filters }: { filters: DatasetsFilter[] } = $props()
 </script>
 
 <div class="filters">
