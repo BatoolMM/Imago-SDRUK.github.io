@@ -13,13 +13,7 @@
 	<!-- <Banner text="There are no datasets available."></Banner> -->
 	<div class="datasets-section">
 		<div class="left-col">
-			<Filters
-				organisations={data.organisations}
-				tags={data.tags}
-				licenses={data.licenses}
-				groups={data.groups}
-				resources={data.resources}
-			></Filters>
+			<Filters tags={data.tags} groups={data.groups} resources={data.resources}></Filters>
 		</div>
 		<div class="right-col">
 			{#if Array.isArray(datasets)}
