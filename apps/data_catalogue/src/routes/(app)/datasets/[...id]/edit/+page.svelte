@@ -2,12 +2,23 @@
 	import { enhance } from '$app/forms'
 	import { invalidateAll } from '$app/navigation'
 	import licenses from '$lib/utils/ckan/licenses.json'
-	import { BaseSection, Button, Editor, Input, InputBlock, Select, Subtitle, Text } from '@imago/ui'
+	import {
+		BaseSection,
+		Button,
+		Editor,
+		Icon,
+		Input,
+		InputBlock,
+		Select,
+		Subtitle,
+		Text
+	} from '@imago/ui'
 	import { getDataset, setDataset } from '$lib/context/dataset.svelte.js'
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import Tags from '$lib/ui/dataset/tags.svelte'
 	import { onMount } from 'svelte'
 	import { handleEnhance } from '$lib/utils/forms/index.js'
+	import MetadataGroups from '$lib/ui/dataset/metadata_groups.svelte'
 	const labels = {
 		source: 'Source',
 		content: 'Content',
@@ -122,6 +133,9 @@
 			<div class="right-col">
 				<div class="form">
 					<Tags existing_tags={data.tags}></Tags>
+				</div>
+				<div class="form">
+					<MetadataGroups groups={data.groups}></MetadataGroups>
 				</div>
 			</div>
 		</div>

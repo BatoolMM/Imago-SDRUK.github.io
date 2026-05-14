@@ -4,8 +4,46 @@
 	import { page } from '$app/state'
 	import Filters from '$lib/ui/dataset/filters.svelte'
 	import CardProduct from '$lib/ui/cards/card_product.svelte'
+	import type { DatasetsFilter } from '$lib/types/filters/index.js'
 	let { data } = $props()
 	let datasets = $derived(data.datasets.items)
+	const filters: DatasetsFilter[] = $derived([
+		{
+			title: 'Groups',
+			filters: data.groups.map((group) =>
+				typeof group === 'string'
+					? { key: group, value: group }
+					: { key: group.title, value: group.name }
+			),
+			query: 'groups',
+			limit: 10
+		},
+		{
+			title: 'Tags',
+			filters: data.tags.map((tag) =>
+				typeof tag === 'string'
+					? { key: tag, value: tag }
+					: { key: tag.display_name, value: tag.name }
+			),
+			// query: 'vocab_Topics',
+			query: 'vocab_general',
+			limit: 10
+		},
+		{
+			title: 'Resources',
+			filters: data.resources.result.map((resource) => ({ key: resource, value: resource })),
+			query: 'res_format',
+			limit: 10
+		}
+	])
+	const some = $derived(
+		filters.filter(
+			(filter) =>
+				filter.filters.filter((result) =>
+					page.url.searchParams.getAll(filter.query).includes(result.value)
+				).length > 0
+		).length
+	)
 	debug.data = data
 </script>
 
@@ -13,15 +51,46 @@
 	<!-- <Banner text="There are no datasets available."></Banner> -->
 	<div class="datasets-section">
 		<div class="left-col">
-			<Filters
-				organisations={data.organisations}
-				tags={data.tags}
-				licenses={data.licenses}
-				groups={data.groups}
-				resources={data.resources}
-			></Filters>
+			<Filters {filters}></Filters>
 		</div>
 		<div class="right-col">
+			{#if some > 0}
+				<div class="existing-filters">
+					<Subtitle size="sm">Filters:</Subtitle>
+					{#each filters as filter}
+						{#each filter.filters.filter((result) => page.url.searchParams
+								.getAll(filter.query)
+								.includes(result.value)) as result}
+							<div class="tag-wrapper">
+								<!-- {#each filter.filters.result.slice(0, filter.limit) as result} -->
+								<!-- {#if typeof result === 'string'} -->
+								<!-- 	{@const active = page.url.searchParams.getAll(filter.query).includes(result)} -->
+								<!-- 	<Button -->
+								<!-- 		style="tag" -->
+								<!-- 		{active} -->
+								<!-- 		line_clamp -->
+								<!-- 		href={handleSearchParams({ -->
+								<!-- 			add: [{ key: filter.query, value: result }], -->
+								<!-- 			remove: active ? [{ key: filter.query, value: result }] : undefined, -->
+								<!-- 			url: page.url -->
+								<!-- 		})}>{result}</Button -->
+								<!-- 	> -->
+								<!-- {/if} -->
+								<Button
+									style="tag"
+									active
+									line_clamp
+									href={handleSearchParams({
+										remove: [{ key: filter.query, value: result.value }],
+										url: page.url
+									})}>{result.key}</Button
+								>
+							</div>
+						{/each}
+					{/each}
+					<Button href={page.url.pathname} style="tag">Clear all</Button>
+				</div>
+			{/if}
 			{#if Array.isArray(datasets)}
 				{#if datasets.length === 0}
 					<Subtitle size="lg">There are no results for this search.</Subtitle>
@@ -120,5 +189,15 @@
 	}
 	.button-wrapper {
 		grid-column: 3/4;
+	}
+	.existing-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		width: 100%;
+		align-items: center;
+	}
+	.tag-wrapper {
+		flex-shrink: 0;
 	}
 </style>

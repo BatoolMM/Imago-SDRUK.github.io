@@ -164,7 +164,6 @@
 						{#if data.datasets.total > 0}
 							{#if page.url.searchParams.get('offset')}
 								{@const offset = Number(page.url.searchParams.get('offset'))}
-								<!-- HACK: replace fixed dataset with fn to strip required searchparams -->
 								<Button
 									href={handleSearchParams({
 										url: page.url,
@@ -172,7 +171,6 @@
 										remove: offset - 10 <= 0 ? ['offset'] : undefined
 									})}
 								>
-									<!-- <Button href={offset - 10 <= 0 ? '/datasets' : `?offset=${offset - 10}`}> -->
 									<Icon icon={{ icon: 'arrow-narrow-left', set: 'tabler' }}></Icon>
 								</Button>
 								<div class="page-count">
