@@ -1,5 +1,11 @@
 # data-catalogue
 
+## 3.0.8
+### Patch Changes
+
+- d25ab78: fix filters, add filter by metadata group
+- 838e1bf: add edit dataset metadata groups
+
 ## 3.0.7
 ### Patch Changes
 
