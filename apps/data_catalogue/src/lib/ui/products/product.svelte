@@ -59,7 +59,7 @@
 										umami_event="File details"
 										href="/datasets/{page.params.id}/resources/{resource.id}"
 										>{#snippet leftCol()}
-											<span>Details</span>
+											<span>Download</span>
 										{/snippet}
 										{#snippet rightCol()}
 											<Icon icon={{ icon: 'arrow-narrow-right', set: 'tabler' }}></Icon>
