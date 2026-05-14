@@ -4,7 +4,9 @@ import {
 } from '$lib/server/interface/adapters/controllers/tags/get.js'
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
 import {
+	datasetAddGroupController,
 	datasetAddTagController,
+	datasetRemoveGroupController,
 	datasetRemoveTagController,
 	datasetUpdateController
 } from '$lib/server/interface/adapters/controllers/datasets/update.js'
@@ -16,6 +18,7 @@ import {
 import { error, fail } from '@sveltejs/kit'
 import { resourceCreateController } from '$lib/server/interface/adapters/controllers/resources/create.js'
 import { resourceDeleteController } from '$lib/server/interface/adapters/controllers/resources/delete.js'
+import { jstr } from '@arturoguzman/art-ui'
 
 export const load = async ({ locals, parent }) => {
 	const { dataset, permits } = await parent()
@@ -211,6 +214,42 @@ export const actions = {
 		return {
 			message: 'ok',
 			url
+		}
+	},
+	add_group: async ({ request, locals }) => {
+		const form = await request.formData()
+		const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
+		const [errors] = await datasetAddGroupController({
+			configuration: locals.configuration,
+			session: locals.session,
+			dataset_id: dataset_id,
+			group_id
+		})
+		if (errors !== null) {
+			console.log(jstr(errors))
+			return fail(500, { message: errors.reason, id: errors.reason })
+		}
+		return {
+			message: `Dataset group added`
+		}
+	},
+	remove_group: async ({ request, locals }) => {
+		const form = await request.formData()
+		const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
+		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
+		const [errors] = await datasetRemoveGroupController({
+			configuration: locals.configuration,
+			session: locals.session,
+			dataset_id: dataset_id,
+			group_id
+		})
+		if (errors !== null) {
+			console.log(jstr(errors))
+			return fail(500, { message: errors.reason, id: errors.reason })
+		}
+		return {
+			message: `Dataset group removed`
 		}
 	}
 }
