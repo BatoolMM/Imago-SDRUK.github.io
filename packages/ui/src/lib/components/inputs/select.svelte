@@ -103,6 +103,9 @@
 		background-color: var(--background-muted);
 		display: grid;
 		gap: 0.5rem;
+		max-height: 40lvh;
+		overflow-y: scroll;
+		scrollbar-width: none;
 	}
 
 	.radio-list {
