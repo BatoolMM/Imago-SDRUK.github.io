@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.19
+### Patch Changes
+
+- 7523840: select overflow scroll
+
 ## 1.0.18
 ### Patch Changes
 
