@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.9
+### Patch Changes
+
+- 7523840: select overflow scroll
+
 ## 3.0.8
 ### Patch Changes
 
