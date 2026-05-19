@@ -50,6 +50,7 @@ export const load = async ({ locals, url }) => {
 			id: edit
 		}).then(([errors, user]) => {
 			if (errors !== null) {
+				console.log(errors)
 				error(500, { message: errors.reason, id: errors.reason })
 			}
 			return user
