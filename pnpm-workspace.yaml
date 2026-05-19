@@ -4,3 +4,43 @@ packages:
 # syncInjectedDepsAfterScripts:
 #   - build
 # injectWorkspacePackages: true
+autoInstallPeers: true
+minimumReleaseAge: 1440
+blockExoticSubdeps: true
+allowBuilds:
+  '@sentry/cli': false
+  argon2: false
+  esbuild: false
+  isolated-vm: true
+  oracledb: false
+  protobufjs: false
+  sharp: false
+  sqlite3: false
+  vue-demi: false
+  better-sqlite3: false
+  libpq: false
+  canvas: false
+  pg: false
+
+# "pnpm": {
+# 		"onlyBuiltDependencies": [
+# 			"@sentry/cli",
+# 			"argon2",
+# 			"esbuild",
+# 			"isolated-vm",
+# 			"oracledb",
+# 			"protobufjs",
+# 			"sharp",
+# 			"sqlite3",
+# 			"vue-demi",
+# 			"better-sqlite3",
+# 			"canvas",
+# 			"oracledb",
+# 			"pg",
+# 			"vue-demi"
+# 		],
+# 		"ignoredBuiltDependencies": [
+# 			"esbuild",
+# 			"libpq"
+# 		]
+# 	}
