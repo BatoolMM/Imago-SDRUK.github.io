@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.12
+### Patch Changes
+
+- d1bcf39: add temp overfetch
+
 ## 3.0.11
 ### Patch Changes
 
