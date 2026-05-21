@@ -3,7 +3,8 @@
 	import { BaseSection, Button, Title, type Routes } from '@imago/ui'
 
 	let { children } = $props()
-	const routes: Routes = [
+	const dashboard_routes: Routes = [{ label: 'Dashboard', href: '/admin/dashboard', subpaths: [] }]
+	const settings_routes: Routes = [
 		{ label: 'Datasets', href: '/admin/settings/datasets', subpaths: [] },
 		{ label: 'Groups', href: '/admin/settings/groups', subpaths: [] },
 		{
@@ -48,7 +49,23 @@
 			<!-- 		>{label}</Button -->
 			<!-- 	> -->
 			<!-- {/each} -->
-			{#each routes as { label, href, subpaths }}
+			{#each dashboard_routes as { label, href, subpaths }}
+				<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
+					>{label}</Button
+				>
+				{#if page.url.pathname.startsWith(href)}
+					{#if subpaths && subpaths.length > 0}
+						<div class="subpaths">
+							{#each subpaths as { label, href }}
+								<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
+									>{label}</Button
+								>
+							{/each}
+						</div>
+					{/if}
+				{/if}
+			{/each}
+			{#each settings_routes as { label, href, subpaths }}
 				<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
 					>{label}</Button
 				>

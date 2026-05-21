@@ -18,6 +18,8 @@ import { getStorageModule } from '$lib/server/modules/storage'
 import { resourceServiceDeleteUseCase } from '$lib/server/application/use_cases/resources/delete'
 import { getDatastoreModule } from '$lib/server/modules/datastore'
 import { permissionsCreateUseCase } from '$lib/server/application/use_cases/permissions/create'
+import { permissionsDeleteUseCase } from '$lib/server/application/use_cases/permissions/delete'
+import { getAuthorisationModule } from '$lib/server/modules/authorisation'
 
 // const presenter = ({ dataset }: { dataset: Dataset }) => dataset
 
@@ -89,41 +91,21 @@ export const resourceCreateControllerWithVersion = async ({
 			if (rs_errors !== null) {
 				return err(rs_errors)
 			}
-			const package_id = rs.package_id
+
 			const [errors, res] = await resourceCreateUseCase({
 				package_id: rs.package_id,
 				resource_respository: getResourceRepositoryModule(),
 				data: { title: rs.name, id: rs.id, description: rs.description },
 				...getServerContext({ session, configuration, tx })
 			})
+
 			if (errors !== null) {
 				log.error({ caller: 'resourceCreateControllerWithVersion', errors })
 				const [rs_errors] = await resourceServiceDeleteUseCase({
 					id: rs.id,
 					datastore_service: getDatastoreModule(),
 					resource_service: getResourceServiceModule(),
-					...getServerContext({ session, configuration, tx })
-				})
-				if (rs_errors !== null) {
-					log.error({ error: rs_errors, message: 'error rolling back ckan resource' })
-					return err(rs_errors)
-				}
-				// {"namespace":"Resource","object":"019dcf95-e781-727d-b1e7-0a40826e709e","relation":"datasets","actor":"3345490f-5b94-40fa-b9f3-03e09221154f"}
-				tx.rollback()
-				return err(errors)
-			}
-			const [v_errors, version] = await resourceVersionPipelineCreateUseCase({
-				resource_respository: getResourceRepositoryModule(),
-				data: { ...version_data, resource: res.id },
-				storage_service: getStorageModule(),
-				...getServerContext({ session, configuration, tx })
-			})
-			if (v_errors !== null) {
-				log.error({ caller: 'resourceCreateControllerWithVersion', errors })
-				const [rs_errors] = await resourceServiceDeleteUseCase({
-					id: rs.id,
-					datastore_service: getDatastoreModule(),
-					resource_service: getResourceServiceModule(),
+					rollback: true,
 					...getServerContext({ session, configuration, tx })
 				})
 				if (rs_errors !== null) {
@@ -135,35 +117,49 @@ export const resourceCreateControllerWithVersion = async ({
 				} catch (_err) {
 					log.error({ error: _err, message: 'IGNORE' })
 				}
-				return err(v_errors)
+
+				return err(errors)
 			}
-			const [errors_p] = await permissionsCreateUseCase({
-				data: [
-					{
-						namespace: 'Resource',
-						object: res.id,
-						relation: 'datasets',
-						actor: {
-							namespace: 'Dataset',
-							object: package_id,
-							relation: ''
-						}
-					},
-					{
-						namespace: 'ResourceVersion',
-						object: version.version.id,
-						relation: 'resources',
-						actor: {
-							namespace: 'Resource',
-							object: res.id,
-							relation: ''
-						}
-					}
-				],
+			const [v_errors, version] = await resourceVersionPipelineCreateUseCase({
+				resource_respository: getResourceRepositoryModule(),
+				data: { ...version_data, resource: res.id },
+				storage_service: getStorageModule(),
 				...getServerContext({ session, configuration, tx })
 			})
-			if (errors_p) {
-				return err(errors_p)
+			if (v_errors !== null) {
+				log.error({ caller: 'resourceCreateControllerWithVersion', v_errors })
+				const [rs_errors] = await resourceServiceDeleteUseCase({
+					id: rs.id,
+					datastore_service: getDatastoreModule(),
+					resource_service: getResourceServiceModule(),
+					rollback: true,
+					...getServerContext({ session, configuration, tx })
+				})
+				if (rs_errors !== null) {
+					log.error({ error: rs_errors, message: 'error rolling back ckan resource' })
+					return err(rs_errors)
+				}
+				await permissionsDeleteUseCase({
+					...getServerContext({ session, configuration, tx }),
+					data: [
+						{
+							namespace: 'Resource',
+							object: res.id,
+							relation: 'datasets',
+							actor: {
+								namespace: 'Dataset',
+								object: rs.package_id,
+								relation: ''
+							}
+						}
+					]
+				})
+				try {
+					tx.rollback()
+				} catch (_err) {
+					log.error({ error: _err, message: 'IGNORE' })
+				}
+				return err(v_errors)
 			}
 			return ok(version)
 		}

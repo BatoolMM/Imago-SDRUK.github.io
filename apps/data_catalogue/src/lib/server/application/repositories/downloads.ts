@@ -4,6 +4,13 @@ import type { Download, DownloadRequest } from '$lib/server/entities/models/down
 export type DownloadsRepository = {
 	getDownloads: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Download[]]>
 	getDownloadsCount: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, number]>
+	getDownloadsAggregate: ({
+		from,
+		to
+	}: {
+		from: Date
+		to: Date
+	}) => Promise<[ErrTypes, null] | [null, { resource_id: string; count: number }[]]>
 	registerDownload: ({
 		data
 	}: {

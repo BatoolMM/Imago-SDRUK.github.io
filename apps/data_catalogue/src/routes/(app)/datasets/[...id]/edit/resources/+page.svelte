@@ -417,7 +417,7 @@
 						{/if}
 						<div class="preview">
 							<Subtitle>{file.filename}</Subtitle>
-							<input type="hidden" name="package_id" value={page.params.id} />
+							<input type="hidden" name="package_id" value={data.dataset.id} />
 							<Input label="Name">
 								<Text name="name" bind:value={file.filename}></Text>
 							</Input>

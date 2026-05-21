@@ -6,9 +6,10 @@ ENV CI=true
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
+RUN corepack enable
 RUN apk add --no-cache libc6-compat && \
   corepack enable && \
-  corepack prepare pnpm@10 --activate && \
   pnpm add -g turbo
 
 FROM base AS builder

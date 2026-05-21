@@ -2,7 +2,7 @@ import { db } from '$lib/db'
 import { downloads } from '$lib/db/schema'
 import type { DownloadsRepository } from '$lib/server/application/repositories/downloads'
 import { err, ok } from '$lib/server/entities/errors'
-import { count, eq } from 'drizzle-orm'
+import { and, count, eq, gte, lte, sql } from 'drizzle-orm'
 
 const getDownloads: DownloadsRepository['getDownloads'] = async ({ id }) => {
 	try {
@@ -34,8 +34,29 @@ const registerDownload: DownloadsRepository['registerDownload'] = async ({ data 
 	}
 }
 
+const getDownloadsAggregate: DownloadsRepository['getDownloadsAggregate'] = async ({
+	from,
+	to
+}) => {
+	try {
+		const download = await db
+			.select({
+				resource_id: downloads.resource,
+				count: sql<number>`cast(count(${downloads.resource}) as int)`
+			})
+			.from(downloads)
+			.groupBy(downloads.resource)
+			.where(and(gte(downloads.created_at, from), lte(downloads.created_at, to)))
+		return ok(download)
+	} catch (_err) {
+		console.log(_err)
+		return err({ reason: 'Unexpected', error: _err })
+	}
+}
+
 export const downloadsRepositoryInfrastructureDrizzle: DownloadsRepository = {
 	getDownloads,
 	getDownloadsCount,
-	registerDownload
+	registerDownload,
+	getDownloadsAggregate
 }

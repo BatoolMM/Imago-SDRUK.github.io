@@ -160,16 +160,14 @@ export const actions = {
 			type: string
 			package_id: string
 		}
-		console.log(form)
 		const [errors, resource] = await resourceCreateController({
 			session: locals.session,
 			configuration: locals.configuration,
 			data: parsed
 		})
 		if (errors !== null) {
-			// return fail(500, { message: errors.message ?? errors.reason })
+			return fail(500, { message: errors.message ?? errors.reason })
 		}
-		console.log(resource)
 		return {
 			message: 'ok'
 		}

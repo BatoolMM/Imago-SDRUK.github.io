@@ -4,6 +4,7 @@ import type { DatasetService } from '$lib/server/application/services/dataset'
 import type { Resource } from '$lib/server/entities/models/datasets'
 import type { AuthorisationService } from '$lib/server/application/services/autorisation'
 import type { AppContext } from '$lib/server/application/context'
+import { DateTime } from 'luxon'
 
 export const downloadsGetByDatasetUseCase = async ({
 	id,
@@ -70,4 +71,38 @@ export const downloadsGetByDatasetUseCase = async ({
 		return err(parsed.errors[0])
 	}
 	return ok(parsed.downloads)
+}
+
+export const dowloadsGetAggregatesUseCase = async ({
+	from,
+	to,
+	downloads_repository
+}: {
+	from: string
+	to: string
+	downloads_repository: DownloadsRepository
+	authorisation_module: AuthorisationService
+} & AppContext) => {
+	const _to = getDate(to)
+	const _from = getDate(from)
+	const [downloads_error, downloads] = await downloads_repository.getDownloadsAggregate({
+		to: _to,
+		from: _from
+	})
+	if (downloads_error !== null) {
+		return err(downloads_error)
+	}
+	return ok(downloads)
+}
+
+const getDate = (str: string) => {
+	try {
+		const value = DateTime.fromISO(str).toJSDate()
+		if (isNaN(value.getTime())) {
+			return DateTime.now().toJSDate()
+		}
+		return value
+	} catch {
+		return DateTime.now().toJSDate()
+	}
 }

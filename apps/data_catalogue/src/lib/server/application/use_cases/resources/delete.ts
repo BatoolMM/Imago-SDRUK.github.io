@@ -72,24 +72,28 @@ export const resourceServiceDeleteUseCase = async ({
 	datastore_service,
 	session,
 	configuration,
-	authorisation_module
+	authorisation_module,
+	rollback
 }: {
 	id: string
 	resource_service: ResourceService
 	datastore_service: DatastoreService
+	rollback?: boolean
 } & AppContext) => {
-	const [errors, permission] = await authorisation_module.authorise({
-		namespace: 'Resource',
-		object: id,
-		permits: 'delete',
-		actor: session.identity.id,
-		configuration
-	})
-	if (errors) {
-		return err(errors)
-	}
-	if (!permission.allowed) {
-		return err({ reason: 'Unauthorised' })
+	if (!rollback) {
+		const [errors, permission] = await authorisation_module.authorise({
+			namespace: 'Resource',
+			object: id,
+			permits: 'delete',
+			actor: session.identity.id,
+			configuration
+		})
+		if (errors) {
+			return err(errors)
+		}
+		if (!permission.allowed) {
+			return err({ reason: 'Unauthorised' })
+		}
 	}
 
 	const [r_errors, resource] = await resource_service.getResource({ id })
