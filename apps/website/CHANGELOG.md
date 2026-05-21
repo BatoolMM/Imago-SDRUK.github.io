@@ -1,5 +1,30 @@
 # website
 
+## 2.0.28
+### Patch Changes
+
+- 21fcceb: Update dependencies
+
+## 2.0.27
+### Patch Changes
+
+- 86fde60: fix load media information
+
+## 2.0.26
+### Patch Changes
+
+- cd93b22: add carousel to events page
+
+## 2.0.25
+### Patch Changes
+
+- abe3b84: feat: add new role
+
+## 2.0.24
+### Patch Changes
+
+- 9eab00b: add new role, add state of imagery to nav, scroll to team on click, open external links in new tab
+
 ## 2.0.23
 ### Patch Changes
 

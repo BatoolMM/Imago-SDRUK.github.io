@@ -1,5 +1,25 @@
 # @imago/ui
 
+## 1.0.19
+### Patch Changes
+
+- 7523840: select overflow scroll
+
+## 1.0.18
+### Patch Changes
+
+- 21fcceb: Fixes on empty css variables. Update dependencies. Upgrade UI components and new features. Implements an experimental select with melt ui.
+
+## 1.0.17
+### Patch Changes
+
+- 9ac9e19: Revamp admin page, add tables for data, move fetch operations to forms, move form logic to endpoint for future rest/cli integration
+
+## 1.0.16
+### Patch Changes
+
+- 9eab00b: add new role, add state of imagery to nav, scroll to team on click, open external links in new tab
+
 ## 1.0.15
 ### Patch Changes
 

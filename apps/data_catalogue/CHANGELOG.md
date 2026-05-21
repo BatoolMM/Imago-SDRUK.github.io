@@ -1,5 +1,83 @@
 # data-catalogue
 
+## 3.0.9
+### Patch Changes
+
+- 7523840: select overflow scroll
+
+## 3.0.8
+### Patch Changes
+
+- d25ab78: fix filters, add filter by metadata group
+- 838e1bf: add edit dataset metadata groups
+
+## 3.0.7
+### Patch Changes
+
+- 5db3a31: revert to alpine, fix  build
+
+## 3.0.6
+### Patch Changes
+
+- cf23e95: move to slim img
+
+## 3.0.5
+### Patch Changes
+
+- 1b5bf25: revert img
+
+## 3.0.4
+### Patch Changes
+
+- 01688ae: trigger build
+
+## 3.0.3
+### Patch Changes
+
+- 4cb0d40: pass dataset id instead of param id
+
+## 3.0.2
+### Patch Changes
+
+- a6ee7d8: disallow all robots
+
+## 3.0.1
+### Patch Changes
+
+- e2173d5: sort by created desc, add dataset migrate tags action
+
+## 3.0.0
+### Major Changes
+
+- 21fcceb: This is a major refactor on the structure of the data catalogue, as the previous implementation limited the flexibility to add new features, services and made it difficult to track down issues and bugs. This architecture follows DDD and CA patterns, which will allow us to extend the platform to adapt new features easily. Authorisation includes new namespaces and enforces group permissions, splitting the logic between CKAN groups and authentication groups.
+  
+  The implementation also considers easier testing but there are currently no tests working due to time constrains. Resources and versions have been implemented with editing and rewritten the handling of upload. Tags implementation has been reworked and dataset listing has been reworked. In the future, we might have to diverge from CKAN due to performance and implementation constrains, specifically on search and filtering through permissions. But this will require further time and careful consideration of the implementation of a search engine.
+  
+  Breaking changes are mainly on our db implementation. Migration files have been added but there are a few minor fixes that must be manually done, specifically on questions and json fields.
+  
+  There is now the requirement to set an superuser at first load. This should be manually set and will have overall permissions to all platform. Permissions are also to be manually adjusted due to the changes on namespaces and relations.
+  
+  Groups can now be set for user self-enrolment on registration. Arktype has been added to handle payload validation. Errors are more clear and allow users to understand the issues with their file uploads.
+
+### Patch Changes
+
+- e00a149: add utils for migration, fix dataset, resources and versions permissions
+
+## 2.1.6
+### Patch Changes
+
+- 00b9e81: handle incomplete user registration, paginate users and groups on admin page
+
+## 2.1.5
+### Patch Changes
+
+- 9ac9e19: Revamp admin page, add tables for data, move fetch operations to forms, move form logic to endpoint for future rest/cli integration
+
+## 2.1.4
+### Patch Changes
+
+- 356d7b6: Improve UI, add additional info to err logs
+
 ## 2.1.3
 ### Patch Changes
 
