@@ -1,5 +1,11 @@
 # data-catalogue
 
+## 3.0.10
+### Patch Changes
+
+- 600e32f: move to pnpm 11, revert to alpine image
+- f8b3476: fix file upload permissions errors and rollback errors
+
 ## 3.0.9
 ### Patch Changes
 
