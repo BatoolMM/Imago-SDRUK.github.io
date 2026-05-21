@@ -3,7 +3,7 @@
 	"version": "1.0.19",
 	"scripts": {
 		"dev": "svelte-kit sync && svelte-package --watch --input=src/lib",
-		"build": "vite build && npm run prepack",
+		"build": "vite build && pnpm run prepack",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"prepack": "svelte-kit sync && svelte-package && publint",
@@ -39,7 +39,8 @@
 		"./css/icons": "./dist/icons/style.css"
 	},
 	"peerDependencies": {
-		"svelte": "^5.0.0"
+		"svelte": "^5.0.0",
+		"@sveltejs/kit": "^2.59.1"
 	},
 	"devDependencies": {
 		"@arturoguzman/art-ui": "^2.8.3",
@@ -56,7 +57,6 @@
 		"@imago/config": "workspace:*",
 		"@playwright/test": "^1.60.0",
 		"@sveltejs/adapter-auto": "^7.0.1",
-		"@sveltejs/kit": "^2.59.1",
 		"@sveltejs/package": "^2.5.7",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@tiptap/core": "^3.23.4",
