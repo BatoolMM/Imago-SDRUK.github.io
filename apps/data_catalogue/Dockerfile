@@ -1,5 +1,4 @@
-# FROM node:24-alpine AS base
-FROM node:24-slim AS base
+FROM node:24-alpine AS base
 ENV NODE_ENV=production
 ENV TURBO_TELEMETRY_DISABLED=1
 ENV BUILDING=true
@@ -9,12 +8,12 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
 RUN corepack enable
-# RUN apk add --no-cache libc6-compat && \
-#   corepack enable && \
-#   pnpm add -g turbo
+RUN apk add --no-cache libc6-compat && \
+  corepack enable && \
+  pnpm add -g turbo
 
 FROM base AS builder
-# RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY . .
 RUN turbo prune data_catalogue --docker
