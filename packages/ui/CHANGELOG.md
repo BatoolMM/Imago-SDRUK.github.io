@@ -1,5 +1,10 @@
 # @imago/ui
 
+## 1.0.20
+### Patch Changes
+
+- c942f5c: specify ui package dist folder
+
 ## 1.0.19
 ### Patch Changes
 
