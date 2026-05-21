@@ -94,8 +94,10 @@ export const datasetsGetPaginatedUseCase = async ({
 	// if (!allowed.allowed) {
 	// 	return err({ reason: 'Unauthorised' })
 	// }
+	// HACK: will overfecth for now, this does lead to duplicate results
+	const OVERFETCH = 20
 	const [errs, datasets] = await dataset_service.getDatasets({
-		page_size: page_size,
+		page_size: page_size + OVERFETCH,
 		offset: offset,
 		url,
 		search
@@ -127,9 +129,14 @@ export const datasetsGetPaginatedUseCase = async ({
 				})
 		)
 	)
+
+	const filtered = datasets.items.filter((dataset) => permissions.includes(dataset.id))
 	return ok({
 		...datasets,
-		items: datasets.items.filter((dataset) => permissions.includes(dataset.id))
+		page_size: page_size - OVERFETCH,
+		items: [...filtered.slice(0, page_size)],
+		max_pages: datasets.total / page_size,
+		next: offset + 1 > datasets.total ? datasets.total : offset + 1
 	})
 }
 
