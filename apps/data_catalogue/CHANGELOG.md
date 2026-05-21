@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.13
+### Patch Changes
+
+- c942f5c: specify ui package dist folder
+
 ## 3.0.12
 ### Patch Changes
 
