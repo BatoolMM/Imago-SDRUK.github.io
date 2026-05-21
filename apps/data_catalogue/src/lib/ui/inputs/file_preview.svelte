@@ -101,7 +101,7 @@
 						</Button>
 					</div>
 				{/snippet}
-				<input type="hidden" name="package_id" value={page.params.id} />
+				<input type="hidden" name="package_id" value={ctx.dataset.id} />
 				<Input label="Name">
 					<Text name="title" bind:value={file.filename}></Text>
 				</Input>

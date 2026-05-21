@@ -33,7 +33,7 @@ export const resourceCreateUseCase = async ({
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
 		object: package_id,
-		permits: 'update',
+		permits: 'edit',
 		actor: session.identity.id,
 		configuration
 	})
@@ -63,6 +63,19 @@ export const resourceCreateUseCase = async ({
 		return err(errs_resource)
 	}
 	log.trace({ returning: 'resourceCreateUseCase' })
+	const [errors_p] = await authorisation_module.createPermission({
+		namespace: 'Resource',
+		object: result.id,
+		relation: 'datasets',
+		actor: {
+			namespace: 'Dataset',
+			object: package_id,
+			relation: ''
+		}
+	})
+	if (errors_p) {
+		return err(errors_p)
+	}
 	return ok(result)
 }
 
@@ -80,7 +93,7 @@ export const resourceServiceCreateUseCase = async ({
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
 		object: data.package_id,
-		permits: 'update',
+		permits: 'edit',
 		actor: session.identity.id,
 		configuration
 	})
@@ -261,23 +274,26 @@ export const resourceVersionPipelineCreateUseCase = async ({
 	if (version_errors !== null) {
 		return err(version_errors)
 	}
-
+	const [errs_s, url] = await storage_service.getUploadUrl({ filename: version_id })
+	if (errs_s !== null) {
+		return err(errs_s)
+	}
 	const [errors_p] = await authorisation_module.createPermissions({
 		permissions: [
 			{
 				namespace: 'ResourceVersion',
 				object: version.id,
-				relation: 'resource',
-				actor: validated.resource
+				relation: 'resources',
+				actor: {
+					namespace: 'Resource',
+					object: validated.id,
+					relation: ''
+				}
 			}
 		]
 	})
 	if (errors_p) {
 		return err(errors_p)
-	}
-	const [errs_s, url] = await storage_service.getUploadUrl({ filename: version_id })
-	if (errs_s !== null) {
-		return err(errs_s)
 	}
 	return ok({ version, url })
 }
