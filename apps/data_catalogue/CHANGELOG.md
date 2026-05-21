@@ -1,5 +1,10 @@
 # data-catalogue
 
+## 3.0.11
+### Patch Changes
+
+- 33c96a4: fix pnpm build issues
+
 ## 3.0.10
 ### Patch Changes
 
