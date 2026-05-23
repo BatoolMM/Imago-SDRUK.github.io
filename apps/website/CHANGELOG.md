@@ -1,5 +1,10 @@
 # website
 
+## 2.0.38
+### Patch Changes
+
+- 0602086: modify headers
+
 ## 2.0.37
 ### Patch Changes
 
