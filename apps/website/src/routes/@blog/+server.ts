@@ -8,7 +8,7 @@ const user = env.MASTODON_USER
 export const GET = async () => {
 	const value = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${endpoint}/users/${user}`,
+		id: `${endpoint}/@${user}`,
 		type: 'Person',
 		following: `${endpoint}/users/${user}/following`,
 		followers: `${endpoint}/users/${user}/followers`,
@@ -17,7 +17,7 @@ export const GET = async () => {
 		preferredUsername: 'blog',
 		name: 'Imago blog',
 		summary: 'Imago blog',
-		url: `${endpoint}/@blog`,
+		url: `${endpoint}/`,
 		// manuallyApprovesFollowers: false,
 		discoverable: true,
 		memorial: false,
@@ -37,7 +37,7 @@ export const GET = async () => {
 			'@context': 'https://w3id.org/security/v1',
 			'@type': 'Key',
 			id: `${endpoint}/@blog#main-key`,
-			owner: `${endpoint}/users/blog`,
+			owner: `${endpoint}/@blog`,
 			publicKeyPem: loadKey(env.RSA_PUBLIC_KEY)
 		},
 		tag: [],

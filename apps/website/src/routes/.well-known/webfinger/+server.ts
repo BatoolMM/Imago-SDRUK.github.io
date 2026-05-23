@@ -7,13 +7,13 @@ const user = env.MASTODON_USER
 
 export const GET = async () => {
 	const value = {
-		subject: `acct:blog@imago.ac.uk`,
+		subject: `acct:${user}@${hostname}`,
 		aliases: [`${endpoint}/@blog`],
 		links: [
 			{
 				rel: 'self',
 				type: 'application/activity+json',
-				href: `${endpoint}/users/blog`
+				href: `${endpoint}/@blog`
 			},
 			{
 				rel: 'http://webfinger.net/rel/profile-page',
