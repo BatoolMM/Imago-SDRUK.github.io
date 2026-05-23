@@ -1,5 +1,10 @@
 # website
 
+## 2.0.33
+### Patch Changes
+
+- 2708cd7: revert changes but keep typo, closes #8
+
 ## 2.0.32
 ### Patch Changes
 
