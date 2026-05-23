@@ -390,7 +390,7 @@ export const createHeadersGetRequest = ({
 	const host_header = new URL(actor.id).hostname
 	const date_header = DateTime.now().toHTTP()
 	const to_sign = [
-		`(request-target): get ${new URL(actor.id).pathname}/inbox`,
+		`(request-target): get /users/${new URL(actor.id).pathname}`,
 		`host: ${host_header}`,
 		`date: ${date_header}`
 	].join('\n')
