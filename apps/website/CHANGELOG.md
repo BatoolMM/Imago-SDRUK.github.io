@@ -1,5 +1,10 @@
 # website
 
+## 2.0.30
+### Patch Changes
+
+- ac3e9aa: update dockerfile
+
 ## 2.0.29
 ### Patch Changes
 
