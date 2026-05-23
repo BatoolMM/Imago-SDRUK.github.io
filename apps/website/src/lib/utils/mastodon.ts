@@ -3,7 +3,6 @@ import type {
 	MastodonActor,
 	MastodonItem,
 	MastodonPayload,
-	MastodonPublicKeyResponse,
 	MastodonRequest
 } from '$lib/types/mastodon'
 import { jstr } from '@arturoguzman/art-ui'
@@ -83,16 +82,11 @@ export const verifyMastodonRequest = async (
 	request: Request,
 	fetch: typeof globalThis.fetch
 ): Promise<{ data: MastodonRequest; valid: boolean }> => {
-	const data = await request.json().catch((err) => {
+	const data = (await request.json().catch((err) => {
 		console.log(err)
 		error(400, { message: `This is not a valid request`, id: '' })
-	})
-	console.log('DATA')
-	console.log(data)
-
+	})) as MastodonRequest
 	const signature_header = request.headers.get('signature')
-	console.log('Signature header')
-	console.log(signature_header)
 	if (!signature_header) error(401, { message: `You're not authorised to do this`, id: '' })
 	const signature_params: { keyId: string; algorithm: string; headers: string; signature: string } =
 		Object.fromEntries(
@@ -106,30 +100,14 @@ export const verifyMastodonRequest = async (
 	) {
 		error(401, { message: `You're not authorised to do this`, id: '' })
 	}
-	const signed_actor_request_headers = createHeadersGetRequest({
+	const enriched_actor = await getIncomingActorInformation({
+		url: signature_params.keyId,
+		actor: 'actor' in data ? data.actor : data.id,
 		endpoint,
-		user,
-		actor: data?.actor ?? ''
+		fetch,
+		user
 	})
-	console.log('signed_actor_request_headers')
-	console.log(signed_actor_request_headers)
-	const res = await fetch(signature_params.keyId, {
-		headers: signed_actor_request_headers
-		// headers: { Accept: 'application/activity+json' }
-	}).catch((err) => {
-		console.log(err)
-		error(500, { message: 'Unexpected', id: 'err-key' })
-	})
-	console.log(res)
-	const public_key_response = (await res.json().catch((err) => {
-		console.log(err)
-		error(500, { message: 'Error parsing json', id: 'err-json' })
-	})) as MastodonPublicKeyResponse
-	console.log(public_key_response)
-	if (!public_key_response?.publicKey?.publicKeyPem) {
-		error(500, { message: 'Public key not found', id: 'err-json' })
-	}
-	const public_key = public_key_response.publicKey.publicKeyPem
+	const public_key = enriched_actor.publicKey.publicKeyPem
 	const built_signature_string = buildSignatureString(request, signature_params.headers.split(' '))
 	const verified = validateDigitalSignature(
 		built_signature_string,
@@ -367,15 +345,32 @@ export const generateOutbox = ({
 	orderedItems: notes
 })
 
-export const getIncomingActorInformation = async (url: string, fetch: typeof globalThis.fetch) => {
+export const getIncomingActorInformation = async ({
+	url,
+	fetch,
+	endpoint,
+	user,
+	actor
+}: {
+	url: string
+	fetch: typeof globalThis.fetch
+	endpoint: string
+	user: string
+	actor: string
+}) => {
+	const signed_actor_request_headers = createHeadersGetRequest({
+		endpoint,
+		user,
+		actor
+	})
 	const res_actor = await fetch(url, {
-		headers: { Accept: 'application/activity+json' }
+		headers: signed_actor_request_headers
 	}).catch((err) => {
 		console.log(err)
-		error(400, { message: `Coudln't get the actor information`, id: '' })
+		error(400, { message: `Couldn't get the actor information`, id: '' })
 	})
-	const actor = await res_actor.json()
-	return actor as MastodonActor
+	const result = await res_actor.json()
+	return result as MastodonActor
 }
 export const createHeadersGetRequest = ({
 	endpoint,
@@ -435,11 +430,13 @@ export const createHeaders = ({
 			id: 'missing-actor'
 		})
 	const payload_hash = hashSHA256(JSON.stringify(payload))
-	const host_header = actor ? new URL(actor.id).hostname : new URL(object.actor).hostname
+	const host_header = actor
+		? new URL(actor.id).hostname
+		: new URL('actor' in object ? object.actor : object.id).hostname
 	const date_header = DateTime.now().toHTTP()
 	const digest_header = `SHA-256=${payload_hash}`
 	const to_sign = [
-		`(request-target): post ${actor ? new URL(actor.id).pathname : new URL(object.actor).pathname}/inbox`,
+		`(request-target): post ${actor ? new URL(actor.id).pathname : new URL('actor' in object ? object.actor : object.id).pathname}/inbox`,
 		`host: ${host_header}`,
 		`date: ${date_header}`,
 		`digest: ${digest_header}`

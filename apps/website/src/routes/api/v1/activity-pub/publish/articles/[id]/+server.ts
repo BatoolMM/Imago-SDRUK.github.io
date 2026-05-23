@@ -41,7 +41,15 @@ export async function GET({ params, fetch }) {
 		.request(readItems('mastodon_followers'))
 		.catch(handleDirectusError)
 	const actors = await Promise.allSettled(
-		followers.map((follower) => getIncomingActorInformation(String(follower.actor_id), fetch))
+		followers.map((follower) =>
+			getIncomingActorInformation({
+				actor: String(follower.actor_id),
+				fetch,
+				endpoint,
+				user,
+				url: String(follower.actor_id)
+			})
+		)
 	).then((results) =>
 		results.reduce(
 			(acc, el) => {

@@ -1,3 +1,32 @@
+type MastodonActivity =
+	| 'Accept'
+	| 'Add'
+	| 'Announce'
+	| 'Arrive'
+	| 'Block'
+	| 'Create'
+	| 'Delete'
+	| 'Dislike'
+	| 'Follow'
+	| 'Flag'
+	| 'Ignore'
+	| 'Invite'
+	| 'Join'
+	| 'Leave'
+	| 'Like'
+	| 'Listen'
+	| 'Move'
+	| 'Offer'
+	| 'Read'
+	| 'Reject'
+	| 'Remove'
+	| 'TentativeAccept'
+	| 'TentativeReject'
+	| 'Travel'
+	| 'Undo'
+	| 'Update'
+	| 'View'
+
 export type MastodonActor = {
 	'@context': string
 	id: string
@@ -72,11 +101,22 @@ export type MastodonReplyRequest = MastodonRequestMetadata & {
 	}
 }
 
+export type MastodonUndoRequest = MastodonRequestMetadata & {
+	type: 'Undo'
+	object: {
+		id: string
+		type: MastodonActivity
+		actor: string
+		object: string
+	}
+}
+
 export type MastodonRequest =
 	| MastodonFollowRequest
 	| MastodonUnfollowRequest
 	| MastodonReplyRequest
 	| MastodonItem
+	| MastodonUndoRequest
 
 export type MastodonAcceptFollowRequest = {
 	'@context': string

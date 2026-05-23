@@ -14,7 +14,13 @@ const user = env.MASTODON_USER
 export async function POST({ request }) {
 	//NOTE: make this internal only
 	const data = (await request.json()) as MastodonFollowRequest
-	const actor = await getIncomingActorInformation(data.actor, fetch)
+	const actor = await getIncomingActorInformation({
+		actor: data.actor,
+		endpoint,
+		fetch,
+		user,
+		url: data.actor
+	})
 	const directus = directusSDKWithToken(env.BACKEND_TOKEN, fetch)
 	const new_follower = await directus
 		.request(

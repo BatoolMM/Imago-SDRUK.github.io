@@ -10,7 +10,13 @@ const user = env.MASTODON_USER
 
 export async function POST({ request }) {
 	const data = (await request.json()) as MastodonFollowRequest
-	const actor = await getIncomingActorInformation(data.actor, fetch)
+	const actor = await getIncomingActorInformation({
+		actor: data.actor,
+		endpoint,
+		user,
+		fetch,
+		url: data.actor
+	})
 	const payload = {
 		'@context': 'https://www.w3.org/ns/activitystreams',
 		id: `${endpoint}/@${user}#accepts/follows/${new URL(actor.url).hostname}@${actor.name}`,
