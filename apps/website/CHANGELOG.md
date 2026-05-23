@@ -1,5 +1,11 @@
 # website
 
+## 2.0.32
+### Patch Changes
+
+- 442965b: typo fix
+- 0b0d10e: another typo
+
 ## 2.0.31
 ### Patch Changes
 
