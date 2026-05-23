@@ -1,5 +1,10 @@
 # website
 
+## 2.0.41
+### Patch Changes
+
+- 8e6deef: actor as string
+
 ## 2.0.40
 ### Patch Changes
 
