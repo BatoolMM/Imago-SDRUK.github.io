@@ -1,5 +1,10 @@
 # website
 
+## 2.0.40
+### Patch Changes
+
+- 363b3b5: remove extra headers
+
 ## 2.0.39
 ### Patch Changes
 
