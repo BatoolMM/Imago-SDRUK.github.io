@@ -106,7 +106,11 @@ export const verifyMastodonRequest = async (
 	) {
 		error(401, { message: `You're not authorised to do this`, id: '' })
 	}
-	const signed_actor_request_headers = createHeadersGetRequest({ endpoint, user, actor: data })
+	const signed_actor_request_headers = createHeadersGetRequest({
+		endpoint,
+		user,
+		actor: data?.actor ?? ''
+	})
 	console.log('signed_actor_request_headers')
 	console.log(signed_actor_request_headers)
 	const res = await fetch(signature_params.keyId, {
@@ -380,13 +384,14 @@ export const createHeadersGetRequest = ({
 }: {
 	endpoint: string
 	user: string
-	actor: MastodonActor
+	actor: string
 }) => {
-	const host_header = new URL(actor.id).hostname
-	console.log(`RECEIVED ACTOR, ${jstr(actor.id)}`)
+	const host_header = new URL(actor).hostname
+	console.log(`RECEIVED ACTOR, ${jstr(actor)}`)
 	const date_header = DateTime.now().toHTTP()
+
 	const to_sign = [
-		`(request-target): get /users/${new URL(actor.id).pathname}`,
+		`(request-target): get ${new URL(actor).pathname}`,
 		`host: ${host_header}`,
 		`date: ${date_header}`
 	].join('\n')
