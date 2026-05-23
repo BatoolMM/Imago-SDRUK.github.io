@@ -102,6 +102,10 @@ export const verifyMastodonRequest = async (
 		console.log(err)
 		error(500, { message: 'Unexpected', id: 'err-key' })
 	})
+	console.log(data)
+	console.log(signature_header)
+	console.log(signature_params.keyId)
+	console.log(res)
 	const public_key_response = (await res.json().catch((err) => {
 		console.log(err)
 		error(500, { message: 'Error parsing json', id: 'err-json' })
