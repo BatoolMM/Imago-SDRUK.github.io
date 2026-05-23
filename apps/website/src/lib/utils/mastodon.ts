@@ -12,7 +12,7 @@ import { createHash, createSign, createVerify, constants, verify } from 'node:cr
 
 export const content_type_headers = `application/activity+json, application/activity+ld`
 
-export const loadKey = (key: string) => Buffer.from(key, 'base64').toString()
+export const loadKey = (key: string) => Buffer.from(key, 'base64').toString().trim()
 
 export function hashSHA256(data: string) {
 	return createHash('sha256').update(data).digest('base64')
