@@ -1,5 +1,10 @@
 # website
 
+## 2.0.34
+### Patch Changes
+
+- f9fbfe3: try catch mastodon errors
+
 ## 2.0.33
 ### Patch Changes
 
