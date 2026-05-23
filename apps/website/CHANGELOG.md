@@ -1,5 +1,10 @@
 # website
 
+## 2.0.31
+### Patch Changes
+
+- 8bf8d3a: change canonical actor url
+
 ## 2.0.30
 ### Patch Changes
 
