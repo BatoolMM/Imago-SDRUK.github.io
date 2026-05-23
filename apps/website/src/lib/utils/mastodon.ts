@@ -6,6 +6,7 @@ import type {
 	MastodonPublicKeyResponse,
 	MastodonRequest
 } from '$lib/types/mastodon'
+import { jstr } from '@arturoguzman/art-ui'
 import { error } from '@sveltejs/kit'
 import { DateTime } from 'luxon'
 import { createHash, createSign, createVerify, constants, verify } from 'node:crypto'
@@ -372,12 +373,6 @@ export const getIncomingActorInformation = async (url: string, fetch: typeof glo
 	const actor = await res_actor.json()
 	return actor as MastodonActor
 }
-// headers: {
-//   Host: 'mastodon.social',
-//   Date: date,
-//   Signature: `keyId="${keyId}",algorithm="rsa-sha256",headers="(request-target) host date",signature="${signature}"`,
-//   Accept: 'application/activity+json'
-// }
 export const createHeadersGetRequest = ({
 	endpoint,
 	user,
@@ -388,12 +383,14 @@ export const createHeadersGetRequest = ({
 	actor: MastodonActor
 }) => {
 	const host_header = new URL(actor.id).hostname
+	console.log(`RECEIVED ACTOR, ${jstr(actor.id)}`)
 	const date_header = DateTime.now().toHTTP()
 	const to_sign = [
 		`(request-target): get /users/${new URL(actor.id).pathname}`,
 		`host: ${host_header}`,
 		`date: ${date_header}`
 	].join('\n')
+	console.log(`TO SIGN REQUEST ${to_sign}`)
 	const signature_header = generateDigitalSignature(to_sign)
 	const signature_params = {
 		key_id: `${endpoint}/@${user}#main-key`,
@@ -410,10 +407,7 @@ export const createHeadersGetRequest = ({
 			`algorithm="${signature_params.algorithm}"`,
 			`headers="${signature_params.headers}"`,
 			`signature="${signature_header}"`
-		].join(','),
-		Algorithm: 'rsa-sha256',
-		'Content-Type':
-			'application/activity+json; application/ld+json; profile="https://www.w3.org/ns/activitystreams"'
+		].join(',')
 	}
 	return headers
 }
@@ -441,7 +435,6 @@ export const createHeaders = ({
 	const digest_header = `SHA-256=${payload_hash}`
 	const to_sign = [
 		`(request-target): post ${actor ? new URL(actor.id).pathname : new URL(object.actor).pathname}/inbox`,
-		// `(request-target): post ${new URL(object.actor).pathname}/inbox`,
 		`host: ${host_header}`,
 		`date: ${date_header}`,
 		`digest: ${digest_header}`
