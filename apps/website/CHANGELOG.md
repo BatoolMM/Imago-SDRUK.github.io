@@ -1,5 +1,10 @@
 # website
 
+## 2.0.42
+### Patch Changes
+
+- 28902b4: get all actor information with signed request
+
 ## 2.0.41
 ### Patch Changes
 
