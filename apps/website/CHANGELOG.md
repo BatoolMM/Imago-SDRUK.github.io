@@ -1,5 +1,10 @@
 # website
 
+## 2.0.37
+### Patch Changes
+
+- 155dbcf: add accept header
+
 ## 2.0.36
 ### Patch Changes
 
