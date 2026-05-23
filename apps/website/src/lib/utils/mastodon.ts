@@ -86,8 +86,12 @@ export const verifyMastodonRequest = async (
 		console.log(err)
 		error(400, { message: `This is not a valid request`, id: '' })
 	})
+	console.log('DATA')
+	console.log(data)
 
 	const signature_header = request.headers.get('signature')
+	console.log('Signature header')
+	console.log(signature_header)
 	if (!signature_header) error(401, { message: `You're not authorised to do this`, id: '' })
 	const signature_params: { keyId: string; algorithm: string; headers: string; signature: string } =
 		Object.fromEntries(
@@ -101,15 +105,8 @@ export const verifyMastodonRequest = async (
 	) {
 		error(401, { message: `You're not authorised to do this`, id: '' })
 	}
-
-	const payload = {
-		'@context': 'https://www.w3.org/ns/activitystreams',
-		id: `${endpoint}/@${user}#`,
-		type: 'Read',
-		actor: `${endpoint}/@${user}`,
-		object: data
-	}
-	const signed_actor_request_headers = createHeaders({ payload, endpoint, user })
+	const signed_actor_request_headers = createHeadersGetRequest({ endpoint, user, actor: data })
+	console.log('signed_actor_request_headers')
 	console.log(signed_actor_request_headers)
 	const res = await fetch(signature_params.keyId, {
 		headers: signed_actor_request_headers
@@ -118,9 +115,6 @@ export const verifyMastodonRequest = async (
 		console.log(err)
 		error(500, { message: 'Unexpected', id: 'err-key' })
 	})
-	console.log(data)
-	console.log(signature_header)
-	console.log(signature_params.keyId)
 	console.log(res)
 	const public_key_response = (await res.json().catch((err) => {
 		console.log(err)
@@ -378,6 +372,51 @@ export const getIncomingActorInformation = async (url: string, fetch: typeof glo
 	const actor = await res_actor.json()
 	return actor as MastodonActor
 }
+// headers: {
+//   Host: 'mastodon.social',
+//   Date: date,
+//   Signature: `keyId="${keyId}",algorithm="rsa-sha256",headers="(request-target) host date",signature="${signature}"`,
+//   Accept: 'application/activity+json'
+// }
+export const createHeadersGetRequest = ({
+	endpoint,
+	user,
+	actor
+}: {
+	endpoint: string
+	user: string
+	actor: MastodonActor
+}) => {
+	const host_header = new URL(actor.id).hostname
+	const date_header = DateTime.now().toHTTP()
+	const to_sign = [
+		`(request-target): get ${new URL(actor.id).pathname}/inbox`,
+		`host: ${host_header}`,
+		`date: ${date_header}`
+	].join('\n')
+	const signature_header = generateDigitalSignature(to_sign)
+	const signature_params = {
+		key_id: `${endpoint}/@${user}#main-key`,
+		algorithm: 'rsa-sha256',
+		headers: '(request-target) host date',
+		signature: signature_header
+	}
+	const headers = {
+		Accept: 'application/activity+json',
+		Host: host_header,
+		Date: date_header,
+		Signature: [
+			`keyId="${signature_params.key_id}"`,
+			`algorithm="${signature_params.algorithm}"`,
+			`headers="${signature_params.headers}"`,
+			`signature="${signature_header}"`
+		].join(','),
+		Algorithm: 'rsa-sha256',
+		'Content-Type':
+			'application/activity+json; application/ld+json; profile="https://www.w3.org/ns/activitystreams"'
+	}
+	return headers
+}
 
 export const createHeaders = ({
 	payload,
@@ -415,7 +454,6 @@ export const createHeaders = ({
 		signature: signature_header
 	}
 	const headers = {
-		Accept: 'application/activity+json',
 		Host: host_header,
 		Date: date_header,
 		Digest: digest_header,
