@@ -86,6 +86,7 @@ export const verifyMastodonRequest = async (
 		console.log(err)
 		error(400, { message: `This is not a valid request`, id: '' })
 	})
+
 	const signature_header = request.headers.get('signature')
 	if (!signature_header) error(401, { message: `You're not authorised to do this`, id: '' })
 	const signature_params: { keyId: string; algorithm: string; headers: string; signature: string } =
@@ -109,6 +110,7 @@ export const verifyMastodonRequest = async (
 		object: data
 	}
 	const signed_actor_request_headers = createHeaders({ payload, endpoint, user })
+	console.log(signed_actor_request_headers)
 	const res = await fetch(signature_params.keyId, {
 		headers: signed_actor_request_headers
 		// headers: { Accept: 'application/activity+json' }
@@ -413,6 +415,7 @@ export const createHeaders = ({
 		signature: signature_header
 	}
 	const headers = {
+		Accept: 'application/activity+json',
 		Host: host_header,
 		Date: date_header,
 		Digest: digest_header,
