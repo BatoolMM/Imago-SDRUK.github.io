@@ -13,12 +13,12 @@ export const GET = async () => {
 			{
 				rel: 'self',
 				type: 'application/activity+json',
-				href: `${endpoint}/@blog`
+				href: `${endpoint}/users/@blog`
 			},
 			{
 				rel: 'http://webfinger.net/rel/profile-page',
 				type: 'text/html',
-				href: `${endpoint}/@blog`
+				href: `${endpoint}/`
 			}
 		]
 	}
