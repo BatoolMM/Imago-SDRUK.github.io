@@ -1,5 +1,10 @@
 # website
 
+## 2.0.29
+### Patch Changes
+
+- 3d51c4d: trim key
+
 ## 2.0.28
 ### Patch Changes
 
