@@ -1,5 +1,10 @@
 # website
 
+## 2.0.36
+### Patch Changes
+
+- 1e334c6: temp sign req
+
 ## 2.0.35
 ### Patch Changes
 
