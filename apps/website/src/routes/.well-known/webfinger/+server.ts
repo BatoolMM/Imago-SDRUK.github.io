@@ -7,7 +7,7 @@ const user = env.MASTODON_USER
 
 export const GET = async () => {
 	const value = {
-		subject: `acct:blog@imago.artgp.xyz`,
+		subject: `acct:blog@imago.ac.uk`,
 		aliases: [`${endpoint}/@blog`],
 		links: [
 			{
