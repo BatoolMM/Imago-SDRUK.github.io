@@ -98,8 +98,14 @@ export const verifyMastodonRequest = async (
 	}
 	const res = await fetch(signature_params.keyId, {
 		headers: { Accept: 'application/activity+json' }
+	}).catch((err) => {
+		console.log(err)
+		error(500, { message: 'Unexpected', id: 'err-key' })
 	})
-	const public_key_response = (await res.json()) as MastodonPublicKeyResponse
+	const public_key_response = (await res.json().catch((err) => {
+		console.log(err)
+		error(500, { message: 'Error parsing json', id: 'err-json' })
+	})) as MastodonPublicKeyResponse
 	const public_key = public_key_response.publicKey.publicKeyPem
 	const built_signature_string = buildSignatureString(request, signature_params.headers.split(' '))
 	const verified = validateDigitalSignature(
