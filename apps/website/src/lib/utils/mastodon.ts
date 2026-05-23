@@ -10,6 +10,10 @@ import { error } from '@sveltejs/kit'
 import { DateTime } from 'luxon'
 import { createHash, createSign, createVerify, constants, verify } from 'node:crypto'
 
+const hostname = env.MASTODON_HOSTNAME
+const endpoint = `https://${hostname}`
+const user = env.MASTODON_USER
+
 export const content_type_headers = `application/activity+json, application/activity+ld`
 
 export const loadKey = (key: string) => Buffer.from(key, 'base64').toString().trim()
@@ -96,8 +100,18 @@ export const verifyMastodonRequest = async (
 	) {
 		error(401, { message: `You're not authorised to do this`, id: '' })
 	}
+
+	const payload = {
+		'@context': 'https://www.w3.org/ns/activitystreams',
+		id: `${endpoint}/@${user}#`,
+		type: 'Read',
+		actor: `${endpoint}/@${user}`,
+		object: data
+	}
+	const signed_actor_request_headers = createHeaders({ payload, endpoint, user })
 	const res = await fetch(signature_params.keyId, {
-		headers: { Accept: 'application/activity+json' }
+		headers: signed_actor_request_headers
+		// headers: { Accept: 'application/activity+json' }
 	}).catch((err) => {
 		console.log(err)
 		error(500, { message: 'Unexpected', id: 'err-key' })
@@ -110,6 +124,10 @@ export const verifyMastodonRequest = async (
 		console.log(err)
 		error(500, { message: 'Error parsing json', id: 'err-json' })
 	})) as MastodonPublicKeyResponse
+	console.log(public_key_response)
+	if (!public_key_response?.publicKey?.publicKeyPem) {
+		error(500, { message: 'Public key not found', id: 'err-json' })
+	}
 	const public_key = public_key_response.publicKey.publicKeyPem
 	const built_signature_string = buildSignatureString(request, signature_params.headers.split(' '))
 	const verified = validateDigitalSignature(
