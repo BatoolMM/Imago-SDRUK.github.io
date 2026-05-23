@@ -1,5 +1,10 @@
 # website
 
+## 2.0.39
+### Patch Changes
+
+- 9ade825: fix user path
+
 ## 2.0.38
 ### Patch Changes
 
