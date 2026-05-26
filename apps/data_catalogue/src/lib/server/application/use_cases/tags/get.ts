@@ -68,10 +68,6 @@ export const tagsGetCountPublicUseCase = async ({
 	if (errors !== null) {
 		return err(errors)
 	}
-	const [nonv_errors, non_vocabulary_tags] = await tags_service.getTags({ limit: 9999, offset: 0 })
-	if (nonv_errors !== null) {
-		return err(nonv_errors)
-	}
 	const tags = await Promise.all(
 		vocabularies.map((vocabulary) =>
 			tags_service.getTags({
@@ -96,7 +92,7 @@ export const tagsGetCountPublicUseCase = async ({
 	if (count.errors.length > 0) {
 		return err(count.errors[0])
 	}
-	return ok(count.count + non_vocabulary_tags.items.length)
+	return ok(count.count)
 }
 
 export const tagsGetVocabularyPublicUseCase = async ({
