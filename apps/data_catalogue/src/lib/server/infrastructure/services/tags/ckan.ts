@@ -1,8 +1,7 @@
 import type { TagsService } from '$lib/server/application/services/tags'
 import { env } from '$env/dynamic/private'
-import { create, createCkanClient, get } from '$lib/utils/ckan/ckan'
+import { create, createCkanClient, get, remove } from '$lib/utils/ckan/ckan'
 import { error } from '@sveltejs/kit'
-import { log } from '$lib/utils/server/logger'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 
@@ -146,6 +145,26 @@ const getVocabularies: TagsService['getVocabularies'] = async () => {
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
+const deleteTag: TagsService['deleteTag'] = async ({ tag_id, vocabulary_id }) => {
+	try {
+		const ckan = createCkanClient({
+			url: env.CKAN_URL,
+			token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+		})
+		const res = await ckan.request(
+			remove('tag_delete', {
+				id: tag_id,
+				vocabulary_id: vocabulary_id
+			})
+		)
+		if (!res.success) {
+			return err(handleCkanError(res, 'tag delete'))
+		}
+		return ok(null)
+	} catch (_err) {
+		return err({ reason: 'Unexpected', error: _err })
+	}
+}
 
 export const infrastructureServiceTagsCkan: TagsService = {
 	getTags,
@@ -153,5 +172,6 @@ export const infrastructureServiceTagsCkan: TagsService = {
 	createVocabulary,
 	getVocabulary,
 	getTag,
-	getVocabularies
+	getVocabularies,
+	deleteTag
 }
