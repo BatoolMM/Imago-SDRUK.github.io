@@ -12,7 +12,8 @@
 		disabled = false,
 		options = [],
 		placeholder = 'Select an option',
-		multiple
+		multiple,
+		same_width = false
 	}: InputSelectProps = $props()
 	const handleChange = (val?: string | Set<string>) => {
 		if (multiple && val instanceof Set) {
@@ -21,11 +22,18 @@
 		}
 		value = val
 	}
-	const select = new Select<string>({
-		multiple,
-		onValueChange: handleChange
-	})
+	const select = $derived(
+		new Select<string>({
+			multiple,
+			onValueChange: handleChange,
+			sameWidth: same_width,
+			floatingConfig: {
+				sameWidth: same_width
+			}
+		})
+	)
 	const getLabel = (val?: string | string[]) => {
+		if (val === undefined) return placeholder
 		if (Array.isArray(val)) {
 			if (val.length === 0) return placeholder
 			return val.map((v) => options.find((opt) => opt.value === v)?.label ?? v).join(', ')
@@ -99,7 +107,7 @@
 		border: 1px solid var(--border);
 		/* transition: all 0.3s ease-in-out; */
 		color: currentColor;
-		width: 100%;
+		/* width: 100%; */
 		background-color: var(--background-muted);
 		display: grid;
 		gap: 0.5rem;
