@@ -5,7 +5,6 @@ import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
 import type { User } from '$lib/server/entities/models/users'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
-import type { Identity } from '@ory/client-fetch'
 
 export const userGetUseCase = async ({
 	id,
@@ -38,7 +37,7 @@ export const userGetUseCase = async ({
 		return err(errs)
 	}
 	if (!user) {
-		return err({ reason: 'Unexpected' })
+		return err({ reason: 'Not Found', message: `Couldn't find this user in the user repository` })
 	}
 	const [errs_identity, identity] = await identity_service.getIdentity({ id })
 	if (errs_identity !== null) {
@@ -89,6 +88,10 @@ export const userGetMeUseCase = async ({
 	}
 	const [errs, user] = await user_repository.getUser({ id: session.identity.id })
 	if (errs !== null) {
+		// TODO: check if identity exists - this must be done
+		// if identity doesnt exist throw err
+		// if identity exists and not verified redir to verification
+		// if identity and verified create user
 		return err(errs)
 	}
 	if (!user) {
@@ -114,6 +117,39 @@ export const userGetMeUseCase = async ({
 		created_at: user.created_at,
 		updated_at: user.updated_at,
 		deleted_at: user.deleted_at
+	})
+}
+
+export const userGetTokenUseCase = async ({
+	cookie,
+	identity_service,
+	session,
+	configuration
+}: {
+	cookie: string
+	session: Session
+	identity_service: IdentityService
+	configuration: Configuration
+}) => {
+	const [errors, permission] = await getAuthorisationModule().authorise({
+		actor: session.identity.id,
+		namespace: 'User',
+		object: session.identity.id,
+		permits: 'members',
+		configuration
+	})
+	if (errors) {
+		return err(errors)
+	}
+	if (!permission.allowed) {
+		return err({ reason: 'Unauthorised' })
+	}
+	const [errs_identity, token] = await identity_service.sessionToToken({ cookie })
+	if (errs_identity !== null) {
+		return err({ reason: 'Unauthorised' })
+	}
+	return ok({
+		token: token.tokenized
 	})
 }
 

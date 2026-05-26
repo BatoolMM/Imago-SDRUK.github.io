@@ -16,7 +16,7 @@ const createSuperUser: IdentityService['createSuperUser'] = async ({ data }) => 
 	}
 }
 
-const validateSession: AuthenticationService['validateSession'] = async ({
+const validateSession: IdentityService['validateSession'] = async ({
 	cookie,
 	token
 }: {
@@ -124,9 +124,46 @@ const getIdentities: IdentityService['getIdentities'] = async ({
 	}
 }
 
+const sessionToToken: IdentityService['sessionToToken'] = async ({
+	cookie
+}: {
+	cookie: string | undefined
+}) => {
+	const headers: HeadersInit = {
+		Accept: 'application/json'
+	}
+	if (cookie) {
+		headers['Cookie'] = `ory_kratos_session=${cookie}`
+	}
+	const res = await fetch(`${env.IDENTITY_SERVER_PUBLIC}/sessions/whoami?tokenize_as=postgrest`, {
+		headers
+	})
+	const session = (await res.json()) as IdentitySession
+
+	if (!session.active) {
+		log.debug('Session is inactive')
+		return err({ reason: 'Unauthenticated' })
+	}
+	const diff = DateTime.fromISO(session.expires_at).diffNow().milliseconds
+	if (diff <= 0) {
+		log.debug('Session has expired')
+		return err({ reason: 'Unauthenticated' })
+	}
+
+	if (session.error && session.error.code === 401) {
+		return err({ reason: 'Unauthenticated' })
+	}
+
+	if (!session.identity.verifiable_addresses.some((va) => va.verified === true)) {
+		return err({ reason: 'Unauthenticated' })
+	}
+	return ok(session)
+}
+
 export const infrastructureServiceIdentityKratos: IdentityService = {
 	validateSession,
 	getIdentity,
 	getIdentities,
-	createSuperUser
+	createSuperUser,
+	sessionToToken
 }

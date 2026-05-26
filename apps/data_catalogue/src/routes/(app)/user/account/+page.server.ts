@@ -1,9 +1,12 @@
 import type { PageServerLoadEvent } from './$types.js'
-import { error, redirect } from '@sveltejs/kit'
+import { error, fail, redirect } from '@sveltejs/kit'
 import { handleOryResponse } from '$lib/utils/auth/index.js'
 import { env } from '$env/dynamic/private'
 import { log } from '$lib/utils/server/logger.js'
-import { userGetMeController } from '$lib/server/interface/adapters/controllers/users/get.js'
+import {
+	userGetMeController,
+	userGetTokenController
+} from '$lib/server/interface/adapters/controllers/users/get.js'
 const FLOW = 'settings'
 export const load = async ({ url, request, cookies, fetch, locals }: PageServerLoadEvent) => {
 	const [errors, user] = await userGetMeController({
@@ -47,8 +50,29 @@ export const load = async ({ url, request, cookies, fetch, locals }: PageServerL
 		}
 		redirect(307, `/`)
 	}
-	// url.searchParams.delete('flow_id')
 	return {
 		form: data.ui
+	}
+}
+
+export const actions = {
+	get_token: async ({ cookies, locals }) => {
+		const cookie = cookies.get('ory_kratos_session')
+		if (!cookie) {
+			return fail(400, { message: `You're not authorised to perform this action` })
+		}
+		const [errors, token] = await userGetTokenController({
+			cookie,
+			configuration: locals.configuration,
+			session: locals.session
+		})
+		if (errors !== null) {
+			console.log(errors)
+			return fail(500, { message: errors.reason })
+		}
+		return {
+			message: `Token created`,
+			token: token.token
+		}
 	}
 }

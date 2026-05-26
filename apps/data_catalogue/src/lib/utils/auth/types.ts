@@ -59,6 +59,7 @@ export type IdentitySession = {
 	]
 	error?: IdentityError
 	redirect_browser_to?: string
+	tokenized?: string
 }
 //
 
