@@ -1,5 +1,5 @@
-import type { AuthenticationService } from '$lib/server/application/services/authentication'
-export const infrastructureServiceAuthenticationTest: AuthenticationService = {
+import type { IAuthenticationService } from '$lib/server/application/services/authentication'
+export const infrastructureServiceAuthenticationTest: IAuthenticationService = {
 	validateSession: async () => {
 		return {
 			session: {

@@ -1,11 +1,11 @@
 import { env } from '$env/dynamic/private'
-import type { AuthenticationService } from '$lib/server/application/services/authentication'
+import type { IAuthenticationService } from '$lib/server/application/services/authentication'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 import { DateTime } from 'luxon'
 import jwt from 'jsonwebtoken'
 import { readFileSync } from 'fs'
-const validateSession: AuthenticationService['validateSession'] = async ({
+const validateSession: IAuthenticationService['validateSession'] = async ({
 	cookie,
 	token
 }: {
@@ -104,6 +104,6 @@ const validateSession: AuthenticationService['validateSession'] = async ({
 	}
 }
 
-export const infrastructureServiceAuthenticationKratos: AuthenticationService = {
+export const infrastructureServiceAuthenticationKratos: IAuthenticationService = {
 	validateSession
 }

@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { DatastoreService } from '$lib/server/application/services/datastore'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
 import { err, ok } from '$lib/server/entities/errors'
 import type { CSVW } from '$lib/server/entities/models/datastore'
 
@@ -12,7 +12,7 @@ export const datastoreUpdateUseCase = async ({
 	configuration
 }: {
 	resource_id: string
-	datastore_service: DatastoreService
+	datastore_service: IDatastoreService
 	metadata: Partial<CSVW>
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({

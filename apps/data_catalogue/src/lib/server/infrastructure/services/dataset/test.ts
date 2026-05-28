@@ -1,6 +1,6 @@
-import type { DatasetService } from '$lib/server/application/services/dataset'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
 
-const createDataset: DatasetService['createDataset'] = async () => {
+const createDataset: IDatasetService['createDataset'] = async () => {
 	return {
 		id: '',
 		extras: [],
@@ -19,7 +19,7 @@ const createDataset: DatasetService['createDataset'] = async () => {
 	}
 }
 
-const getDataset: DatasetService['getDataset'] = async () => {
+const getDataset: IDatasetService['getDataset'] = async () => {
 	return {
 		id: '',
 		extras: [],
@@ -38,7 +38,7 @@ const getDataset: DatasetService['getDataset'] = async () => {
 	}
 }
 
-const getDatasets: DatasetService['getDatasets'] = async () => {
+const getDatasets: IDatasetService['getDatasets'] = async () => {
 	return {
 		items: [
 			{
@@ -64,11 +64,11 @@ const getDatasets: DatasetService['getDatasets'] = async () => {
 	}
 }
 
-const getDatasetActivity: DatasetService['getDatasetActivity'] = async () => {
+const getDatasetActivity: IDatasetService['getDatasetActivity'] = async () => {
 	return []
 }
 
-export const infrastructureServiceDatasetTest: DatasetService = {
+export const infrastructureServiceDatasetTest: IDatasetService = {
 	getDataset,
 	createDataset,
 	getDatasets,

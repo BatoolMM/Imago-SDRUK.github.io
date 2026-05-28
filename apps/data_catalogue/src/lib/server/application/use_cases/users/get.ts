@@ -1,5 +1,5 @@
-import type { UsersRepository } from '$lib/server/application/repositories/users'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
@@ -15,8 +15,8 @@ export const userGetUseCase = async ({
 }: {
 	session: Session
 	id: string
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -69,8 +69,8 @@ export const userGetMeUseCase = async ({
 	configuration
 }: {
 	session: Session
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -128,7 +128,7 @@ export const userGetTokenUseCase = async ({
 }: {
 	cookie: string
 	session: Session
-	identity_service: IdentityService
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -159,7 +159,7 @@ export const userGetGroupsUseCase = async ({
 	configuration
 }: {
 	session: Session
-	user_repository: UsersRepository
+	user_repository: IUsersRepository
 	configuration: Configuration
 }) => {
 	if (session.identity.id === 'anonymous') {
@@ -197,8 +197,8 @@ export const usersGetUseCase = async ({
 	limit?: number
 	offset?: number
 	session: Session
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -266,7 +266,7 @@ export const usersSearchUseCase = async ({
 }: {
 	identifier: string
 	session: Session
-	identity_service: IdentityService
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({

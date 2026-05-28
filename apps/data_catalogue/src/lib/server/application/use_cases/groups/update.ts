@@ -1,6 +1,6 @@
 import type { Session } from '$lib/server/entities/models/identity'
-// import type { GroupsService } from '$lib/server/application/services/groups'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+// import type { IGroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import { type } from 'arktype'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
@@ -9,9 +9,9 @@ import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'driz
 import slugify from '@sindresorhus/slugify'
 import type { UsersGroups, UsersGroupsRequest } from '$lib/server/entities/models/groups'
 import type { AppContext } from '$lib/server/application/context'
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 import type { PermissionRequest } from '$lib/server/entities/models/permissions'
-import type { UsersRepository } from '$lib/server/application/repositories/users'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
 import { log } from '$lib/utils/server/logger'
 
 export const groupUpdateUseCase = async ({
@@ -25,7 +25,7 @@ export const groupUpdateUseCase = async ({
 	id: string
 	data: unknown
 	session: Session
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',
@@ -100,7 +100,7 @@ export const groupAddDatasetUseCase = async ({
 	dataset_id: string
 	group_id: string
 	session: Session
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 }) => {
 	const auth_module = getAuthorisationModule()
 	const [errors, permission] = await auth_module.authorise({
@@ -134,7 +134,7 @@ export const groupRemoveDatasetUseCase = async ({
 	dataset_id: string
 	group_id: string
 	session: Session
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 }) => {
 	const auth_module = getAuthorisationModule()
 	const [errors, permission] = await auth_module.authorise({
@@ -165,8 +165,8 @@ export const groupsSyncUseCase = async ({
 	group_repository
 }: {
 	session: Session
-	// group_service: GroupsService
-	group_repository: GroupsRepository
+	// group_service: IGroupsService
+	group_repository: IGroupsRepository
 }) => {
 	const auth_module = getAuthorisationModule()
 	const [errors, permission] = await auth_module.authorise({
@@ -226,7 +226,7 @@ export const groupAddUserUseCase = async ({
 	authorisation_module
 }: {
 	data: Partial<UsersGroupsRequest>
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',
@@ -277,8 +277,8 @@ export const groupAddAllUsersUseCase = async ({
 	tx
 }: {
 	group_id: string
-	groups_repository: GroupsRepository
-	users_repository: UsersRepository
+	groups_repository: IGroupsRepository
+	users_repository: IUsersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',
@@ -357,7 +357,7 @@ export const groupRemoveUserUseCase = async ({
 }: {
 	user_id: string
 	group_id: string
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',
@@ -411,8 +411,8 @@ export const groupToggleAutoenrollUseCase = async ({
 	id: string
 	autoenroll: boolean
 	session: Session
-	groups_repository: GroupsRepository
-	questions_repository: QuestionsRepository
+	groups_repository: IGroupsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',

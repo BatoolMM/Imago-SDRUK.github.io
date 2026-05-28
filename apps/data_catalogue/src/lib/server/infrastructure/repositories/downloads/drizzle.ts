@@ -1,10 +1,10 @@
 import { db } from '$lib/db'
 import { downloads } from '$lib/db/schema'
-import type { DownloadsRepository } from '$lib/server/application/repositories/downloads'
+import type { IDownloadsRepository } from '$lib/server/application/repositories/downloads'
 import { err, ok } from '$lib/server/entities/errors'
 import { and, count, eq, gte, lte, sql } from 'drizzle-orm'
 
-const getDownloads: DownloadsRepository['getDownloads'] = async ({ id }) => {
+const getDownloads: IDownloadsRepository['getDownloads'] = async ({ id }) => {
 	try {
 		const download = await db.select().from(downloads).where(eq(downloads.resource, id))
 		return ok(download)
@@ -13,7 +13,7 @@ const getDownloads: DownloadsRepository['getDownloads'] = async ({ id }) => {
 	}
 }
 
-const getDownloadsCount: DownloadsRepository['getDownloadsCount'] = async ({ id }) => {
+const getDownloadsCount: IDownloadsRepository['getDownloadsCount'] = async ({ id }) => {
 	try {
 		const download = await db
 			.select({ value: count() })
@@ -25,7 +25,7 @@ const getDownloadsCount: DownloadsRepository['getDownloadsCount'] = async ({ id 
 	}
 }
 
-const registerDownload: DownloadsRepository['registerDownload'] = async ({ data }) => {
+const registerDownload: IDownloadsRepository['registerDownload'] = async ({ data }) => {
 	try {
 		const download = await db.insert(downloads).values(data).returning()
 		return ok(download[0])
@@ -34,7 +34,7 @@ const registerDownload: DownloadsRepository['registerDownload'] = async ({ data 
 	}
 }
 
-const getDownloadsAggregate: DownloadsRepository['getDownloadsAggregate'] = async ({
+const getDownloadsAggregate: IDownloadsRepository['getDownloadsAggregate'] = async ({
 	from,
 	to
 }) => {
@@ -54,7 +54,7 @@ const getDownloadsAggregate: DownloadsRepository['getDownloadsAggregate'] = asyn
 	}
 }
 
-export const downloadsRepositoryInfrastructureDrizzle: DownloadsRepository = {
+export const downloadsRepositoryInfrastructureDrizzle: IDownloadsRepository = {
 	getDownloads,
 	getDownloadsCount,
 	registerDownload,

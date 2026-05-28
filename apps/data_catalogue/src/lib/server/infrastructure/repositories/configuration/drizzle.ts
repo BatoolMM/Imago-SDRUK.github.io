@@ -1,9 +1,9 @@
 import { db } from '$lib/db'
-import type { ConfigurationRepository } from '$lib/server/application/repositories/configuration'
+import type { IConfigurationRepository } from '$lib/server/application/repositories/configuration'
 import { err, ok } from '$lib/server/entities/errors'
 import { configuration } from '$lib/server/entities/models/configuration'
 import { eq, sql } from 'drizzle-orm'
-const initialiseConfiguration: ConfigurationRepository['initialiseConfiguration'] = async ({
+const initialiseConfiguration: IConfigurationRepository['initialiseConfiguration'] = async ({
 	config
 }) => {
 	try {
@@ -16,7 +16,7 @@ const initialiseConfiguration: ConfigurationRepository['initialiseConfiguration'
 		return err({ reason: 'Unexpected', errors: _err })
 	}
 }
-const addSuperUser: ConfigurationRepository['addSuperUser'] = async ({ id, config_id }) => {
+const addSuperUser: IConfigurationRepository['addSuperUser'] = async ({ id, config_id }) => {
 	try {
 		const config = await db
 			.update(configuration)
@@ -38,7 +38,7 @@ const addSuperUser: ConfigurationRepository['addSuperUser'] = async ({ id, confi
 	}
 }
 
-const removeSuperUser: ConfigurationRepository['removeSuperUser'] = async ({ id, config_id }) => {
+const removeSuperUser: IConfigurationRepository['removeSuperUser'] = async ({ id, config_id }) => {
 	try {
 		const config = await db
 			.update(configuration)
@@ -57,7 +57,7 @@ const removeSuperUser: ConfigurationRepository['removeSuperUser'] = async ({ id,
 	}
 }
 
-const setAdminGroup: ConfigurationRepository['setAdminGroup'] = async ({ id, config_id }) => {
+const setAdminGroup: IConfigurationRepository['setAdminGroup'] = async ({ id, config_id }) => {
 	try {
 		const config = await db
 			.update(configuration)
@@ -75,7 +75,7 @@ const setAdminGroup: ConfigurationRepository['setAdminGroup'] = async ({ id, con
 	}
 }
 
-const getConfiguration: ConfigurationRepository['getConfiguration'] = async ({ id }) => {
+const getConfiguration: IConfigurationRepository['getConfiguration'] = async ({ id }) => {
 	try {
 		const config = await db.select().from(configuration).where(eq(configuration.id, id))
 		if (config[0]) {
@@ -87,7 +87,7 @@ const getConfiguration: ConfigurationRepository['getConfiguration'] = async ({ i
 	}
 }
 
-export const configurationRepositoryInfrastructureDrizzle: ConfigurationRepository = {
+export const configurationRepositoryInfrastructureDrizzle: IConfigurationRepository = {
 	addSuperUser,
 	removeSuperUser,
 	setAdminGroup,

@@ -1,6 +1,6 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const groupGetPublicUseCase = async ({
@@ -8,7 +8,7 @@ export const groupGetPublicUseCase = async ({
 	groups_repository
 }: {
 	id: string
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 }) => {
 	const [errors, service_group] = await groups_repository.getGroup({ id })
 	const [rg_errors] = await groups_repository.getGroup({ id })
@@ -30,7 +30,7 @@ export const groupGetUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -61,7 +61,7 @@ export const groupsGetUseCase = async ({
 	authorisation_module,
 	configuration
 }: {
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -97,8 +97,8 @@ export const groupGetUsersUseCase = async ({
 	authorisation_module
 }: {
 	group_id: string
-	groups_repository: GroupsRepository
-	identity_service: IdentityService
+	groups_repository: IGroupsRepository
+	identity_service: IIdentityService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

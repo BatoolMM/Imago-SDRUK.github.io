@@ -1,5 +1,5 @@
 import { env } from '$env/dynamic/private'
-import type { StorageService } from '$lib/server/application/services/storage'
+import type { IStorageService } from '$lib/server/application/services/storage'
 import { err, ok } from '$lib/server/entities/errors'
 import { createSASReadString } from '$lib/utils/files/azure'
 import {
@@ -24,7 +24,7 @@ export const loadStorageClient = (): { client: BlobServiceClient; container_name
 	}
 }
 
-export const getUploadUrl: StorageService['getUploadUrl'] = async ({ filename }) => {
+export const getUploadUrl: IStorageService['getUploadUrl'] = async ({ filename }) => {
 	try {
 		const client = loadStorageClient()
 		const duration = 5
@@ -48,7 +48,7 @@ export const getUploadUrl: StorageService['getUploadUrl'] = async ({ filename })
 	}
 }
 
-export const getDownloadUrl: StorageService['getDownloadUrl'] = async ({
+export const getDownloadUrl: IStorageService['getDownloadUrl'] = async ({
 	filename
 }: {
 	filename: string
@@ -66,7 +66,7 @@ export const getDownloadUrl: StorageService['getDownloadUrl'] = async ({
 	}
 }
 
-export const deleteFile: StorageService['deleteFile'] = async ({
+export const deleteFile: IStorageService['deleteFile'] = async ({
 	filename
 }: {
 	filename: string
@@ -82,7 +82,7 @@ export const deleteFile: StorageService['deleteFile'] = async ({
 	}
 }
 
-export const azureStorageServiceInfrastructure: StorageService = {
+export const azureIStorageServiceInfrastructure: IStorageService = {
 	getDownloadUrl,
 	getUploadUrl,
 	deleteFile

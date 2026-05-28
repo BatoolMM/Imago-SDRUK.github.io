@@ -1,10 +1,10 @@
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import { env } from '$env/dynamic/private'
 import { create, createCkanClient, get, patch, remove } from '$lib/utils/ckan/ckan'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 
-const createGroup: GroupsService['createGroup'] = async ({ data }) => {
+const createGroup: IGroupsService['createGroup'] = async ({ data }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -19,7 +19,7 @@ const createGroup: GroupsService['createGroup'] = async ({ data }) => {
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-const getGroup: GroupsService['getGroup'] = async ({ id }) => {
+const getGroup: IGroupsService['getGroup'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -39,7 +39,7 @@ const getGroup: GroupsService['getGroup'] = async ({ id }) => {
 	}
 }
 
-const getGroups: GroupsService['getGroups'] = async ({ page_size, offset }) => {
+const getGroups: IGroupsService['getGroups'] = async ({ page_size, offset }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -64,7 +64,7 @@ const getGroups: GroupsService['getGroups'] = async ({ page_size, offset }) => {
 	}
 }
 
-const updateGroup: GroupsService['updateGroup'] = async ({ data, id }) => {
+const updateGroup: IGroupsService['updateGroup'] = async ({ data, id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -81,7 +81,7 @@ const updateGroup: GroupsService['updateGroup'] = async ({ data, id }) => {
 	}
 }
 
-const deleteGroup: GroupsService['deleteGroup'] = async ({ id }) => {
+const deleteGroup: IGroupsService['deleteGroup'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -98,7 +98,7 @@ const deleteGroup: GroupsService['deleteGroup'] = async ({ id }) => {
 	}
 }
 
-export const infrastructureServiceGroupsCkan: GroupsService = {
+export const infrastructureServiceGroupsCkan: IGroupsService = {
 	createGroup,
 	getGroup,
 	getGroups,

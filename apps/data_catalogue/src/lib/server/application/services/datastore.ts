@@ -1,7 +1,7 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { CkanDatastore, CkanDatastoreRequest } from '$lib/server/entities/models/datastore'
 
-export type DatastoreService = {
+export type IDatastoreService = {
 	getStructuralMetadata: ({
 		id
 	}: {

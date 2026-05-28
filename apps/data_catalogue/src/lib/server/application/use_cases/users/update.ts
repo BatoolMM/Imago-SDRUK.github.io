@@ -1,8 +1,8 @@
 import type { UserRequest } from '$lib/server/entities/models/users'
-import type { UsersRepository } from '$lib/server/application/repositories/users'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
 import type { AppContext } from '$lib/server/application/context'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import { env } from '$env/dynamic/private'
 import { log } from '$lib/utils/server/logger'
 
@@ -16,7 +16,7 @@ export const userAddGroupUseCase = async ({
 }: {
 	user_id: string
 	group_id: string
-	user_repository: UsersRepository
+	user_repository: IUsersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -67,7 +67,7 @@ export const userRemoveGroupUseCase = async ({
 }: {
 	user_id: string
 	group_id: string
-	user_repository: UsersRepository
+	user_repository: IUsersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -111,7 +111,7 @@ export const userUpdateUseCase = async ({
 }: {
 	id: string
 	data: Partial<UserRequest>
-	user_repository: UsersRepository
+	user_repository: IUsersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -150,8 +150,8 @@ export const userAutoEnrollUseCase = async ({
 	authorisation_module
 }: {
 	user_id: string
-	users_repository: UsersRepository
-	groups_repository: GroupsRepository
+	users_repository: IUsersRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	if (identity_token !== env.IDENTITY_TOKEN) {
 		return err({ reason: 'Unauthorised' })

@@ -1,10 +1,10 @@
-import type { DatastoreService } from '$lib/server/application/services/datastore'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
 import { env } from '$env/dynamic/private'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 import { create, createCkanClient, get, remove } from '$lib/utils/ckan/ckan'
 
-const getStructuralMetadata: DatastoreService['getStructuralMetadata'] = async ({ id }) => {
+const getStructuralMetadata: IDatastoreService['getStructuralMetadata'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -20,7 +20,7 @@ const getStructuralMetadata: DatastoreService['getStructuralMetadata'] = async (
 	}
 }
 
-const setStructuralMetadata: DatastoreService['setStructuralMetadata'] = async ({ metadata }) => {
+const setStructuralMetadata: IDatastoreService['setStructuralMetadata'] = async ({ metadata }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -63,7 +63,7 @@ const setStructuralMetadata: DatastoreService['setStructuralMetadata'] = async (
 }
 
 // TODO: evaluate update process as there is no easy way to update previous data without overriding the whole row
-const updateStructuralMetadata: DatastoreService['updateStructuralMetadata'] = async ({
+const updateStructuralMetadata: IDatastoreService['updateStructuralMetadata'] = async ({
 	metadata
 }) => {
 	try {
@@ -109,7 +109,7 @@ const updateStructuralMetadata: DatastoreService['updateStructuralMetadata'] = a
 	}
 }
 
-const deleteStructuralMetadata: DatastoreService['deleteStructuralMetadata'] = async ({ id }) => {
+const deleteStructuralMetadata: IDatastoreService['deleteStructuralMetadata'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -124,7 +124,7 @@ const deleteStructuralMetadata: DatastoreService['deleteStructuralMetadata'] = a
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-export const infrastructureServiceDatastoreCkan: DatastoreService = {
+export const infrastructureServiceDatastoreCkan: IDatastoreService = {
 	getStructuralMetadata,
 	setStructuralMetadata,
 	updateStructuralMetadata,

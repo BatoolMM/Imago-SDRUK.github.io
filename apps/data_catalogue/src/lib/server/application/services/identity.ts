@@ -3,7 +3,7 @@ import type { Session } from '$lib/server/entities/models/identity'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import type { CreateIdentityBody, Identity } from '@ory/client-fetch'
 
-export type IdentityService = {
+export type IIdentityService = {
 	// generateUserId: () => string;
 	createSuperUser: ({
 		data

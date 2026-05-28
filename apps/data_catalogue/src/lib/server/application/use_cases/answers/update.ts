@@ -1,4 +1,4 @@
-import type { AnswersRepository } from '$lib/server/application/repositories/answers'
+import type { IAnswersRepository } from '$lib/server/application/repositories/answers'
 import { err, ok } from '$lib/server/entities/errors'
 import { answers } from '$lib/db/schema'
 import { type } from 'arktype'
@@ -15,7 +15,7 @@ export const answerUpdateUseCase = async ({
 }: {
 	id: string
 	data: unknown
-	answers_repository: AnswersRepository
+	answers_repository: IAnswersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

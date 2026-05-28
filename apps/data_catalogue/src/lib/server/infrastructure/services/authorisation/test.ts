@@ -1,6 +1,6 @@
-import type { AuthorisationService } from '$lib/server/application/services/autorisation'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 
-export const authorisationServiceInfrastructureTest: AuthorisationService = {
+export const authorisationServiceInfrastructureTest: IAuthorisationService = {
 	authorise: async () => {
 		return { allowed: true }
 	},

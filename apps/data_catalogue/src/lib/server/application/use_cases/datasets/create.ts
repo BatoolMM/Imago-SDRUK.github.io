@@ -1,5 +1,5 @@
-import type { DatasetService } from '$lib/server/application/services/dataset'
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import type { AppContext } from '$lib/server/application/context'
 import { type } from 'arktype'
 import { generateExtrasFromPayload } from '$lib/globals/datasets'
@@ -18,8 +18,8 @@ export const datasetCreateUseCase = async ({
 	authorisation_module
 }: {
 	data: unknown
-	dataset_service: DatasetService
-	group_service: GroupsService
+	dataset_service: IDatasetService
+	group_service: IGroupsService
 } & AppContext) => {
 	log.trace({ message: `Create dataset request` })
 	//NOTE: this will only handle the metadata groups, as groups with 'datasets' are linked through permissions

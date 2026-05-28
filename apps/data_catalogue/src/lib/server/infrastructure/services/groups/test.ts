@@ -1,6 +1,6 @@
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 
-export const infrastructureServiceGroupsTest: GroupsService = {
+export const infrastructureServiceGroupsTest: IGroupsService = {
 	createGroup: async () => {
 		return {
 			id: '',

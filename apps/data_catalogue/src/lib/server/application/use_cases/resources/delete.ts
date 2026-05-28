@@ -1,7 +1,7 @@
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
-import type { DatastoreService } from '$lib/server/application/services/datastore'
-import type { ResourceService } from '$lib/server/application/services/resource'
-import type { StorageService } from '$lib/server/application/services/storage'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
+import type { IResourceService } from '$lib/server/application/services/resource'
+import type { IStorageService } from '$lib/server/application/services/storage'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { AppContext } from '$lib/server/application/context'
 
@@ -14,9 +14,9 @@ export const resourceDeleteUseCase = async ({
 	storage_service
 }: {
 	id: string
-	resource_respository: ResourceRepository
-	datastore_service: DatastoreService
-	storage_service: StorageService
+	resource_respository: IResourceRepository
+	datastore_service: IDatastoreService
+	storage_service: IStorageService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Resource',
@@ -76,8 +76,8 @@ export const resourceServiceDeleteUseCase = async ({
 	rollback
 }: {
 	id: string
-	resource_service: ResourceService
-	datastore_service: DatastoreService
+	resource_service: IResourceService
+	datastore_service: IDatastoreService
 	rollback?: boolean
 } & AppContext) => {
 	if (!rollback) {
@@ -122,8 +122,8 @@ export const resourceVersionDeleteUseCase = async ({
 	storage_service
 }: {
 	version_id: string
-	resource_respository: ResourceRepository
-	storage_service: StorageService
+	resource_respository: IResourceRepository
+	storage_service: IStorageService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',

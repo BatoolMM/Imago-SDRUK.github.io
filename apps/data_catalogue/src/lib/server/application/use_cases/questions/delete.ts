@@ -1,6 +1,6 @@
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
 import { err, ok } from '$lib/server/entities/errors'
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 import type { AppContext } from '$lib/server/application/context'
 
 export const questionDeleteUseCase = async ({
@@ -11,7 +11,7 @@ export const questionDeleteUseCase = async ({
 	configuration
 }: {
 	id: string
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const auth_service = getAuthorisationModule()
 	const [errors, permission] = await authorisation_module.authorise({

@@ -1,4 +1,4 @@
-import type { AuthorisationService } from '$lib/server/application/services/autorisation'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import { log } from '$lib/utils/server/logger'
 import { error } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
@@ -84,7 +84,7 @@ const permissionToKetoUnderscore = ({
 	}
 }
 
-const authorise: AuthorisationService['authorise'] = async ({
+const authorise: IAuthorisationService['authorise'] = async ({
 	namespace,
 	object,
 	permits,
@@ -111,7 +111,7 @@ const authorise: AuthorisationService['authorise'] = async ({
 	}
 }
 
-const batchAuthorise: AuthorisationService['batchAuthorise'] = async ({ permissions }) => {
+const batchAuthorise: IAuthorisationService['batchAuthorise'] = async ({ permissions }) => {
 	try {
 		log.trace({
 			message: `Evaluating`,
@@ -127,7 +127,7 @@ const batchAuthorise: AuthorisationService['batchAuthorise'] = async ({ permissi
 	}
 }
 
-const createPermission: AuthorisationService['createPermission'] = async ({
+const createPermission: IAuthorisationService['createPermission'] = async ({
 	actor,
 	object,
 	namespace,
@@ -181,7 +181,7 @@ const createPermission: AuthorisationService['createPermission'] = async ({
 	return err({ reason: 'Unexpected', error: '' })
 }
 
-const createPermissions: AuthorisationService['createPermissions'] = async ({ permissions }) => {
+const createPermissions: IAuthorisationService['createPermissions'] = async ({ permissions }) => {
 	const parsed = permissions.map(({ namespace, relation, actor, object }) => {
 		let body_converted = {}
 		if (typeof actor === 'string') {
@@ -215,7 +215,7 @@ const createPermissions: AuthorisationService['createPermissions'] = async ({ pe
 	}
 }
 
-const deletePermission: AuthorisationService['deletePermission'] = async ({
+const deletePermission: IAuthorisationService['deletePermission'] = async ({
 	actor,
 	object,
 	namespace,
@@ -249,7 +249,7 @@ const deletePermission: AuthorisationService['deletePermission'] = async ({
 	return ok(null)
 }
 
-const deletePermissions: AuthorisationService['createPermissions'] = async ({ permissions }) => {
+const deletePermissions: IAuthorisationService['createPermissions'] = async ({ permissions }) => {
 	const parsed = permissions.map(({ namespace, relation, actor, object }) => {
 		let body_converted = {}
 		if (typeof actor === 'string') {
@@ -283,7 +283,7 @@ const deletePermissions: AuthorisationService['createPermissions'] = async ({ pe
 	}
 }
 
-const getPermissions: AuthorisationService['getPermissions'] = async ({
+const getPermissions: IAuthorisationService['getPermissions'] = async ({
 	namespace,
 	permits,
 	actor,
@@ -318,7 +318,7 @@ const getPermissions: AuthorisationService['getPermissions'] = async ({
 	}
 }
 
-export const authorisationServiceInfrastructureKeto: AuthorisationService = {
+export const authorisationServiceInfrastructureKeto: IAuthorisationService = {
 	authorise,
 	batchAuthorise,
 	createPermission,

@@ -2,7 +2,7 @@ import type { ErrTypes } from '$lib/server/entities/errors'
 import type { UsersGroups, UsersGroupsRequest } from '$lib/server/entities/models/groups'
 import type { User, UserRequest } from '$lib/server/entities/models/users'
 
-export type UsersRepository = {
+export type IUsersRepository = {
 	updateUser: ({
 		data,
 		id

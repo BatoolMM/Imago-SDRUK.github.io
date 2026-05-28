@@ -9,7 +9,7 @@ import type {
 	Relationships
 } from '$lib/server/entities/models/permissions'
 
-export type AuthorisationService = {
+export type IAuthorisationService = {
 	authorise: ({
 		namespace,
 		object,

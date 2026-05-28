@@ -1,7 +1,7 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { Dataset, DatasetActivity, DatasetRequest } from '$lib/server/entities/models/datasets'
 
-export type DatasetService = {
+export type IDatasetService = {
 	getDataset: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Dataset | null]>
 	getDatasetsCount: () => Promise<[ErrTypes, null] | [null, number | null]>
 	getDatasetActivity: ({

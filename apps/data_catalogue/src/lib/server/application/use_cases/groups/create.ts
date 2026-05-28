@@ -1,4 +1,4 @@
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import { type } from 'arktype'
 import { err, ok } from '$lib/server/entities/errors'
 import { groups } from '$lib/db/schema'
@@ -14,7 +14,7 @@ export const groupCreateUseCase = async ({
 	groups_repository
 }: {
 	data: unknown
-	groups_repository: GroupsRepository
+	groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Action',

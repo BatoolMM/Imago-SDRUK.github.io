@@ -1,6 +1,6 @@
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { ITagsService } from '$lib/server/application/services/tags'
 
-export const infrastructureServiceTagsTest: TagsService = {
+export const infrastructureServiceTagsTest: ITagsService = {
 	getTags: async () => {
 		return {
 			total: 0,

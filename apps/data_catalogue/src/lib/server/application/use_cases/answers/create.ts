@@ -1,14 +1,14 @@
 import type { AnswerRequest } from '$lib/server/entities/models/questions'
-import type { AnswersRepository } from '$lib/server/application/repositories/answers'
+import type { IAnswersRepository } from '$lib/server/application/repositories/answers'
 import type { PermissionRequest } from '$lib/server/entities/models/permissions'
-import type { AuthorisationService } from '$lib/server/application/services/autorisation'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { AppContext } from '$lib/server/application/context'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import { answers } from '$lib/db/schema'
 import { type } from 'arktype'
 import { createInsertSchema } from 'drizzle-arktype'
 import { getAnswerBasePermissions } from '$lib/server/entities/models/policies'
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 
 export const answerCreateUseCase = async ({
 	data,
@@ -20,9 +20,9 @@ export const answerCreateUseCase = async ({
 	tx
 }: {
 	data: { question_id: string; answer: string }
-	answers_repository: AnswersRepository
-	authorisation_module: AuthorisationService
-	question_repository: QuestionsRepository
+	answers_repository: IAnswersRepository
+	authorisation_module: IAuthorisationService
+	question_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -71,8 +71,8 @@ export const answersCreateUseCase = async ({
 	question_repository
 }: {
 	data: { question_id: string; answer: string }[]
-	answers_repository: AnswersRepository
-	question_repository: QuestionsRepository
+	answers_repository: IAnswersRepository
+	question_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errs, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

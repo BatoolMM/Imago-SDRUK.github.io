@@ -1,8 +1,8 @@
-import type { DownloadsRepository } from '$lib/server/application/repositories/downloads'
+import type { IDownloadsRepository } from '$lib/server/application/repositories/downloads'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
-import type { DatasetService } from '$lib/server/application/services/dataset'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
 import type { Resource } from '$lib/server/entities/models/datasets'
-import type { AuthorisationService } from '$lib/server/application/services/autorisation'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { AppContext } from '$lib/server/application/context'
 import { DateTime } from 'luxon'
 
@@ -15,9 +15,9 @@ export const downloadsGetByDatasetUseCase = async ({
 	configuration
 }: {
 	id: string
-	dataset_service: DatasetService
-	downloads_repository: DownloadsRepository
-	authorisation_module: AuthorisationService
+	dataset_service: IDatasetService
+	downloads_repository: IDownloadsRepository
+	authorisation_module: IAuthorisationService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -80,8 +80,8 @@ export const dowloadsGetAggregatesUseCase = async ({
 }: {
 	from: string
 	to: string
-	downloads_repository: DownloadsRepository
-	authorisation_module: AuthorisationService
+	downloads_repository: IDownloadsRepository
+	authorisation_module: IAuthorisationService
 } & AppContext) => {
 	const _to = getDate(to)
 	const _from = getDate(from)

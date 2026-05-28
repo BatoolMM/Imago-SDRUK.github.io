@@ -2,7 +2,7 @@ import type { Transaction } from '$lib/db'
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { Answer, AnswerRequest } from '$lib/server/entities/models/questions'
 
-export type AnswersRepository = {
+export type IAnswersRepository = {
 	getAnswer: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Answer]>
 	createAnswer: ({
 		data

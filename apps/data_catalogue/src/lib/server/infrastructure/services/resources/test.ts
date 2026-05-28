@@ -1,9 +1,9 @@
 import { env } from '$env/dynamic/private'
-import type { ResourceService } from '$lib/server/application/services/resource'
+import type { IResourceService } from '$lib/server/application/services/resource'
 import { create, createCkanClient, get } from '$lib/utils/ckan/ckan'
 import { error } from '@sveltejs/kit'
 
-const getResource: ResourceService['getResource'] = async ({ id }) => {
+const getResource: IResourceService['getResource'] = async ({ id }) => {
 	const ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
@@ -14,7 +14,7 @@ const getResource: ResourceService['getResource'] = async ({ id }) => {
 	}
 	error(500, { message: `Error getting the resource`, id: 'err-ckan-resource' })
 }
-const getResources: ResourceService['getResources'] = async ({ id }) => {
+const getResources: IResourceService['getResources'] = async ({ id }) => {
 	const ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
@@ -25,7 +25,7 @@ const getResources: ResourceService['getResources'] = async ({ id }) => {
 	}
 	error(500, { message: `Error getting the resource`, id: 'err-ckan-resource' })
 }
-const createResource: ResourceService['createResource'] = async ({ data }) => {
+const createResource: IResourceService['createResource'] = async ({ data }) => {
 	const ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
@@ -48,9 +48,9 @@ const createResource: ResourceService['createResource'] = async ({ data }) => {
 	}
 	error(500, { message: `Error creating the resource`, id: 'err-ckan-resource' })
 }
-const deleteResource: ResourceService['deleteResource'] = async () => {}
+const deleteResource: IResourceService['deleteResource'] = async () => {}
 
-export const resourceServiceInfrastructureTest: ResourceService = {
+export const resourceServiceInfrastructureTest: IResourceService = {
 	createResource,
 	deleteResource,
 	getResource,

@@ -1,13 +1,13 @@
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
 import type { AppContext } from '$lib/server/application/context'
-import type { ResourceService } from '$lib/server/application/services/resource'
-import type { StorageService } from '$lib/server/application/services/storage'
+import type { IResourceService } from '$lib/server/application/services/resource'
+import type { IStorageService } from '$lib/server/application/services/storage'
 import {
 	resource_versions,
 	resources,
-	ResourceServiceRequestSchema,
+	IResourceServiceRequestSchema,
 	type ResourceRequest,
-	type ResourceServiceRequest,
+	type IResourceServiceRequest,
 	type ResourceVersionRequest
 } from '$lib/server/entities/models/resources'
 import { err, ok } from '$lib/server/entities/errors'
@@ -26,7 +26,7 @@ export const resourceCreateUseCase = async ({
 	tx
 }: {
 	data: Partial<ResourceRequest>
-	resource_respository: ResourceRepository
+	resource_respository: IResourceRepository
 	package_id: string
 } & AppContext) => {
 	log.trace({ caller: 'resourceCreateUseCase' })
@@ -86,8 +86,8 @@ export const resourceServiceCreateUseCase = async ({
 	configuration,
 	authorisation_module
 }: {
-	data: ResourceServiceRequest
-	resource_service: ResourceService
+	data: IResourceServiceRequest
+	resource_service: IResourceService
 } & AppContext) => {
 	log.trace({ caller: 'resourceServiceCreateUseCase' })
 	const [errors, permission] = await authorisation_module.authorise({
@@ -106,7 +106,7 @@ export const resourceServiceCreateUseCase = async ({
 		log.warn({ message: 'User unauthorised' })
 		return err({ reason: 'Unauthorised' })
 	}
-	const validated = ResourceServiceRequestSchema(data)
+	const validated = IResourceServiceRequestSchema(data)
 	if (validated instanceof type.errors) {
 		return err({ reason: 'Invalid Data', message: validated.summary, id: 'invalid-data' })
 	}
@@ -132,8 +132,8 @@ export const resourceVersionCreateUseCase = async ({
 	tx
 }: {
 	data: Partial<ResourceVersionRequest>
-	resource_respository: ResourceRepository
-	storage_service: StorageService
+	resource_respository: IResourceRepository
+	storage_service: IStorageService
 } & AppContext) => {
 	log.trace({ caller: 'resourceVersionCreateUseCase' })
 	const schema = createInsertSchema(resource_versions, {
@@ -224,8 +224,8 @@ export const resourceVersionPipelineCreateUseCase = async ({
 	tx
 }: {
 	data: Partial<ResourceVersionRequest>
-	resource_respository: ResourceRepository
-	storage_service: StorageService
+	resource_respository: IResourceRepository
+	storage_service: IStorageService
 } & AppContext) => {
 	log.trace({ caller: 'resourceVersionCreateUseCase' })
 	const schema = createInsertSchema(resource_versions, {

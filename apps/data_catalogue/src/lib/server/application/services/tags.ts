@@ -6,7 +6,7 @@ import type {
 	VocabularyRequest
 } from '$lib/server/entities/models/datasets'
 
-export type TagsService = {
+export type ITagsService = {
 	createTag: ({ tag }: { tag: TagRequest }) => Promise<[ErrTypes, null] | [null, Tag]>
 	createVocabulary: ({
 		vocabulary

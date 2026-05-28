@@ -75,7 +75,7 @@ export type ResourceVersionRequest = typeof resource_versions.$inferInsert
 export type ResourceVersion = typeof resource_versions.$inferSelect
 
 //
-// export type ResourceServiceRequest = {
+// export type IResourceServiceRequest = {
 // 	/**
 // 	 * id of package that the resource should be added to
 // 	 **/
@@ -111,7 +111,7 @@ export type ResourceVersion = typeof resource_versions.$inferSelect
 // 	upload?: unknown
 // }
 
-export const ResourceServiceRequestSchema = type({
+export const IResourceServiceRequestSchema = type({
 	'id?': 'string',
 	package_id: 'string',
 	name: 'string',
@@ -134,7 +134,7 @@ export const ResourceServiceRequestSchema = type({
 	'hash?': 'string'
 })
 
-export const ResourceServiceSchema = type({
+export const IResourceServiceSchema = type({
 	id: 'string',
 	package_id: 'string',
 	name: 'string',
@@ -157,5 +157,5 @@ export const ResourceServiceSchema = type({
 	'hash?': 'string'
 })
 
-export type ResourceServiceRequest = typeof ResourceServiceRequestSchema.inferIn
-export type ResourceServiceDto = typeof ResourceServiceSchema.inferIn
+export type IResourceServiceRequest = typeof IResourceServiceRequestSchema.inferIn
+export type IResourceServiceDto = typeof IResourceServiceSchema.inferIn

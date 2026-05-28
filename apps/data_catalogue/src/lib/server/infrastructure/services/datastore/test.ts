@@ -1,7 +1,7 @@
-import type { DatasetService } from '$lib/server/application/services/dataset'
-import type { DatastoreService } from '$lib/server/application/services/datastore'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
 
-export const infrastructureServiceDatastoreTest: DatastoreService = {
+export const infrastructureServiceDatastoreTest: IDatastoreService = {
 	getStructuralMetadata: async () => {},
 	setStructuralMetadata: async () => {},
 	updateStructuralMetadata: async () => {}

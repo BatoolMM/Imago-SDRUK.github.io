@@ -1,6 +1,6 @@
 import type { Session } from '$lib/server/entities/models/identity'
 
-export type AuthenticationService = {
+export type IAuthenticationService = {
 	validateSession: ({
 		cookie,
 		token

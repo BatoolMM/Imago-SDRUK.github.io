@@ -1,13 +1,13 @@
 import { env } from '$env/dynamic/private'
-import type { AuthenticationService } from '$lib/server/application/services/authentication'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IAuthenticationService } from '$lib/server/application/services/authentication'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
 import { kratosRead, kratosWrite } from '$lib/utils/auth'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 import { DateTime } from 'luxon'
 
-const createSuperUser: IdentityService['createSuperUser'] = async ({ data }) => {
+const createSuperUser: IIdentityService['createSuperUser'] = async ({ data }) => {
 	try {
 		const identity = await kratosWrite.createIdentity({ createIdentityBody: data })
 		return ok(identity)
@@ -16,7 +16,7 @@ const createSuperUser: IdentityService['createSuperUser'] = async ({ data }) => 
 	}
 }
 
-const validateSession: IdentityService['validateSession'] = async ({
+const validateSession: IIdentityService['validateSession'] = async ({
 	cookie,
 	token
 }: {
@@ -79,7 +79,7 @@ const validateSession: IdentityService['validateSession'] = async ({
 	}
 }
 
-const getIdentity: IdentityService['getIdentity'] = async ({ id }) => {
+const getIdentity: IIdentityService['getIdentity'] = async ({ id }) => {
 	try {
 		const identity = await kratosRead.getIdentity({ id: id })
 		return ok({
@@ -95,7 +95,7 @@ const getIdentity: IdentityService['getIdentity'] = async ({ id }) => {
 	}
 }
 
-const getIdentities: IdentityService['getIdentities'] = async ({
+const getIdentities: IIdentityService['getIdentities'] = async ({
 	page_size,
 	page_token,
 	identifier,
@@ -124,7 +124,7 @@ const getIdentities: IdentityService['getIdentities'] = async ({
 	}
 }
 
-const sessionToToken: IdentityService['sessionToToken'] = async ({
+const sessionToToken: IIdentityService['sessionToToken'] = async ({
 	cookie
 }: {
 	cookie: string | undefined
@@ -160,7 +160,7 @@ const sessionToToken: IdentityService['sessionToToken'] = async ({
 	return ok(session)
 }
 
-export const infrastructureServiceIdentityKratos: IdentityService = {
+export const infrastructureServiceIdentityKratos: IIdentityService = {
 	validateSession,
 	getIdentity,
 	getIdentities,

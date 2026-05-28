@@ -1,11 +1,11 @@
 import { env } from '$env/dynamic/private'
-import type { DatasetService } from '$lib/server/application/services/dataset'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 import { create, createCkanClient, get, patch, remove } from '$lib/utils/ckan/ckan'
 import { getSolrSearchParams } from '$lib/utils/ckan/datasets'
 
-const createDataset: DatasetService['createDataset'] = async ({ data }) => {
+const createDataset: IDatasetService['createDataset'] = async ({ data }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -27,7 +27,7 @@ const createDataset: DatasetService['createDataset'] = async ({ data }) => {
 	}
 }
 
-const getDataset: DatasetService['getDataset'] = async ({ id }) => {
+const getDataset: IDatasetService['getDataset'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -49,7 +49,7 @@ const getDataset: DatasetService['getDataset'] = async ({ id }) => {
 	}
 }
 
-const getDatasetsCount: DatasetService['getDatasetsCount'] = async () => {
+const getDatasetsCount: IDatasetService['getDatasetsCount'] = async () => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -71,7 +71,7 @@ const getDatasetsCount: DatasetService['getDatasetsCount'] = async () => {
 	}
 }
 
-const getDatasets: DatasetService['getDatasets'] = async ({ page_size, offset, search, url }) => {
+const getDatasets: IDatasetService['getDatasets'] = async ({ page_size, offset, search, url }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -111,7 +111,7 @@ const getDatasets: DatasetService['getDatasets'] = async ({ page_size, offset, s
 	}
 }
 
-const getDatasetActivity: DatasetService['getDatasetActivity'] = async ({
+const getDatasetActivity: IDatasetService['getDatasetActivity'] = async ({
 	id,
 	page_size,
 	offset
@@ -132,7 +132,7 @@ const getDatasetActivity: DatasetService['getDatasetActivity'] = async ({
 	}
 }
 
-const updateDataset: DatasetService['updateDataset'] = async ({ id, data }) => {
+const updateDataset: IDatasetService['updateDataset'] = async ({ id, data }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -148,7 +148,7 @@ const updateDataset: DatasetService['updateDataset'] = async ({ id, data }) => {
 	}
 }
 
-const deleteDataset: DatasetService['deleteDataset'] = async ({ id }) => {
+const deleteDataset: IDatasetService['deleteDataset'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -164,7 +164,7 @@ const deleteDataset: DatasetService['deleteDataset'] = async ({ id }) => {
 	}
 }
 
-export const infrastructureServiceDatasetCkan: DatasetService = {
+export const infrastructureServiceDatasetCkan: IDatasetService = {
 	getDataset,
 	getDatasetActivity,
 	getDatasets,

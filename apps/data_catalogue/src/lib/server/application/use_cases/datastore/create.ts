@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { DatastoreService } from '$lib/server/application/services/datastore'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import { CkanDatastore, CSVW } from '$lib/server/entities/models/datastore'
 import { csvwToDatastore } from '$lib/server/entities/utils/datastore'
@@ -14,7 +14,7 @@ export const datastoreCSVWtoCKANCreateUseCase = async ({
 	authorisation_module
 }: {
 	resource_id: string
-	datastore_service: DatastoreService
+	datastore_service: IDatastoreService
 	metadata: CSVW
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({

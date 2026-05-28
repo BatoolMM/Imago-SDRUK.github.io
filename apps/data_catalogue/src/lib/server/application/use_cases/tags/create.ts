@@ -1,7 +1,10 @@
+import { handleArkErrors } from '$lib/db/validation'
 import type { AppContext } from '$lib/server/application/context'
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import { err, ok } from '$lib/server/entities/errors'
+import { VocabularySchema, type VocabularyRequest } from '$lib/server/entities/models/datasets'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
+import { type } from 'arktype'
 
 export const tagCreateUseCase = async ({
 	tag,
@@ -12,7 +15,7 @@ export const tagCreateUseCase = async ({
 }: {
 	vocabulary_name?: string
 	tag: string
-	tags_service: TagsService
+	tags_service: ITagsService
 } & AppContext) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
 		namespace: 'Action',
@@ -65,4 +68,45 @@ export const tagCreateUseCase = async ({
 		})
 		.then((res) => ok(res))
 		.catch((_err) => err({ reason: 'Unexpected', error: _err }))
+}
+
+export const vocabularyCreateUseCase = async ({
+	vocabulary_request,
+	configuration,
+	authorisation_module,
+	tags_service,
+	session
+}: {
+	vocabulary_request: VocabularyRequest
+	tags_service: ITagsService
+} & AppContext) => {
+	const [errors, permission] = await authorisation_module.authorise({
+		namespace: 'Action',
+		object: 'datasets',
+		permits: 'create',
+		actor: session.identity.id,
+		configuration
+	})
+	if (errors) {
+		return err(errors)
+	}
+	if (!permission.allowed) {
+		return err({ reason: 'Unauthorised' })
+	}
+	const validated = VocabularySchema(vocabulary_request)
+	if (validated instanceof type.errors) {
+		return err({
+			reason: 'Invalid Data',
+			message: validated.summary,
+			errors: handleArkErrors(validated),
+			id: 'invalid-data-vocabulary'
+		})
+	}
+	const [vocabulary_errors, vocabulary] = await tags_service.createVocabulary({
+		vocabulary: vocabulary_request
+	})
+	if (vocabulary_errors !== null) {
+		return err(vocabulary_errors)
+	}
+	return ok(vocabulary)
 }

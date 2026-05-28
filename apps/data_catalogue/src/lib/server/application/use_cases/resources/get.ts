@@ -1,7 +1,7 @@
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
-import type { DatastoreService } from '$lib/server/application/services/datastore'
-import type { ResourceService } from '$lib/server/application/services/resource'
-import type { StorageService } from '$lib/server/application/services/storage'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
+import type { IResourceService } from '$lib/server/application/services/resource'
+import type { IStorageService } from '$lib/server/application/services/storage'
 import { err, ok } from '$lib/server/entities/errors'
 import type { AppContext } from '$lib/server/application/context'
 import { datastoreToCsvw } from '$lib/server/entities/utils/datastore'
@@ -16,9 +16,9 @@ export const resourceGetUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	resource_respository: ResourceRepository
-	resource_service: ResourceService
-	datastore_service: DatastoreService
+	resource_respository: IResourceRepository
+	resource_service: IResourceService
+	datastore_service: IDatastoreService
 } & AppContext) => {
 	// if (session.identity.id === 'anonymous') {
 	// 	return err({ reason: 'Unauthenticated' })
@@ -99,8 +99,8 @@ export const resourceVersionGetDownloadUrlUseCase = async ({
 }: {
 	resource_id: string
 	version_id: string
-	resource_respository: ResourceRepository
-	storage_service: StorageService
+	resource_respository: IResourceRepository
+	storage_service: IStorageService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',
@@ -139,9 +139,9 @@ export const resourcesGetUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	resource_respository: ResourceRepository
-	resource_service: ResourceService
-	datastore_service: DatastoreService
+	resource_respository: IResourceRepository
+	resource_service: IResourceService
+	datastore_service: IDatastoreService
 } & AppContext) => {
 	// if (session.identity.id === 'anonymous') {
 	// 	return err({ reason: 'Unauthenticated' })

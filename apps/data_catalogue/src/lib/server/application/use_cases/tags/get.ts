@@ -1,4 +1,4 @@
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Session } from '$lib/server/entities/models/identity'
 
@@ -10,7 +10,7 @@ export const tagsGetUseCase = async ({
 	tags_service,
 	vocabulary_id
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 	limit?: number
 	offset?: number
 	search?: string
@@ -45,7 +45,7 @@ export const tagsGetPublicUseCase = async ({
 	tags_service,
 	vocabulary_id
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 	limit?: number
 	offset?: number
 	search?: string
@@ -62,7 +62,7 @@ export const tagsGetPublicUseCase = async ({
 export const tagsGetCountPublicUseCase = async ({
 	tags_service
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 }) => {
 	const [errors, vocabularies] = await tags_service.getVocabularies()
 	if (errors !== null) {
@@ -98,7 +98,7 @@ export const tagsGetCountPublicUseCase = async ({
 export const tagsGetVocabularyPublicUseCase = async ({
 	tags_service
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 }) => {
 	return await tags_service.getVocabularies()
 }

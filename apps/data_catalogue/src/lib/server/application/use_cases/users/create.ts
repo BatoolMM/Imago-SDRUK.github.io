@@ -1,4 +1,4 @@
-import type { UsersRepository } from '$lib/server/application/repositories/users'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
 import type { AppContext } from '$lib/server/application/context'
 import { err, ok } from '$lib/server/entities/errors'
 import { createInsertSchema } from 'drizzle-arktype'
@@ -14,7 +14,7 @@ export const userCreateUseCase = async ({
 	identity_token
 }: {
 	payload: UserRequest
-	repository: UsersRepository
+	repository: IUsersRepository
 } & AppContext) => {
 	if (identity_token !== env.IDENTITY_TOKEN) {
 		return err({ reason: 'Unauthorised' })

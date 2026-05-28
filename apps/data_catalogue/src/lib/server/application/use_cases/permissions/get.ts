@@ -4,9 +4,9 @@ import {
 	type PermissionRequest
 } from '$lib/server/entities/models/permissions'
 import { type } from 'arktype'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
-import type { UsersRepository } from '$lib/server/application/repositories/users'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import type { User } from '$lib/server/entities/models/users'
 import type { AppContext } from '$lib/server/application/context'
 
@@ -50,9 +50,9 @@ export const permissionsGetActorsUseCase = async ({
 	configuration,
 	authorisation_module
 }: {
-	groups_repository: GroupsRepository
-	users_repository: UsersRepository
-	identity_service: IdentityService
+	groups_repository: IGroupsRepository
+	users_repository: IUsersRepository
+	identity_service: IIdentityService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

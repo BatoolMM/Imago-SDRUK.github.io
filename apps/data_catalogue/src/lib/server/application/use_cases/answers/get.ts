@@ -1,4 +1,4 @@
-import type { AnswersRepository } from '$lib/server/application/repositories/answers'
+import type { IAnswersRepository } from '$lib/server/application/repositories/answers'
 import { err, ok } from '$lib/server/entities/errors'
 import type { AppContext } from '$lib/server/application/context'
 
@@ -10,7 +10,7 @@ export const answerGetUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	answers_repository: AnswersRepository
+	answers_repository: IAnswersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

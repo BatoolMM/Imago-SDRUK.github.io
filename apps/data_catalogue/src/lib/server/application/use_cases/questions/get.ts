@@ -1,4 +1,4 @@
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 import { err, ok } from '$lib/server/entities/errors'
 import type { AppContext } from '$lib/server/application/context'
 import type { Configuration } from '$lib/server/entities/models/configuration'
@@ -11,7 +11,7 @@ export const questionGetUseCase = async ({
 	configuration
 }: {
 	id: string
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -43,7 +43,7 @@ export const questionsGetUseCase = async ({
 }: {
 	limit?: number
 	offset?: number
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 	session: App.Locals['session']
 	configuration: Configuration
 } & AppContext) => {

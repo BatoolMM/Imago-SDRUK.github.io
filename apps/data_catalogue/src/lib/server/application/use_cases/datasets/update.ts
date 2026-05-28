@@ -1,6 +1,6 @@
-import type { DatasetService } from '$lib/server/application/services/dataset'
-import type { GroupsService } from '$lib/server/application/services/groups'
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import type { IGroupsService } from '$lib/server/application/services/groups'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import type { DatasetRequest } from '$lib/server/entities/models/datasets'
 import { err, ok } from '$lib/server/entities/errors'
 import { generateExtrasFromPayload } from '$lib/globals/datasets'
@@ -17,7 +17,7 @@ export const datasetUpdateUseCase = async ({
 }: {
 	id: string
 	data?: DatasetRequest
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -62,8 +62,8 @@ export const datasetAddTagUseCase = async ({
 	id: string
 	tag: string
 	vocabulary_id: string
-	dataset_service: DatasetService
-	tags_service: TagsService
+	dataset_service: IDatasetService
+	tags_service: ITagsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -123,8 +123,8 @@ export const datasetRemoveTagUseCase = async ({
 	id: string
 	tag_id: string
 	vocabulary_id: string
-	dataset_service: DatasetService
-	tags_service: TagsService
+	dataset_service: IDatasetService
+	tags_service: ITagsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -174,8 +174,8 @@ export const datasetAddGroupUseCase = async ({
 }: {
 	group_id: string
 	dataset_id: string
-	groups_service: GroupsService
-	dataset_service: DatasetService
+	groups_service: IGroupsService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -232,7 +232,7 @@ export const datasetRemoveGroupUseCase = async ({
 }: {
 	group_id: string
 	dataset_id: string
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',

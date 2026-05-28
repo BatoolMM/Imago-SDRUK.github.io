@@ -8,12 +8,12 @@ import {
 } from '$lib/server/application/use_cases/groups/get'
 import { getGroupsRepositoryModule } from '$lib/server/modules/groups'
 import { getIdentityModule } from '$lib/server/modules/identity'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import { getServerContext } from '$lib/server/application/context'
 import { log } from '$lib/utils/server/logger'
 
-const presenter = ({ group }: { group: GroupsRepository }) => group
+const presenter = ({ group }: { group: IGroupsRepository }) => group
 
 export const groupGetController = async ({
 	session,

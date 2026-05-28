@@ -1,10 +1,10 @@
 import { env } from '$env/dynamic/private'
-import type { ResourceService } from '$lib/server/application/services/resource'
+import type { IResourceService } from '$lib/server/application/services/resource'
 import { err, ok } from '$lib/server/entities/errors'
 import { ckanWrapper, handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 import { create, createCkanClient, get, remove } from '$lib/utils/ckan/ckan'
 
-const getResource: ResourceService['getResource'] = async ({ id }) => {
+const getResource: IResourceService['getResource'] = async ({ id }) => {
 	const ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
@@ -12,7 +12,7 @@ const getResource: ResourceService['getResource'] = async ({ id }) => {
 	return ckanWrapper(() => ckan.request(get('resource_show', { id })))
 }
 
-const getResources: ResourceService['getResources'] = async ({ id }) => {
+const getResources: IResourceService['getResources'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -29,7 +29,7 @@ const getResources: ResourceService['getResources'] = async ({ id }) => {
 	}
 }
 
-const createResource: ResourceService['createResource'] = async ({ data }) => {
+const createResource: IResourceService['createResource'] = async ({ data }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -58,7 +58,7 @@ const createResource: ResourceService['createResource'] = async ({ data }) => {
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-const deleteResource: ResourceService['deleteResource'] = async ({ id }) => {
+const deleteResource: IResourceService['deleteResource'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -74,7 +74,7 @@ const deleteResource: ResourceService['deleteResource'] = async ({ id }) => {
 	}
 }
 
-export const resourceServiceInfrastructureCkan: ResourceService = {
+export const resourceServiceInfrastructureCkan: IResourceService = {
 	createResource,
 	deleteResource,
 	getResource,

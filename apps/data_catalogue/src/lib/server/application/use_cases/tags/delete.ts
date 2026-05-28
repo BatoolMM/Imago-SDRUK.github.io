@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const tagDeleteUseCase = async ({
@@ -12,7 +12,7 @@ export const tagDeleteUseCase = async ({
 }: {
 	tag_id: string
 	vocabulary_id?: string
-	tags_service: TagsService
+	tags_service: ITagsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Action',

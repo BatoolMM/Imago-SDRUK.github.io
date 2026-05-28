@@ -1,4 +1,4 @@
-import type { UsersRepository } from '$lib/server/application/repositories/users'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
 import { db } from '$lib/db'
 import { users, type UserRequest } from '$lib/server/entities/models/users'
 import { log } from '$lib/utils/server/logger'
@@ -6,7 +6,7 @@ import { and, count, eq, inArray, sql } from 'drizzle-orm'
 import { groups, users_groups } from '$lib/db/schema'
 import { err, ok } from '$lib/server/entities/errors'
 
-const createUser: UsersRepository['createUser'] = async ({ data }: { data: UserRequest }) => {
+const createUser: IUsersRepository['createUser'] = async ({ data }: { data: UserRequest }) => {
 	try {
 		const user = await db.insert(users).values(data).returning()
 		log.info(`Create user ${user[0].id}`)
@@ -16,7 +16,7 @@ const createUser: UsersRepository['createUser'] = async ({ data }: { data: UserR
 	}
 }
 
-const getUser: UsersRepository['getUser'] = async ({ id }) => {
+const getUser: IUsersRepository['getUser'] = async ({ id }) => {
 	try {
 		const user = await db.select().from(users).where(eq(users.id, id))
 		if (user[0]) {
@@ -28,7 +28,7 @@ const getUser: UsersRepository['getUser'] = async ({ id }) => {
 	}
 }
 
-const getUsers: UsersRepository['getUsers'] = async ({ limit, offset }) => {
+const getUsers: IUsersRepository['getUsers'] = async ({ limit, offset }) => {
 	try {
 		const items = await db.select().from(users).limit(limit).offset(offset)
 		const total = await db.select({ value: count() }).from(users)
@@ -38,7 +38,7 @@ const getUsers: UsersRepository['getUsers'] = async ({ limit, offset }) => {
 	}
 }
 
-const getUsersById: UsersRepository['getUsersById'] = async ({ limit, offset, ids }) => {
+const getUsersById: IUsersRepository['getUsersById'] = async ({ limit, offset, ids }) => {
 	try {
 		const items = await db
 			.select()
@@ -53,7 +53,7 @@ const getUsersById: UsersRepository['getUsersById'] = async ({ limit, offset, id
 	}
 }
 
-const updateUser: UsersRepository['updateUser'] = async ({ data, id }) => {
+const updateUser: IUsersRepository['updateUser'] = async ({ data, id }) => {
 	try {
 		const user = await db
 			.update(users)
@@ -72,7 +72,7 @@ const updateUser: UsersRepository['updateUser'] = async ({ data, id }) => {
 	}
 }
 
-const getUserGroups: UsersRepository['getUserGroups'] = async ({ id }) => {
+const getUserGroups: IUsersRepository['getUserGroups'] = async ({ id }) => {
 	try {
 		const user_groups = await db
 			.select({
@@ -89,7 +89,7 @@ const getUserGroups: UsersRepository['getUserGroups'] = async ({ id }) => {
 	}
 }
 
-const addUserToGroup: UsersRepository['addUserToGroup'] = async ({ data }) => {
+const addUserToGroup: IUsersRepository['addUserToGroup'] = async ({ data }) => {
 	try {
 		const result = await db.insert(users_groups).values(data).returning()
 		if (result[0]) {
@@ -101,7 +101,7 @@ const addUserToGroup: UsersRepository['addUserToGroup'] = async ({ data }) => {
 	}
 }
 
-const removeUserGroup: UsersRepository['removeUserGroup'] = async ({ data }) => {
+const removeUserGroup: IUsersRepository['removeUserGroup'] = async ({ data }) => {
 	try {
 		const result = await db
 			.delete(users_groups)
@@ -116,7 +116,7 @@ const removeUserGroup: UsersRepository['removeUserGroup'] = async ({ data }) => 
 	}
 }
 
-export const userRepositoryInfrastructureDrizzle: UsersRepository = {
+export const userRepositoryInfrastructureDrizzle: IUsersRepository = {
 	createUser,
 	getUser,
 	getUsers,
