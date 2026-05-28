@@ -1,47 +1,108 @@
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
-import { db } from '$lib/db'
-import { questions } from '$lib/server/entities/models/questions'
-import { err, ok } from '$lib/server/entities/errors'
-import { eq } from 'drizzle-orm'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
+import { ok } from '$lib/server/entities/errors'
+import { DateTime } from 'luxon'
 
-const createQuestion: QuestionsRepository['createQuestion'] = async ({ data }) => {
-	try {
-		const question = await db.insert(questions).values(data).returning()
-		return ok(question[0])
-	} catch (_err) {
-		return err({ reason: 'Unexpected', error: _err })
-	}
+const createQuestion: IQuestionsRepository['createQuestion'] = async ({ data }) => {
+	return ok({
+		...data,
+		created_at: DateTime.now().toJSDate(),
+		updated_at: DateTime.now().toJSDate(),
+		id: '',
+		question: data.question ?? null,
+		sort: data.sort ?? null,
+		description: data.description ?? null,
+		label: data.label ?? null,
+		created_by: '',
+		updated_by: '',
+		status: data.status ?? 'draft',
+		conditionals: data.conditionals ?? [],
+		deleted_at: null,
+		group: data.group ?? null,
+		options: data.options ?? [],
+		required: data.required ?? false,
+		type: data.type ?? 'string',
+		visibility: data.visibility ?? false
+	})
 }
 
-const updateQuestion: QuestionsRepository['updateQuestion'] = async ({ id, data }) => {
-	try {
-		const question = await db.update(questions).set(data).where(eq(questions.id, id)).returning()
-		return ok(question[0])
-	} catch (_err) {
-		return err({ reason: 'Unexpected', error: _err })
-	}
+const updateQuestion: IQuestionsRepository['updateQuestion'] = async ({ id, data }) => {
+	return ok({
+		...data,
+		created_at: DateTime.now().toJSDate(),
+		updated_at: DateTime.now().toJSDate(),
+		id,
+		question: data.question ?? '',
+		sort: data.sort ?? null,
+		description: data.description ?? null,
+		label: data.label ?? null,
+		created_by: '',
+		updated_by: '',
+		status: data.status ?? 'draft',
+		conditionals: data.conditionals ?? [],
+		deleted_at: null,
+		group: data.group ?? null,
+		options: data.options ?? [],
+		required: data.required ?? false,
+		type: data.type ?? 'string',
+		visibility: data.visibility ?? false
+	})
 }
-const getQuestion: QuestionsRepository['getQuestion'] = async ({ id }) => {
-	try {
-		const question = await db.select().from(questions).where(eq(questions.id, id))
-		return ok(question[0])
-	} catch (_err) {
-		return err({ reason: 'Unexpected', error: _err })
-	}
+const getQuestion: IQuestionsRepository['getQuestion'] = async ({ id }) => {
+	return ok({
+		created_at: DateTime.now().toJSDate(),
+		updated_at: DateTime.now().toJSDate(),
+		id,
+		question: '',
+		sort: null,
+		description: null,
+		label: null,
+		created_by: '',
+		updated_by: '',
+		status: 'draft',
+		conditionals: [],
+		deleted_at: null,
+		group: null,
+		options: [],
+		required: false,
+		type: 'string',
+		visibility: false
+	})
 }
 
-const deleteQuestion: QuestionsRepository['deleteQuestion'] = async ({ id }) => {
-	try {
-		await db.delete(questions).where(eq(questions.id, id))
-		return ok(null)
-	} catch (_err) {
-		return err({ reason: 'Unexpected', error: _err })
-	}
+const deleteQuestion: IQuestionsRepository['deleteQuestion'] = async () => {
+	return ok(null)
 }
 
-export const questionsRepositoryInfrastructureTest: QuestionsRepository = {
+const getQuestions: IQuestionsRepository['getQuestions'] = async () => {
+	return ok([])
+}
+const updateQuestionSort: IQuestionsRepository['updateQuestionSort'] = async ({ id }) => {
+	return ok({
+		created_at: DateTime.now().toJSDate(),
+		updated_at: DateTime.now().toJSDate(),
+		id,
+		question: '',
+		sort: null,
+		description: null,
+		label: null,
+		created_by: '',
+		updated_by: '',
+		status: 'draft',
+		conditionals: [],
+		deleted_at: null,
+		group: null,
+		options: [],
+		required: false,
+		type: 'string',
+		visibility: false
+	})
+}
+
+export const questionsRepositoryInfrastructureTest: IQuestionsRepository = {
 	createQuestion,
 	deleteQuestion,
 	getQuestion,
-	updateQuestion
+	updateQuestion,
+	getQuestions,
+	updateQuestionSort
 }
