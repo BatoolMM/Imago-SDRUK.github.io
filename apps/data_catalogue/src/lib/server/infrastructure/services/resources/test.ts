@@ -1,54 +1,44 @@
-import { env } from '$env/dynamic/private'
 import type { IResourceService } from '$lib/server/application/services/resource'
-import { create, createCkanClient, get } from '$lib/utils/ckan/ckan'
-import { error } from '@sveltejs/kit'
+import { ok } from '$lib/server/entities/errors'
 
 const getResource: IResourceService['getResource'] = async ({ id }) => {
-	const ckan = createCkanClient({
-		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+	return ok({
+		id,
+		state: null,
+		created: null,
+		description: '',
+		format: '',
+		metadata_modified: '',
+		name: '',
+		package_id: '',
+		position: 0,
+		url_type: null,
+		cache_last_updated: null,
+		cache_url: null
 	})
-	const ckan_resource = await ckan.request(get('resource_show', { id }))
-	if (ckan_resource.success) {
-		return ckan_resource.result
-	}
-	error(500, { message: `Error getting the resource`, id: 'err-ckan-resource' })
 }
-const getResources: IResourceService['getResources'] = async ({ id }) => {
-	const ckan = createCkanClient({
-		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+const getResources: IResourceService['getResources'] = async () => {
+	return ok([])
+}
+const createResource: IResourceService['createResource'] = async () => {
+	return ok({
+		id: '',
+		state: null,
+		created: null,
+		description: '',
+		format: '',
+		metadata_modified: '',
+		name: '',
+		package_id: '',
+		position: 0,
+		url_type: null,
+		cache_last_updated: null,
+		cache_url: null
 	})
-	const ckan_resource = await ckan.request(get('resource_show', { id }))
-	if (ckan_resource.success) {
-		return [ckan_resource.result]
-	}
-	error(500, { message: `Error getting the resource`, id: 'err-ckan-resource' })
 }
-const createResource: IResourceService['createResource'] = async ({ data }) => {
-	const ckan = createCkanClient({
-		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
-	})
-	const ckan_resource = await ckan.request(
-		create('resource_create', {
-			id: data.id,
-			url: data.url,
-			// url: `${env.ORIGIN}/api/v1/resources/${resource_id}`,
-			name: data.name,
-			package_id: data.package_id,
-			description: data.description,
-			format: data.format,
-			mimetype: data.mimetype,
-			size: data.size
-		})
-	)
-	if (ckan_resource.success) {
-		return ckan_resource.result
-	}
-	error(500, { message: `Error creating the resource`, id: 'err-ckan-resource' })
+const deleteResource: IResourceService['deleteResource'] = async () => {
+	return ok(null)
 }
-const deleteResource: IResourceService['deleteResource'] = async () => {}
 
 export const resourceServiceInfrastructureTest: IResourceService = {
 	createResource,

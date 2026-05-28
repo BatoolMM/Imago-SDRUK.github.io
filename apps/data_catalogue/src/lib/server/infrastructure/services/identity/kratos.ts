@@ -1,5 +1,4 @@
 import { env } from '$env/dynamic/private'
-import type { IAuthenticationService } from '$lib/server/application/services/authentication'
 import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
 import { kratosRead, kratosWrite } from '$lib/utils/auth'
