@@ -28,31 +28,6 @@ const setStructuralMetadata: IDatastoreService['setStructuralMetadata'] = async 
 		})
 
 		const data = await ckan.request(create('datastore_create', metadata))
-		// const record = csvwToDatastore({
-		// 	id: id,
-		// 	csvw: metadata,
-		// 	force: true
-		// 	// delete_fields: true
-		// })
-		// const result = await Promise.all(
-		// 	record.map(async (table) => {
-		// 		return ckan.request(create('datastore_create', table))
-		// 	})
-		// )
-		// const { errors, data } = result.reduce(
-		// 	(acc, res) => {
-		// 		if (!res.success) {
-		// 			acc.errors.push(handleCkanError(res))
-		// 			return acc
-		// 		}
-		// 		acc.data.push(datastoreToCsvw(res.result))
-		// 		return acc
-		// 	},
-		// 	{ errors: [], data: [] } as { errors: ErrTypes[]; data: CSVW[] }
-		// )
-		// if (errors.length > 0) {
-		// 	return err(errors[0])
-		// }
 		if (!data.success) {
 			return err(handleCkanError(data))
 		}
@@ -73,32 +48,6 @@ const updateStructuralMetadata: IDatastoreService['updateStructuralMetadata'] = 
 		})
 
 		const data = await ckan.request(create('datastore_create', metadata))
-		// const record = csvwToDatastore({
-		// 	id: id,
-		// 	csvw: metadata,
-		// 	force: true,
-		// 	delete_fields: true
-		// })
-		// const result = await Promise.all(
-		// 	record.map(async (table) => {
-		// return ckan.request(create('datastore_create', table))
-		// 	})
-		// )
-		//
-		// const { errors, data } = result.reduce(
-		// 	(acc, res) => {
-		// 		if (!res.success) {
-		// 			acc.errors.push(handleCkanError(res))
-		// 			return acc
-		// 		}
-		// 		acc.data.push(datastoreToCsvw(res.result))
-		// 		return acc
-		// 	},
-		// 	{ errors: [], data: [] } as { errors: ErrTypes[]; data: CSVW[] }
-		// )
-		// if (errors.length > 0) {
-		// 	return err(errors[0])
-		// }
 		if (!data.success) {
 			return err(handleCkanError(data))
 		}
@@ -115,7 +64,7 @@ const deleteStructuralMetadata: IDatastoreService['deleteStructuralMetadata'] = 
 			url: env.CKAN_URL,
 			token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
 		})
-		const res = await ckan.request(remove('datastore_delete', { resource_id: id }))
+		const res = await ckan.request(remove('datastore_delete', { resource_id: id, force: true }))
 		if (!res.success) {
 			return err(handleCkanError(res))
 		}

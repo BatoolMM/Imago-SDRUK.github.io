@@ -15,7 +15,7 @@ export const datastoreCSVWtoCKANCreateUseCase = async ({
 }: {
 	resource_id: string
 	datastore_service: IDatastoreService
-	metadata: CSVW
+	metadata?: Record<PropertyKey, unknown> | CSVW
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Resource',
@@ -35,7 +35,6 @@ export const datastoreCSVWtoCKANCreateUseCase = async ({
 		return err({ reason: 'Invalid Data', message: validated.summary, id: 'invalid-metadata' })
 	}
 	const converted = csvwToDatastore({ id: resource_id, csvw: validated, force: true })
-	// return ok(converted)
 	const results = await Promise.all(
 		converted.map((table) => datastore_service.setStructuralMetadata({ metadata: table }))
 	)

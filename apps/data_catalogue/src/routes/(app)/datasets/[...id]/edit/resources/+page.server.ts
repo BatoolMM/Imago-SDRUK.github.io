@@ -21,6 +21,7 @@ import type { CSVW } from '$lib/types/csvw.js'
 import { err, ok } from '$lib/server/entities/errors.js'
 import { datastoreCreateController } from '$lib/server/interface/adapters/controllers/datastore/create.js'
 import { jstr } from '@arturoguzman/art-ui'
+import { datastoreResetController } from '$lib/server/interface/adapters/controllers/datastore/delete.js'
 
 export const load = async ({ locals, parent, url }) => {
 	const { permits, dataset } = await parent()
@@ -127,6 +128,23 @@ export const actions = {
 			metadata,
 			resource_id: id
 		})
+		return {
+			message: `Datastore updated`
+		}
+	},
+	reset_datastore: async ({ request, locals }) => {
+		const form = await request.formData()
+		const id = formGetStringOrUndefined({ form, field: 'id' })
+		const [errors] = await datastoreResetController({
+			configuration: locals.configuration,
+			session: locals.session,
+			resource_id: id
+		})
+
+		if (errors !== null) {
+			console.log(errors)
+			return fail(400, { message: errors.message ?? errors.reason })
+		}
 		return {
 			message: `Datastore updated`
 		}

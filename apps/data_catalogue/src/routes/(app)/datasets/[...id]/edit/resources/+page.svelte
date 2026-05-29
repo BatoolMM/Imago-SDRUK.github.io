@@ -6,6 +6,7 @@
 	import { notify } from '$lib/stores/notify.js'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
 	import Facts from '$lib/ui/cards/facts.svelte'
+	import FileInput from '$lib/ui/inputs/file_input.svelte'
 	import Upload from '$lib/ui/inputs/upload.svelte'
 	import BaseTable from '$lib/ui/tables/base_table.svelte'
 	import CellEditor from '$lib/ui/tables/cell_editor.svelte'
@@ -13,7 +14,6 @@
 	import { xhrUpload } from '$lib/utils/files/readers/index.js'
 	import { handleEnhance } from '$lib/utils/forms'
 	import { toggleDialog } from '$lib/utils/ui/index.js'
-	import { capitalise, jstr } from '@arturoguzman/art-ui'
 	import {
 		Accordion,
 		ActionBar,
@@ -316,13 +316,23 @@
 						<Subtitle>Structural metadata</Subtitle>
 					{/snippet}
 					{#snippet right()}
-						<Button
-							onclick={() => {
-								toggleDialog('add-datastore')
-							}}
-						>
-							<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
-						</Button>
+						<div class="buttons">
+							<Button
+								onclick={() => {
+									toggleDialog(`reset-datastore-${data.resource?.id}`)
+								}}
+							>
+								<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+							</Button>
+
+							<Button
+								onclick={() => {
+									toggleDialog(`add-datastore-${data.resource?.id}`)
+								}}
+							>
+								<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
+							</Button>
+						</div>
 					{/snippet}
 				</ActionBar>
 				{#if data.resource.metadata === null}
@@ -330,25 +340,63 @@
 						<Paragraph>No structural metadata has been added</Paragraph>
 					</Notice>
 				{/if}
-				<Dialog id="add-datastore">
+				{#if data.resource.metadata !== null}
+					<div class="tables">
+						{#each data.resource.metadata?.tables as table}
+							<BaseTable data={table.tableSchema.columns ?? []} {columns}></BaseTable>
+						{/each}
+					</div>
+				{/if}
+				<Dialog id="add-datastore-{data.resource.id}">
 					<form
+						class="form"
 						enctype="multipart/form-data"
 						method="post"
 						action="?/add_datastore"
-						use:enhance={handleEnhance()}
+						use:enhance={handleEnhance({
+							onsuccess: ({ formElement }) => {
+								toggleDialog(`add-datastore-${data.resource?.id}`)
+								formElement.reset()
+							}
+						})}
 					>
 						<input type="hidden" value={data.resource.id} name="id" />
-						<Input>
-							<input type="file" name="file" />
-						</Input>
+						<div class="fields-block">
+							<Subtitle>Upload a metadata JSON file</Subtitle>
+							<FileInput label="Metadata file" name="file" enable_previews={false}></FileInput>
+						</div>
 						<div class="buttons" data-disabled={enable_buttons ? undefined : true}>
 							<Button
 								type="button"
 								onclick={() => {
-									toggleDialog('add-datastore')
+									toggleDialog(`add-datastore-${data.resource?.id}`)
 								}}>Cancel</Button
 							>
 							<Button>Upload</Button>
+						</div>
+					</form>
+				</Dialog>
+				<Dialog id="reset-datastore-{data.resource.id}">
+					<form
+						class="form"
+						method="post"
+						action="?/reset_datastore"
+						use:enhance={handleEnhance({
+							onsuccess: () => {
+								toggleDialog(`reset-datastore-${data.resource?.id}`)
+							}
+						})}
+					>
+						<input type="hidden" value={data.resource.id} name="id" />
+						<Subtitle>Are you sure you want to reset this resource's datastore?</Subtitle>
+						<div class="buttons" data-disabled={enable_buttons ? undefined : true}>
+							<Button
+								type="button"
+								onclick={() => {
+									toggleDialog(`reset-datastore-${data.resource?.id}`)
+								}}>Cancel</Button
+							>
+							<Button>Reset</Button>
 						</div>
 					</form>
 				</Dialog>
@@ -564,5 +612,15 @@
 		background-color: color-mix(in oklab, var(--background-muted) 50%, transparent 50%);
 		padding: 0 1rem;
 		z-index: 1;
+	}
+	.tables {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.form {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 </style>
