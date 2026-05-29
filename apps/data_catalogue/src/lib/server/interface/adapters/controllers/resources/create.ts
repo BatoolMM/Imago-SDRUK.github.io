@@ -1,5 +1,5 @@
 import type {
-	IResourceServiceRequest,
+	ResourceServiceRequest,
 	ResourceVersionRequest
 } from '$lib/server/entities/models/resources'
 import { getResourceRepositoryModule } from '$lib/server/modules/resources'
@@ -30,7 +30,7 @@ export const resourceCreateController = async ({
 }: {
 	session: App.Locals['session']
 	configuration: Configuration
-	data: IResourceServiceRequest
+	data: ResourceServiceRequest
 }) => {
 	if (!session) {
 		return err({ reason: 'Unauthenticated' })
@@ -74,7 +74,7 @@ export const resourceCreateControllerWithVersion = async ({
 }: {
 	session: App.Locals['session']
 	configuration: Configuration
-	data: IResourceServiceRequest
+	data: ResourceServiceRequest
 	version_data: Partial<ResourceVersionRequest>
 }) => {
 	if (!session) {

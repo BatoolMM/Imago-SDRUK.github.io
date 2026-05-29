@@ -5,9 +5,9 @@ import type { IStorageService } from '$lib/server/application/services/storage'
 import {
 	resource_versions,
 	resources,
-	IResourceServiceRequestSchema,
+	ResourceServiceRequestSchema,
 	type ResourceRequest,
-	type IResourceServiceRequest,
+	type ResourceServiceRequest,
 	type ResourceVersionRequest
 } from '$lib/server/entities/models/resources'
 import { err, ok } from '$lib/server/entities/errors'
@@ -86,7 +86,7 @@ export const resourceServiceCreateUseCase = async ({
 	configuration,
 	authorisation_module
 }: {
-	data: IResourceServiceRequest
+	data: ResourceServiceRequest
 	resource_service: IResourceService
 } & AppContext) => {
 	log.trace({ caller: 'resourceServiceCreateUseCase' })
@@ -106,7 +106,7 @@ export const resourceServiceCreateUseCase = async ({
 		log.warn({ message: 'User unauthorised' })
 		return err({ reason: 'Unauthorised' })
 	}
-	const validated = IResourceServiceRequestSchema(data)
+	const validated = ResourceServiceRequestSchema(data)
 	if (validated instanceof type.errors) {
 		return err({ reason: 'Invalid Data', message: validated.summary, id: 'invalid-data' })
 	}
