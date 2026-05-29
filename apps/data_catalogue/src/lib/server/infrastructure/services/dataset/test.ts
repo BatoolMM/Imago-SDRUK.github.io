@@ -1,7 +1,8 @@
-import type { DatasetService } from '$lib/server/application/services/dataset'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import { ok } from '$lib/server/entities/errors'
 
-const createDataset: DatasetService['createDataset'] = async () => {
-	return {
+const createDataset: IDatasetService['createDataset'] = async () => {
+	return ok({
 		id: '',
 		extras: [],
 		groups: [],
@@ -15,12 +16,13 @@ const createDataset: DatasetService['createDataset'] = async () => {
 		state: '',
 		title: '',
 		type: '',
-		resources: []
-	}
+		resources: [],
+		tags: []
+	})
 }
 
-const getDataset: DatasetService['getDataset'] = async () => {
-	return {
+const getDataset: IDatasetService['getDataset'] = async () => {
+	return ok({
 		id: '',
 		extras: [],
 		groups: [],
@@ -34,12 +36,13 @@ const getDataset: DatasetService['getDataset'] = async () => {
 		state: '',
 		title: '',
 		type: '',
-		resources: []
-	}
+		resources: [],
+		tags: []
+	})
 }
 
-const getDatasets: DatasetService['getDatasets'] = async () => {
-	return {
+const getDatasets: IDatasetService['getDatasets'] = async () => {
+	return ok({
 		items: [
 			{
 				id: '',
@@ -55,22 +58,52 @@ const getDatasets: DatasetService['getDatasets'] = async () => {
 				state: '',
 				title: '',
 				type: '',
-				resources: []
+				resources: [],
+				tags: []
 			}
 		],
 		page_size: 1,
 		next: 1,
 		total: 1
-	}
+	})
 }
 
-const getDatasetActivity: DatasetService['getDatasetActivity'] = async () => {
-	return []
+const getDatasetActivity: IDatasetService['getDatasetActivity'] = async () => {
+	return ok([])
 }
 
-export const infrastructureServiceDatasetTest: DatasetService = {
+const deleteDataset: IDatasetService['deleteDataset'] = async () => {
+	return ok(null)
+}
+const getDatasetsCount: IDatasetService['getDatasetsCount'] = async () => {
+	return ok(0)
+}
+const updateDataset: IDatasetService['updateDataset'] = async () => {
+	return ok({
+		id: '',
+		extras: [],
+		groups: [],
+		isopen: false,
+		name: '',
+		owner_org: '',
+		metadata_created: '',
+		creator_user_id: '',
+		metadata_modified: '',
+		private: false,
+		state: '',
+		title: '',
+		type: '',
+		resources: [],
+		tags: []
+	})
+}
+
+export const infrastructureServiceDatasetTest: IDatasetService = {
 	getDataset,
 	createDataset,
 	getDatasets,
-	getDatasetActivity
+	getDatasetActivity,
+	deleteDataset,
+	getDatasetsCount,
+	updateDataset
 }

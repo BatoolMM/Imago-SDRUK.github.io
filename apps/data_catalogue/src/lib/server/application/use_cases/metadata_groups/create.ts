@@ -1,4 +1,4 @@
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import { err, ok } from '$lib/server/entities/errors'
 import slugify from '@sindresorhus/slugify'
 import type { AppContext } from '$lib/server/application/context'
@@ -11,7 +11,7 @@ export const metadataGroupCreateUseCase = async ({
 	authorisation_module
 }: {
 	data: unknown
-	groups_service: GroupsService
+	groups_service: IGroupsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Action',

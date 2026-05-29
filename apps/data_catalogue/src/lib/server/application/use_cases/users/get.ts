@@ -1,11 +1,10 @@
-import type { UsersRepository } from '$lib/server/application/repositories/users'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
 import type { User } from '$lib/server/entities/models/users'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
-import type { Identity } from '@ory/client-fetch'
 
 export const userGetUseCase = async ({
 	id,
@@ -16,8 +15,8 @@ export const userGetUseCase = async ({
 }: {
 	session: Session
 	id: string
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -38,7 +37,7 @@ export const userGetUseCase = async ({
 		return err(errs)
 	}
 	if (!user) {
-		return err({ reason: 'Unexpected' })
+		return err({ reason: 'Not Found', message: `Couldn't find this user in the user repository` })
 	}
 	const [errs_identity, identity] = await identity_service.getIdentity({ id })
 	if (errs_identity !== null) {
@@ -70,8 +69,8 @@ export const userGetMeUseCase = async ({
 	configuration
 }: {
 	session: Session
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -89,6 +88,10 @@ export const userGetMeUseCase = async ({
 	}
 	const [errs, user] = await user_repository.getUser({ id: session.identity.id })
 	if (errs !== null) {
+		// TODO: check if identity exists - this must be done
+		// if identity doesnt exist throw err
+		// if identity exists and not verified redir to verification
+		// if identity and verified create user
 		return err(errs)
 	}
 	if (!user) {
@@ -117,13 +120,46 @@ export const userGetMeUseCase = async ({
 	})
 }
 
+export const userGetTokenUseCase = async ({
+	cookie,
+	identity_service,
+	session,
+	configuration
+}: {
+	cookie: string
+	session: Session
+	identity_service: IIdentityService
+	configuration: Configuration
+}) => {
+	const [errors, permission] = await getAuthorisationModule().authorise({
+		actor: session.identity.id,
+		namespace: 'User',
+		object: session.identity.id,
+		permits: 'members',
+		configuration
+	})
+	if (errors) {
+		return err(errors)
+	}
+	if (!permission.allowed) {
+		return err({ reason: 'Unauthorised' })
+	}
+	const [errs_identity, token] = await identity_service.sessionToToken({ cookie })
+	if (errs_identity !== null) {
+		return err({ reason: 'Unauthorised' })
+	}
+	return ok({
+		token: token.tokenized
+	})
+}
+
 export const userGetGroupsUseCase = async ({
 	user_repository,
 	session,
 	configuration
 }: {
 	session: Session
-	user_repository: UsersRepository
+	user_repository: IUsersRepository
 	configuration: Configuration
 }) => {
 	if (session.identity.id === 'anonymous') {
@@ -161,8 +197,8 @@ export const usersGetUseCase = async ({
 	limit?: number
 	offset?: number
 	session: Session
-	user_repository: UsersRepository
-	identity_service: IdentityService
+	user_repository: IUsersRepository
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
@@ -230,7 +266,7 @@ export const usersSearchUseCase = async ({
 }: {
 	identifier: string
 	session: Session
-	identity_service: IdentityService
+	identity_service: IIdentityService
 	configuration: Configuration
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({

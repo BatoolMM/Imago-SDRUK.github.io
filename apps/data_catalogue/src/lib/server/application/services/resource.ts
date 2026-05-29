@@ -5,7 +5,7 @@ import type {
 	ResourceServiceRequest
 } from '$lib/server/entities/models/resources'
 
-export type ResourceService = {
+export type IResourceService = {
 	getResource: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, ResourceServiceDto]>
 	getResources: ({
 		id

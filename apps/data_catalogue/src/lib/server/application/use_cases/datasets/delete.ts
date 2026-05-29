@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { DatasetService } from '$lib/server/application/services/dataset'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const datasetDeleteUseCase = async ({
@@ -10,7 +10,7 @@ export const datasetDeleteUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',

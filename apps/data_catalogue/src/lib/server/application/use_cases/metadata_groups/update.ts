@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const metadataGroupUpdateUseCase = async ({
@@ -12,8 +12,8 @@ export const metadataGroupUpdateUseCase = async ({
 }: {
 	id: string
 	data: unknown
-	groups_service: GroupsService
-	// groups_repository: GroupsRepository
+	groups_service: IGroupsService
+	// groups_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Action',

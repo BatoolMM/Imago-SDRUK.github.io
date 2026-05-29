@@ -1,10 +1,10 @@
-import type { DatastoreService } from '$lib/server/application/services/datastore'
+import type { IDatastoreService } from '$lib/server/application/services/datastore'
 import { env } from '$env/dynamic/private'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleCkanError } from '$lib/server/infrastructure/utils/services/ckan'
 import { create, createCkanClient, get, remove } from '$lib/utils/ckan/ckan'
 
-const getStructuralMetadata: DatastoreService['getStructuralMetadata'] = async ({ id }) => {
+const getStructuralMetadata: IDatastoreService['getStructuralMetadata'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -20,7 +20,7 @@ const getStructuralMetadata: DatastoreService['getStructuralMetadata'] = async (
 	}
 }
 
-const setStructuralMetadata: DatastoreService['setStructuralMetadata'] = async ({ metadata }) => {
+const setStructuralMetadata: IDatastoreService['setStructuralMetadata'] = async ({ metadata }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
@@ -28,31 +28,6 @@ const setStructuralMetadata: DatastoreService['setStructuralMetadata'] = async (
 		})
 
 		const data = await ckan.request(create('datastore_create', metadata))
-		// const record = csvwToDatastore({
-		// 	id: id,
-		// 	csvw: metadata,
-		// 	force: true
-		// 	// delete_fields: true
-		// })
-		// const result = await Promise.all(
-		// 	record.map(async (table) => {
-		// 		return ckan.request(create('datastore_create', table))
-		// 	})
-		// )
-		// const { errors, data } = result.reduce(
-		// 	(acc, res) => {
-		// 		if (!res.success) {
-		// 			acc.errors.push(handleCkanError(res))
-		// 			return acc
-		// 		}
-		// 		acc.data.push(datastoreToCsvw(res.result))
-		// 		return acc
-		// 	},
-		// 	{ errors: [], data: [] } as { errors: ErrTypes[]; data: CSVW[] }
-		// )
-		// if (errors.length > 0) {
-		// 	return err(errors[0])
-		// }
 		if (!data.success) {
 			return err(handleCkanError(data))
 		}
@@ -63,7 +38,7 @@ const setStructuralMetadata: DatastoreService['setStructuralMetadata'] = async (
 }
 
 // TODO: evaluate update process as there is no easy way to update previous data without overriding the whole row
-const updateStructuralMetadata: DatastoreService['updateStructuralMetadata'] = async ({
+const updateStructuralMetadata: IDatastoreService['updateStructuralMetadata'] = async ({
 	metadata
 }) => {
 	try {
@@ -73,32 +48,6 @@ const updateStructuralMetadata: DatastoreService['updateStructuralMetadata'] = a
 		})
 
 		const data = await ckan.request(create('datastore_create', metadata))
-		// const record = csvwToDatastore({
-		// 	id: id,
-		// 	csvw: metadata,
-		// 	force: true,
-		// 	delete_fields: true
-		// })
-		// const result = await Promise.all(
-		// 	record.map(async (table) => {
-		// return ckan.request(create('datastore_create', table))
-		// 	})
-		// )
-		//
-		// const { errors, data } = result.reduce(
-		// 	(acc, res) => {
-		// 		if (!res.success) {
-		// 			acc.errors.push(handleCkanError(res))
-		// 			return acc
-		// 		}
-		// 		acc.data.push(datastoreToCsvw(res.result))
-		// 		return acc
-		// 	},
-		// 	{ errors: [], data: [] } as { errors: ErrTypes[]; data: CSVW[] }
-		// )
-		// if (errors.length > 0) {
-		// 	return err(errors[0])
-		// }
 		if (!data.success) {
 			return err(handleCkanError(data))
 		}
@@ -109,13 +58,13 @@ const updateStructuralMetadata: DatastoreService['updateStructuralMetadata'] = a
 	}
 }
 
-const deleteStructuralMetadata: DatastoreService['deleteStructuralMetadata'] = async ({ id }) => {
+const deleteStructuralMetadata: IDatastoreService['deleteStructuralMetadata'] = async ({ id }) => {
 	try {
 		const ckan = createCkanClient({
 			url: env.CKAN_URL,
 			token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
 		})
-		const res = await ckan.request(remove('datastore_delete', { resource_id: id }))
+		const res = await ckan.request(remove('datastore_delete', { resource_id: id, force: true }))
 		if (!res.success) {
 			return err(handleCkanError(res))
 		}
@@ -124,7 +73,7 @@ const deleteStructuralMetadata: DatastoreService['deleteStructuralMetadata'] = a
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-export const infrastructureServiceDatastoreCkan: DatastoreService = {
+export const infrastructureServiceDatastoreCkan: IDatastoreService = {
 	getStructuralMetadata,
 	setStructuralMetadata,
 	updateStructuralMetadata,

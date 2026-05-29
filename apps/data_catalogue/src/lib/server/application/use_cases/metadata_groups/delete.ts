@@ -1,4 +1,4 @@
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import type { AppContext } from '$lib/server/application/context'
 import { err, ok } from '$lib/server/entities/errors'
 
@@ -10,7 +10,7 @@ export const metadataGroupDeleteUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	group_service: GroupsService
+	group_service: IGroupsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Action',

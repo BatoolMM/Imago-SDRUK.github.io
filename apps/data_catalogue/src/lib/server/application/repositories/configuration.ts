@@ -1,7 +1,7 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { Configuration, ConfigurationRequest } from '$lib/server/entities/models/configuration'
 
-export type ConfigurationRepository = {
+export type IConfigurationRepository = {
 	initialiseConfiguration: ({
 		config
 	}: {

@@ -1,4 +1,4 @@
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import { db } from '$lib/db'
 import { and, eq, or, sql, inArray } from 'drizzle-orm'
 import { groups, users_groups } from '$lib/server/entities/models/groups'
@@ -6,7 +6,7 @@ import { users } from '$lib/server/entities/models/users'
 import { err, ok } from '$lib/server/entities/errors'
 import { validate as validateUUID } from 'uuid'
 
-const getGroup: GroupsRepository['getGroup'] = async ({ id }) => {
+const getGroup: IGroupsRepository['getGroup'] = async ({ id }) => {
 	try {
 		const valid_uuid = validateUUID(id)
 		const group = await db
@@ -25,7 +25,7 @@ const getGroup: GroupsRepository['getGroup'] = async ({ id }) => {
 	}
 }
 
-const createGroup: GroupsRepository['createGroup'] = async ({ data }) => {
+const createGroup: IGroupsRepository['createGroup'] = async ({ data }) => {
 	try {
 		const group = await db.insert(groups).values(data).returning()
 		if (group[0]) {
@@ -37,7 +37,7 @@ const createGroup: GroupsRepository['createGroup'] = async ({ data }) => {
 	}
 }
 
-const updateGroup: GroupsRepository['updateGroup'] = async ({ data, id }) => {
+const updateGroup: IGroupsRepository['updateGroup'] = async ({ data, id }) => {
 	try {
 		const group = await db.update(groups).set(data).where(eq(groups.id, id)).returning()
 		if (group[0]) {
@@ -49,7 +49,7 @@ const updateGroup: GroupsRepository['updateGroup'] = async ({ data, id }) => {
 	}
 }
 
-const getGroups: GroupsRepository['getGroups'] = async ({ limit, offset }) => {
+const getGroups: IGroupsRepository['getGroups'] = async ({ limit, offset }) => {
 	try {
 		const _groups = await db.select().from(groups).limit(limit).offset(offset)
 		return ok(_groups)
@@ -58,7 +58,7 @@ const getGroups: GroupsRepository['getGroups'] = async ({ limit, offset }) => {
 	}
 }
 
-const getGroupsAutoenroll: GroupsRepository['getGroupsAutoenroll'] = async () => {
+const getGroupsAutoenroll: IGroupsRepository['getGroupsAutoenroll'] = async () => {
 	try {
 		const _groups = await db.select().from(groups).where(eq(groups.autoenroll, true))
 		return ok(_groups)
@@ -67,7 +67,7 @@ const getGroupsAutoenroll: GroupsRepository['getGroupsAutoenroll'] = async () =>
 	}
 }
 
-const deleteGroup: GroupsRepository['deleteGroup'] = async ({ id }) => {
+const deleteGroup: IGroupsRepository['deleteGroup'] = async ({ id }) => {
 	try {
 		await db.delete(groups).where(eq(groups.id, id))
 		return ok(null)
@@ -76,7 +76,7 @@ const deleteGroup: GroupsRepository['deleteGroup'] = async ({ id }) => {
 	}
 }
 
-const addDatasetToGroup: GroupsRepository['addDatasetToGroup'] = async ({ dataset_id, id }) => {
+const addDatasetToGroup: IGroupsRepository['addDatasetToGroup'] = async ({ dataset_id, id }) => {
 	try {
 		const group = await db
 			.update(groups)
@@ -98,7 +98,7 @@ const addDatasetToGroup: GroupsRepository['addDatasetToGroup'] = async ({ datase
 	}
 }
 
-const removeDatasetFromGroup: GroupsRepository['removeDatasetFromGroup'] = async ({
+const removeDatasetFromGroup: IGroupsRepository['removeDatasetFromGroup'] = async ({
 	dataset_id,
 	id
 }) => {
@@ -119,7 +119,7 @@ const removeDatasetFromGroup: GroupsRepository['removeDatasetFromGroup'] = async
 	}
 }
 
-const addUserToGroup: GroupsRepository['addUserToGroup'] = async ({ data, tx }) => {
+const addUserToGroup: IGroupsRepository['addUserToGroup'] = async ({ data, tx }) => {
 	try {
 		const _db = tx ?? db
 		const user_group = await _db.insert(users_groups).values(data).returning()
@@ -132,7 +132,7 @@ const addUserToGroup: GroupsRepository['addUserToGroup'] = async ({ data, tx }) 
 	}
 }
 
-const removeUserFromGroup: GroupsRepository['removeUserFromGroup'] = async ({
+const removeUserFromGroup: IGroupsRepository['removeUserFromGroup'] = async ({
 	user_id,
 	group_id
 }) => {
@@ -146,7 +146,7 @@ const removeUserFromGroup: GroupsRepository['removeUserFromGroup'] = async ({
 	}
 }
 
-const getGroupUsers: GroupsRepository['getGroupUsers'] = async ({ id }) => {
+const getGroupUsers: IGroupsRepository['getGroupUsers'] = async ({ id }) => {
 	try {
 		const group_users = await db
 			.select({ id: users.id })
@@ -159,7 +159,7 @@ const getGroupUsers: GroupsRepository['getGroupUsers'] = async ({ id }) => {
 	}
 }
 
-const getGroupsById: GroupsRepository['getGroupsById'] = async ({ ids }) => {
+const getGroupsById: IGroupsRepository['getGroupsById'] = async ({ ids }) => {
 	try {
 		const _groups = await db.select().from(groups).where(inArray(groups.id, ids))
 		return ok(_groups)
@@ -168,7 +168,7 @@ const getGroupsById: GroupsRepository['getGroupsById'] = async ({ ids }) => {
 	}
 }
 
-export const groupRepositoryInfrastructureDrizzle: GroupsRepository = {
+export const groupRepositoryInfrastructureDrizzle: IGroupsRepository = {
 	createGroup,
 	getGroup,
 	updateGroup,

@@ -2,7 +2,7 @@ import { err, ok } from '$lib/server/entities/errors'
 import { questions, type QuestionRequest } from '$lib/server/entities/models/questions'
 import { type } from 'arktype'
 import { createInsertSchema } from 'drizzle-arktype'
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 import type { AppContext } from '$lib/server/application/context'
 import { DateTime } from 'luxon'
 
@@ -14,7 +14,7 @@ export const questionCreateUseCase = async ({
 	configuration
 }: {
 	data: QuestionRequest
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

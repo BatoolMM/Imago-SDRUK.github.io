@@ -1,10 +1,10 @@
-import type { ConfigurationRepository } from '$lib/server/application/repositories/configuration'
+import type { IConfigurationRepository } from '$lib/server/application/repositories/configuration'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const configurationGetUseCase = async ({
 	configuration_repository
 }: {
-	configuration_repository: ConfigurationRepository
+	configuration_repository: IConfigurationRepository
 }) =>
 	await configuration_repository.getConfiguration({ id: 'config' }).then(([errors, config]) => {
 		if (errors !== null) {

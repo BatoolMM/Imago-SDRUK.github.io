@@ -1,4 +1,4 @@
-import type { QuestionsRepository } from '$lib/server/application/repositories/questions'
+import type { IQuestionsRepository } from '$lib/server/application/repositories/questions'
 import { err, ok } from '$lib/server/entities/errors'
 import { questions, type QuestionRequest } from '$lib/server/entities/models/questions'
 import { type } from 'arktype'
@@ -16,7 +16,7 @@ export const questionUpdateUseCase = async ({
 }: {
 	id: string
 	data: Partial<QuestionRequest>
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
@@ -68,7 +68,7 @@ export const questionUpdateSortUseCase = async ({
 }: {
 	id: string
 	sort: string
-	questions_repository: QuestionsRepository
+	questions_repository: IQuestionsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,

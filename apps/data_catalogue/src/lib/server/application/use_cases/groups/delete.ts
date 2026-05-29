@@ -1,4 +1,4 @@
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
 import type { AppContext } from '$lib/server/application/context'
 import { err, ok } from '$lib/server/entities/errors'
 
@@ -10,7 +10,7 @@ export const groupDeleteUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	group_repository: GroupsRepository
+	group_repository: IGroupsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Group',

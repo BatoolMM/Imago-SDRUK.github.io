@@ -1,13 +1,12 @@
 import { env } from '$env/dynamic/private'
-import type { AuthenticationService } from '$lib/server/application/services/authentication'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
 import { kratosRead, kratosWrite } from '$lib/utils/auth'
 import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 import { DateTime } from 'luxon'
 
-const createSuperUser: IdentityService['createSuperUser'] = async ({ data }) => {
+const createSuperUser: IIdentityService['createSuperUser'] = async ({ data }) => {
 	try {
 		const identity = await kratosWrite.createIdentity({ createIdentityBody: data })
 		return ok(identity)
@@ -16,7 +15,7 @@ const createSuperUser: IdentityService['createSuperUser'] = async ({ data }) => 
 	}
 }
 
-const validateSession: AuthenticationService['validateSession'] = async ({
+const validateSession: IIdentityService['validateSession'] = async ({
 	cookie,
 	token
 }: {
@@ -79,7 +78,7 @@ const validateSession: AuthenticationService['validateSession'] = async ({
 	}
 }
 
-const getIdentity: IdentityService['getIdentity'] = async ({ id }) => {
+const getIdentity: IIdentityService['getIdentity'] = async ({ id }) => {
 	try {
 		const identity = await kratosRead.getIdentity({ id: id })
 		return ok({
@@ -95,7 +94,7 @@ const getIdentity: IdentityService['getIdentity'] = async ({ id }) => {
 	}
 }
 
-const getIdentities: IdentityService['getIdentities'] = async ({
+const getIdentities: IIdentityService['getIdentities'] = async ({
 	page_size,
 	page_token,
 	identifier,
@@ -124,9 +123,46 @@ const getIdentities: IdentityService['getIdentities'] = async ({
 	}
 }
 
-export const infrastructureServiceIdentityKratos: IdentityService = {
+const sessionToToken: IIdentityService['sessionToToken'] = async ({
+	cookie
+}: {
+	cookie: string | undefined
+}) => {
+	const headers: HeadersInit = {
+		Accept: 'application/json'
+	}
+	if (cookie) {
+		headers['Cookie'] = `ory_kratos_session=${cookie}`
+	}
+	const res = await fetch(`${env.IDENTITY_SERVER_PUBLIC}/sessions/whoami?tokenize_as=postgrest`, {
+		headers
+	})
+	const session = (await res.json()) as IdentitySession
+
+	if (!session.active) {
+		log.debug('Session is inactive')
+		return err({ reason: 'Unauthenticated' })
+	}
+	const diff = DateTime.fromISO(session.expires_at).diffNow().milliseconds
+	if (diff <= 0) {
+		log.debug('Session has expired')
+		return err({ reason: 'Unauthenticated' })
+	}
+
+	if (session.error && session.error.code === 401) {
+		return err({ reason: 'Unauthenticated' })
+	}
+
+	if (!session.identity.verifiable_addresses.some((va) => va.verified === true)) {
+		return err({ reason: 'Unauthenticated' })
+	}
+	return ok(session)
+}
+
+export const infrastructureServiceIdentityKratos: IIdentityService = {
 	validateSession,
 	getIdentity,
 	getIdentities,
-	createSuperUser
+	createSuperUser,
+	sessionToToken
 }

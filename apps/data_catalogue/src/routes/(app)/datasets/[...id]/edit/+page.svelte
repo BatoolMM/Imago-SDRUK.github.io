@@ -132,7 +132,7 @@
 			</div>
 			<div class="right-col">
 				<div class="form">
-					<Tags existing_tags={data.tags}></Tags>
+					<Tags existing_tags={data.tags} vocabularies={data.vocabularies}></Tags>
 				</div>
 				<div class="form">
 					<MetadataGroups groups={data.groups}></MetadataGroups>

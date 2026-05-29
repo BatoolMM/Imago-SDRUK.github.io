@@ -1,11 +1,11 @@
 import { db } from '$lib/db'
 import { resource_versions, resources } from '$lib/db/schema'
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
 import { err, ok } from '$lib/server/entities/errors'
 import { handleDBError } from '$lib/utils/db'
 import { and, desc, eq, sql } from 'drizzle-orm'
 
-const getResource: ResourceRepository['getResource'] = async ({ id }) => {
+const getResource: IResourceRepository['getResource'] = async ({ id }) => {
 	try {
 		const resource = await db
 			.select()
@@ -21,7 +21,7 @@ const getResource: ResourceRepository['getResource'] = async ({ id }) => {
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-const getResourceVersion: ResourceRepository['getResourceVersion'] = async ({
+const getResourceVersion: IResourceRepository['getResourceVersion'] = async ({
 	resource,
 	version
 }) => {
@@ -41,7 +41,7 @@ const getResourceVersion: ResourceRepository['getResourceVersion'] = async ({
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-const getResources: ResourceRepository['getResources'] = async ({ limit, offset }) => {
+const getResources: IResourceRepository['getResources'] = async ({ limit, offset }) => {
 	try {
 		const results = await db
 			.select()
@@ -55,7 +55,7 @@ const getResources: ResourceRepository['getResources'] = async ({ limit, offset 
 	}
 }
 
-const createResource: ResourceRepository['createResource'] = async ({ data, tx }) => {
+const createResource: IResourceRepository['createResource'] = async ({ data, tx }) => {
 	try {
 		const _tx = tx ?? db
 		const resource = await _tx
@@ -78,7 +78,7 @@ const createResource: ResourceRepository['createResource'] = async ({ data, tx }
 	}
 }
 
-const createResourceVersion: ResourceRepository['createResourceVersion'] = async ({ data, tx }) => {
+const createResourceVersion: IResourceRepository['createResourceVersion'] = async ({ data, tx }) => {
 	try {
 		const _tx = tx ?? db
 		const resource_version = await _tx
@@ -95,7 +95,7 @@ const createResourceVersion: ResourceRepository['createResourceVersion'] = async
 	}
 }
 
-const getResourceVersions: ResourceRepository['getResourceVersions'] = async ({ id }) => {
+const getResourceVersions: IResourceRepository['getResourceVersions'] = async ({ id }) => {
 	try {
 		const versions = await db
 			.select()
@@ -108,7 +108,7 @@ const getResourceVersions: ResourceRepository['getResourceVersions'] = async ({ 
 	}
 }
 
-const deleteResource: ResourceRepository['deleteResource'] = async ({ id }: { id: string }) => {
+const deleteResource: IResourceRepository['deleteResource'] = async ({ id }: { id: string }) => {
 	try {
 		await db
 			.delete(resources)
@@ -120,7 +120,7 @@ const deleteResource: ResourceRepository['deleteResource'] = async ({ id }: { id
 	}
 }
 
-const deleteResourceVersion: ResourceRepository['deleteResourceVersion'] = async ({
+const deleteResourceVersion: IResourceRepository['deleteResourceVersion'] = async ({
 	id
 }: {
 	id: string
@@ -136,7 +136,7 @@ const deleteResourceVersion: ResourceRepository['deleteResourceVersion'] = async
 	}
 }
 
-const updateResource: ResourceRepository['updateResource'] = async ({ id, data, tx }) => {
+const updateResource: IResourceRepository['updateResource'] = async ({ id, data, tx }) => {
 	try {
 		const _tx = tx ?? db
 		const resource = await _tx
@@ -154,7 +154,7 @@ const updateResource: ResourceRepository['updateResource'] = async ({ id, data, 
 	}
 }
 
-const updateVersion: ResourceRepository['updateVersion'] = async ({ id, data, tx }) => {
+const updateVersion: IResourceRepository['updateVersion'] = async ({ id, data, tx }) => {
 	try {
 		const _tx = tx ?? db
 		const version = await _tx
@@ -172,7 +172,7 @@ const updateVersion: ResourceRepository['updateVersion'] = async ({ id, data, tx
 	}
 }
 
-const updateVersionAddDownload: ResourceRepository['updateVersionAddDownload'] = async ({
+const updateVersionAddDownload: IResourceRepository['updateVersionAddDownload'] = async ({
 	id,
 	tx
 }) => {
@@ -195,7 +195,7 @@ const updateVersionAddDownload: ResourceRepository['updateVersionAddDownload'] =
 	}
 }
 
-// const getResourcesByDataset: ResourceRepository['getResourcesByDataset'] = async ({ id }) => {
+// const getResourcesByDataset: IResourceRepository['getResourcesByDataset'] = async ({ id }) => {
 // 	const results = await db
 // 		.select()
 // 		.from(resources)
@@ -204,7 +204,7 @@ const updateVersionAddDownload: ResourceRepository['updateVersionAddDownload'] =
 // 	return results
 // }
 
-export const datasetRepositoryInfrastructureDrizzle: ResourceRepository = {
+export const datasetRepositoryInfrastructureDrizzle: IResourceRepository = {
 	getResource,
 	createResource,
 	getResourceVersions,

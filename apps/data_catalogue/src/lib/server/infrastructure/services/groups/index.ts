@@ -1,10 +1,10 @@
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import { infrastructureServiceGroupsCkan } from '$lib/server/infrastructure/services/groups/ckan'
 import { infrastructureServiceGroupsTest } from '$lib/server/infrastructure/services/groups/test'
 
 export const groupsServiceInfrastructure: {
-	ckan: GroupsService
-	test: GroupsService
+	ckan: IGroupsService
+	test: IGroupsService
 } = {
 	ckan: infrastructureServiceGroupsCkan,
 	test: infrastructureServiceGroupsTest

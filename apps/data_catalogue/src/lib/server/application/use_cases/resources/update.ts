@@ -1,4 +1,4 @@
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
 import {
 	resource_versions,
 	type ResourceRequest,
@@ -19,7 +19,7 @@ export const resourceUpdateUseCase = async ({
 }: {
 	resource_id: string
 	data: Partial<ResourceRequest>
-	resource_respository: ResourceRepository
+	resource_respository: IResourceRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Resource',
@@ -57,7 +57,7 @@ export const resourceVersionUpdateUseCase = async ({
 }: {
 	version_id: string
 	data: Partial<ResourceVersionRequest>
-	resource_respository: ResourceRepository
+	resource_respository: IResourceRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',
@@ -107,7 +107,7 @@ export const resourceVersionUpdateFileUseCase = async ({
 }: {
 	version_id: string
 	data: Partial<ResourceVersionRequest>
-	resource_respository: ResourceRepository
+	resource_respository: IResourceRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',

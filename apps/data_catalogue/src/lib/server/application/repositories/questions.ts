@@ -1,7 +1,7 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { Question, QuestionRequest } from '$lib/server/entities/models/questions'
 
-export type QuestionsRepository = {
+export type IQuestionsRepository = {
 	getQuestion: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Question]>
 	getQuestions: ({
 		limit,

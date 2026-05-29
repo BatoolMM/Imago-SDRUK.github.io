@@ -1,16 +1,19 @@
 <script lang="ts">
-	import type { Tag } from '$lib/server/entities/models/datasets'
+	import type { Tag, Vocabulary } from '$lib/server/entities/models/datasets'
 	import { enhance } from '$app/forms'
 	import { invalidateAll } from '$app/navigation'
 	import { getDataset } from '$lib/context/dataset.svelte'
-	import { APP_STATE } from '$lib/globals/state.svelte'
-	import { notify } from '$lib/stores/notify'
 	import { handleEnhance } from '$lib/utils/forms'
 	import { fuzzy } from '@arturoguzman/art-ui'
-	import { Subtitle, Button, Paragraph, Input, Text, Icon, Notice } from '@imago/ui'
+	import { Subtitle, Button, Paragraph, Input, Text, Icon, Notice, Select } from '@imago/ui'
 	import slugify from '@sindresorhus/slugify'
+	import { toggleDialog } from '$lib/utils/ui'
+	import Dialog from '../cards/dialog.svelte'
 	const ctx = getDataset()
-	let { existing_tags }: { existing_tags: (Tag | string)[] } = $props()
+	let {
+		existing_tags,
+		vocabularies
+	}: { existing_tags: (Tag | string)[]; vocabularies: Vocabulary[] } = $props()
 	let search = $state('')
 	let search_results = $derived(
 		existing_tags
@@ -25,94 +28,182 @@
 	<Subtitle size="lg">Tags</Subtitle>
 	<div class="wrapper"></div>
 </div>
-<form action="?/add_tag" method="POST" use:enhance={handleEnhance()}>
-	<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
-	<div class="fields">
-		<div class="search">
-			<Input label="Search or add a tag">
-				<Text
-					onkeydown={(e) => {
-						if (e.key === ',') {
-							e.preventDefault()
-						}
-					}}
-					bind:value={search}
-				></Text>
-			</Input>
+<div class="fields">
+	<div class="search">
+		<Input label="Search or add a tag">
+			<Text
+				onkeydown={(e) => {
+					if (e.key === ',') {
+						e.preventDefault()
+					}
+				}}
+				bind:value={search}
+			></Text>
+		</Input>
 
-			{#if search !== ''}
-				<div class="search-results">
-					{#each search_results as tag, index (tag)}
-						{#if typeof tag !== 'string'}
+		{#if search !== ''}
+			<div class="search-results">
+				{#each search_results as tag (tag)}
+					{#if typeof tag !== 'string'}
+						<form
+							action="?/add_tag"
+							method="POST"
+							use:enhance={handleEnhance({
+								onsuccess: () => {
+									search = ''
+								}
+							})}
+						>
+							<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
 							<input type="hidden" name="tag" value={tag.name} />
+							<input
+								type="hidden"
+								name="vocabulary_id"
+								value={vocabularies.find((voc) => voc.id === tag?.vocabulary_id)?.name}
+							/>
 							<div class="tag">
 								<Button>
-									<Paragraph>{tag.display_name}</Paragraph>
+									<Paragraph
+										>{tag.display_name} - {vocabularies.find((voc) => voc.id === tag?.vocabulary_id)
+											?.name}</Paragraph
+									>
 								</Button>
 							</div>
-						{/if}
-					{/each}
-					<input type="hidden" name="tag" value={search} />
-					<Button>
-						<Icon icon={{ icon: 'plus', set: 'tabler', size: 'lg' }}></Icon>
-						<Paragraph>{search}</Paragraph>
-					</Button>
-
-					<!-- {#if !existing_tags.find( (tag) => fuzzy(search, typeof tag === 'string' ? tag : tag.display_name) )} -->
-					<!-- 	<input type="hidden" name="tag" value={search} /> -->
-					<!-- 	<Button> -->
-					<!-- 		<Icon icon={{ icon: 'plus', set: 'tabler', size: 'lg' }}></Icon> -->
-					<!-- 		<Paragraph>{search}</Paragraph> -->
-					<!-- 	</Button> -->
-					<!-- {/if} -->
-					{#if search_results.length === 0}
-						{#if ctx.dataset.tags.find((tag) => tag.name === slugify(search))}
-							<Notice level="info">
-								<Paragraph>Tag {search} has already been added to the dataset.</Paragraph>
-							</Notice>
-							<!-- <input type="hidden" name="tag" value={search} /> -->
-							<!-- <Button> -->
-							<!-- 	<Icon icon={{ icon: 'plus', set: 'tabler', size: 'lg' }}></Icon> -->
-							<!-- 	<Paragraph>{search}</Paragraph> -->
-							<!-- </Button> -->
-						{/if}
+						</form>
 					{/if}
-				</div>
-			{/if}
-		</div>
+				{/each}
+				<input type="hidden" name="tag" value={search} />
+				<Button
+					onclick={() => {
+						toggleDialog('add-tag')
+					}}
+				>
+					<Icon icon={{ icon: 'plus', set: 'tabler', size: 'lg' }}></Icon>
+					<Paragraph>{search}</Paragraph>
+				</Button>
+
+				{#if search_results.length === 0}
+					{#if ctx.dataset.tags.find((tag) => tag.name === slugify(search))}
+						<Notice level="info">
+							<Paragraph>Tag {search} has already been added to the dataset.</Paragraph>
+						</Notice>
+					{/if}
+				{/if}
+			</div>
+		{/if}
 	</div>
-</form>
+</div>
 
 <div class="tags">
 	{#each ctx.dataset.tags as tag (tag)}
-		<form
-			action="?/remove_tag"
-			method="POST"
-			use:enhance={({ cancel }) => {
-				if (APP_STATE.loading) {
-					cancel()
-				}
-				APP_STATE.loading = true
-				return async ({ result }) => {
-					APP_STATE.loading = false
-					if ('data' in result) {
-						notify.send(String(result.data?.message))
-					}
-					search = ''
-					invalidateAll()
-				}
-			}}
-		>
-			<div class="tag">
-				<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
-				<input type="hidden" hidden value={tag.display_name} name="tag" />
-				<Button hover_label={`Click to delete ${tag.display_name}`} style="tag">
-					<Paragraph>{tag.display_name}</Paragraph>
+		<div class="existing-tag">
+			<Paragraph
+				>{tag.display_name} - {vocabularies.find((voc) => voc.id === tag?.vocabulary_id)
+					?.name}</Paragraph
+			>
+			<div class="buttons">
+				<form
+					action="?/remove_tag"
+					method="POST"
+					use:enhance={handleEnhance({
+						onsuccess: () => {
+							search = ''
+							invalidateAll()
+						}
+					})}
+				>
+					<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
+					<input type="hidden" hidden value={tag.display_name} name="tag" />
+					<input
+						type="hidden"
+						name="vocabulary_id"
+						value={vocabularies.find((voc) => voc.id === tag?.vocabulary_id)?.name}
+					/>
+					<Button hover_label={`Click to remove from dataset`} style="tag">
+						<Icon icon={{ icon: 'x', set: 'tabler' }}></Icon>
+					</Button>
+				</form>
+
+				<Button
+					style="tag"
+					hover_label={`Click to delete`}
+					onclick={() => {
+						toggleDialog(`delete-tag-${tag.id}`)
+					}}
+				>
+					<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
 				</Button>
+				<Dialog id="delete-tag-{tag.id}">
+					<form
+						action="?/delete_tag"
+						method="POST"
+						use:enhance={handleEnhance({
+							onsuccess: () => {
+								search = ''
+								invalidateAll()
+							}
+						})}
+					>
+						<input type="hidden" hidden value={tag.id} name="tag_id" />
+						<input
+							type="hidden"
+							name="vocabulary_id"
+							value={vocabularies.find((voc) => voc.id === tag?.vocabulary_id)?.name}
+						/>
+						<Subtitle>Are you sure you want to delete this tag for all datasets?</Subtitle>
+						<div class="buttons">
+							<Button
+								type="button"
+								onclick={() => {
+									toggleDialog(`delete-tag-${tag.id}`)
+								}}>Cancel</Button
+							>
+							<Button>Delete</Button>
+						</div>
+					</form>
+				</Dialog>
 			</div>
-		</form>
+		</div>
 	{/each}
 </div>
+
+<Dialog id="add-tag">
+	<form
+		action="?/add_tag"
+		method="POST"
+		use:enhance={handleEnhance({
+			onsuccess: () => {
+				toggleDialog('add-tag')
+			}
+		})}
+	>
+		<input type="hidden" name="dataset_id" value={ctx.dataset.id} />
+		<Input label="Vocabulary" required>
+			<Select
+				name="vocabulary_id"
+				same_width
+				required
+				options={vocabularies.map((voc) => ({ label: voc.name, value: voc.id }))}
+			></Select>
+		</Input>
+		<Input label="Tag" required>
+			<Text bind:value={search} name="tag" required></Text>
+		</Input>
+		<div class="buttons">
+			<Button
+				type="button"
+				onclick={() => {
+					toggleDialog('add-tag')
+				}}
+			>
+				<Paragraph>Cancel</Paragraph>
+			</Button>
+			<Button>
+				<Paragraph>Create</Paragraph>
+			</Button>
+		</div>
+	</form>
+</Dialog>
 
 <style>
 	form {
@@ -134,6 +225,15 @@
 		align-items: center;
 		gap: 1rem;
 	}
+	.existing-tag {
+		display: flex;
+		align-items: center;
+		gap: 2rem;
+		width: 100%;
+		border: 1px solid var(--border-muted);
+		padding: 0.5rem 1rem;
+		border-radius: var(--radius);
+	}
 	.search-results {
 		padding: 1rem;
 		display: flex;
@@ -150,5 +250,6 @@
 	.buttons {
 		display: flex;
 		justify-content: space-between;
+		gap: 1rem;
 	}
 </style>

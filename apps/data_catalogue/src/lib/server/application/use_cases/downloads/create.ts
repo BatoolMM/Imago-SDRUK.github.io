@@ -1,6 +1,6 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { DownloadsRepository } from '$lib/server/application/repositories/downloads'
-import type { ResourceRepository } from '$lib/server/application/repositories/resource'
+import type { IDownloadsRepository } from '$lib/server/application/repositories/downloads'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
 import { err, ok } from '$lib/server/entities/errors'
 import { downloads } from '$lib/server/entities/models/downloads'
 import { type } from 'arktype'
@@ -18,8 +18,8 @@ export const downloadsCreateUseCase = async ({
 }: {
 	version_id: string
 	resource_id: string
-	downloads_repository: DownloadsRepository
-	resource_repository: ResourceRepository
+	downloads_repository: IDownloadsRepository
+	resource_repository: IResourceRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',

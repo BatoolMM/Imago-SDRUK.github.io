@@ -3,6 +3,7 @@ import { getUserModule } from '$lib/server/modules/user'
 import {
 	userGetGroupsUseCase,
 	userGetMeUseCase,
+	userGetTokenUseCase,
 	userGetUseCase,
 	usersGetUseCase,
 	usersSearchUseCase
@@ -152,4 +153,27 @@ export const usersSearchController = async ({
 		return err(errors)
 	}
 	return ok(users)
+}
+
+export const userGetTokenController = async ({
+	cookie,
+	session,
+	configuration
+}: {
+	cookie: string
+	session: App.Locals['session']
+	configuration: Configuration
+}) => {
+	if (!session) {
+		return err({ reason: 'Unauthenticated' })
+	}
+	const [errors, token] = await userGetTokenUseCase({
+		cookie,
+		identity_service: getIdentityModule(),
+		...getServerContext({ session, configuration })
+	})
+	if (errors !== null) {
+		return err(errors)
+	}
+	return ok(token)
 }

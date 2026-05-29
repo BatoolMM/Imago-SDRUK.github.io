@@ -1,8 +1,8 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
-import type { UsersRepository } from '$lib/server/application/repositories/users'
-import type { DatasetService } from '$lib/server/application/services/dataset'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { permissionsGetUseCase } from '$lib/server/application/use_cases/permissions/get'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { PermissionActor, Relationship } from '$lib/server/entities/models/permissions'
@@ -14,7 +14,7 @@ export const datasetGetPublicUseCase = async ({
 	dataset_service
 }: {
 	id: string
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 }) => {
 	const [errors, dataset] = await dataset_service.getDataset({ id })
 	if (errors !== null) {
@@ -34,7 +34,7 @@ export const datasetGetUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	//NOTE: id lookup must be perfomed before auth
 	const [dataset_errors, dataset] = await dataset_service.getDataset({ id })
@@ -77,7 +77,7 @@ export const datasetsGetPaginatedUseCase = async ({
 	authorisation_module
 }: {
 	url: URL
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 	page_size?: number
 	offset?: number
 	search?: string
@@ -148,7 +148,7 @@ export const datasetsGetPaginatedPublicUseCase = async ({
 	search
 }: {
 	url: URL
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 	page_size?: number
 	offset?: number
 	search?: string
@@ -181,7 +181,7 @@ export const datasetGetActivityUseCase = async ({
 	id: string
 	offset?: number
 	page_size?: number
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -212,7 +212,7 @@ export const datasetGetActivityPublicUseCase = async ({
 	id: string
 	offset?: number
 	page_size?: number
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 }) => {
 	const [errors, activity] = await dataset_service.getDatasetActivity({ id, offset, page_size })
 	if (errors !== null) {
@@ -225,7 +225,7 @@ export const datasetGetActivityPublicUseCase = async ({
 export const datasetsCountGetPublicUseCase = async ({
 	dataset_service
 }: {
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 }) => {
 	const [errors, count] = await dataset_service.getDatasetsCount()
 	if (errors !== null) {
@@ -244,9 +244,9 @@ export const datasetGetPermissionsUseCase = async ({
 	authorisation_module
 }: {
 	id: string
-	groups_repository: GroupsRepository
-	identity_service: IdentityService
-	users_repository: UsersRepository
+	groups_repository: IGroupsRepository
+	identity_service: IIdentityService
+	users_repository: IUsersRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',

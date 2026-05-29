@@ -1,7 +1,7 @@
-import type { ConfigurationRepository } from '$lib/server/application/repositories/configuration'
-import type { GroupsRepository } from '$lib/server/application/repositories/groups'
-import type { UsersRepository } from '$lib/server/application/repositories/users'
-import type { IdentityService } from '$lib/server/application/services/identity'
+import type { IConfigurationRepository } from '$lib/server/application/repositories/configuration'
+import type { IGroupsRepository } from '$lib/server/application/repositories/groups'
+import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IIdentityService } from '$lib/server/application/services/identity'
 import { type } from 'arktype'
 import { err, ok } from '$lib/server/entities/errors'
 import { configuration } from '$lib/server/entities/models/configuration'
@@ -21,10 +21,10 @@ export const configurationInitialiseUseCase = async ({
 		identity: { first_name: string; last_name: string; email: string; password: string }
 		// group: GroupRequest
 	}
-	identity_service: IdentityService
-	groups_repository: GroupsRepository
-	users_repository: UsersRepository
-	config_repository: ConfigurationRepository
+	identity_service: IIdentityService
+	groups_repository: IGroupsRepository
+	users_repository: IUsersRepository
+	config_repository: IConfigurationRepository
 }) => {
 	/**
 	 * fetch or create identity

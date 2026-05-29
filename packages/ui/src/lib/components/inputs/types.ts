@@ -43,5 +43,6 @@ export type InputSelectProps = {
 	debug?: boolean
 	multiple?: boolean
 	value?: string | string[]
+	same_width?: boolean
 } & Omit<HTMLInputAttributes, 'popover'> &
 	InputComponentProps

@@ -1,4 +1,4 @@
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Session } from '$lib/server/entities/models/identity'
 
@@ -10,7 +10,7 @@ export const tagsGetUseCase = async ({
 	tags_service,
 	vocabulary_id
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 	limit?: number
 	offset?: number
 	search?: string
@@ -45,7 +45,7 @@ export const tagsGetPublicUseCase = async ({
 	tags_service,
 	vocabulary_id
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 	limit?: number
 	offset?: number
 	search?: string
@@ -62,15 +62,11 @@ export const tagsGetPublicUseCase = async ({
 export const tagsGetCountPublicUseCase = async ({
 	tags_service
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 }) => {
 	const [errors, vocabularies] = await tags_service.getVocabularies()
 	if (errors !== null) {
 		return err(errors)
-	}
-	const [nonv_errors, non_vocabulary_tags] = await tags_service.getTags({ limit: 9999, offset: 0 })
-	if (nonv_errors !== null) {
-		return err(nonv_errors)
 	}
 	const tags = await Promise.all(
 		vocabularies.map((vocabulary) =>
@@ -96,13 +92,13 @@ export const tagsGetCountPublicUseCase = async ({
 	if (count.errors.length > 0) {
 		return err(count.errors[0])
 	}
-	return ok(count.count + non_vocabulary_tags.items.length)
+	return ok(count.count)
 }
 
 export const tagsGetVocabularyPublicUseCase = async ({
 	tags_service
 }: {
-	tags_service: TagsService
+	tags_service: ITagsService
 }) => {
 	return await tags_service.getVocabularies()
 }

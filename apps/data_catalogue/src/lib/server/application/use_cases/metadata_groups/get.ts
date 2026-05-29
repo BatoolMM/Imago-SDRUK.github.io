@@ -1,5 +1,5 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { GroupsService } from '$lib/server/application/services/groups'
+import type { IGroupsService } from '$lib/server/application/services/groups'
 import { err, ok } from '$lib/server/entities/errors'
 
 export const metadataGroupGetPublicUseCase = async ({
@@ -8,8 +8,8 @@ export const metadataGroupGetPublicUseCase = async ({
 	// groups_repository
 }: {
 	id: string
-	// groups_repository: GroupsRepository
-	groups_service: GroupsService
+	// groups_repository: IGroupsRepository
+	groups_service: IGroupsService
 } & AppContext) => {
 	const [errors, service_group] = await groups_service.getGroup({ id })
 	if (errors !== null) {
@@ -23,7 +23,7 @@ export const metadataGroupGetUseCase = async ({
 	groups_service
 }: {
 	id: string
-	groups_service: GroupsService
+	groups_service: IGroupsService
 } & AppContext) => {
 	// NOTE: metadata groups should always be public until refactor?
 	// const [errors, permission] = await getAuthorisationModule().authorise({
@@ -49,7 +49,7 @@ export const metadataGroupsGetUseCase = async ({
 	groups_service,
 	session
 }: {
-	groups_service: GroupsService
+	groups_service: IGroupsService
 } & AppContext) => {
 	// NOTE: metadata groups should always be public until refactor?
 	// const [errors, permission] = await getAuthorisationModule().authorise({
@@ -79,7 +79,7 @@ export const metadataGroupsGetUseCase = async ({
 export const metadataGroupsGetPublicUseCase = async ({
 	groups_service
 }: {
-	groups_service: GroupsService
+	groups_service: IGroupsService
 } & AppContext) => {
 	const [errs, groups] = await groups_service.getGroups({ page_size: 1000, offset: 0 })
 	if (errs !== null) {

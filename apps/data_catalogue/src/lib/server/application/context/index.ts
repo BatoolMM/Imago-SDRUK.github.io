@@ -1,5 +1,5 @@
 import type { Transaction } from '$lib/db'
-import type { AuthorisationService } from '$lib/server/application/services/autorisation'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
@@ -7,7 +7,7 @@ import { getAuthorisationModule } from '$lib/server/modules/authorisation'
 export type AppContext = {
 	session: Session
 	configuration: Configuration
-	authorisation_module: AuthorisationService
+	authorisation_module: IAuthorisationService
 	identity_token?: string
 	tx?: Transaction
 }

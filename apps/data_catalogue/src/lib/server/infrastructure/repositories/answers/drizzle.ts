@@ -1,10 +1,10 @@
 import { db } from '$lib/db'
 import { answers } from '$lib/db/schema'
-import type { AnswersRepository } from '$lib/server/application/repositories/answers'
+import type { IAnswersRepository } from '$lib/server/application/repositories/answers'
 import { err, ok } from '$lib/server/entities/errors'
 import { eq } from 'drizzle-orm'
 
-const createAnswer: AnswersRepository['createAnswer'] = async ({ data, tx }) => {
+const createAnswer: IAnswersRepository['createAnswer'] = async ({ data, tx }) => {
 	try {
 		const _db = tx ?? db
 		const answer = await _db.insert(answers).values(data).returning()
@@ -14,7 +14,7 @@ const createAnswer: AnswersRepository['createAnswer'] = async ({ data, tx }) => 
 	}
 }
 
-const createAnswers: AnswersRepository['createAnswers'] = async ({ data }) => {
+const createAnswers: IAnswersRepository['createAnswers'] = async ({ data }) => {
 	try {
 		const answer = await db.insert(answers).values(data).returning()
 		return ok(answer)
@@ -23,7 +23,7 @@ const createAnswers: AnswersRepository['createAnswers'] = async ({ data }) => {
 	}
 }
 
-const updateAnswer: AnswersRepository['updateAnswer'] = async ({ id, data }) => {
+const updateAnswer: IAnswersRepository['updateAnswer'] = async ({ id, data }) => {
 	try {
 		const answer = await db.update(answers).set(data).where(eq(answers.id, id)).returning()
 		return ok(answer[0])
@@ -31,7 +31,7 @@ const updateAnswer: AnswersRepository['updateAnswer'] = async ({ id, data }) => 
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
-const getAnswer: AnswersRepository['getAnswer'] = async ({ id }) => {
+const getAnswer: IAnswersRepository['getAnswer'] = async ({ id }) => {
 	try {
 		const answer = await db.select().from(answers).where(eq(answers.id, id))
 		return ok(answer[0])
@@ -40,7 +40,7 @@ const getAnswer: AnswersRepository['getAnswer'] = async ({ id }) => {
 	}
 }
 
-const deleteAnswer: AnswersRepository['deleteAnswer'] = async ({ id }) => {
+const deleteAnswer: IAnswersRepository['deleteAnswer'] = async ({ id }) => {
 	try {
 		await db.delete(answers).where(eq(answers.id, id))
 		return ok(null)
@@ -49,7 +49,7 @@ const deleteAnswer: AnswersRepository['deleteAnswer'] = async ({ id }) => {
 	}
 }
 
-export const answersRepositoryInfrastructureDrizzle: AnswersRepository = {
+export const answersRepositoryInfrastructureDrizzle: IAnswersRepository = {
 	createAnswer,
 	createAnswers,
 	deleteAnswer,

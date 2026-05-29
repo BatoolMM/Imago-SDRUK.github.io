@@ -7,7 +7,7 @@ import type {
 	ResourceVersionRequest
 } from '$lib/server/entities/models/resources'
 
-export type ResourceRepository = {
+export type IResourceRepository = {
 	getResource: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Resource]>
 	getResources: ({
 		limit,

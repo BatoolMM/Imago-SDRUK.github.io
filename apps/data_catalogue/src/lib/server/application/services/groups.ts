@@ -6,7 +6,7 @@ import type {
 } from '$lib/server/entities/models/groups'
 import type { CkanGroup } from '$lib/types/ckan'
 
-export type GroupsService = {
+export type IGroupsService = {
 	createGroup: ({
 		data
 	}: {

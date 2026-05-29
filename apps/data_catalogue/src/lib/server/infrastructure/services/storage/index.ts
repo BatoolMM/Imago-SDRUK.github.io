@@ -1,11 +1,11 @@
-import type { StorageService } from '$lib/server/application/services/storage'
-import { azureStorageServiceInfrastructure } from '$lib/server/infrastructure/services/storage/azure'
-import { testStorageServiceInfrastructure } from '$lib/server/infrastructure/services/storage/test'
+import type { IStorageService } from '$lib/server/application/services/storage'
+import { azureIStorageServiceInfrastructure } from '$lib/server/infrastructure/services/storage/azure'
+import { testIStorageServiceInfrastructure } from '$lib/server/infrastructure/services/storage/test'
 
 export const storageServiceInfrastructure: {
-	azure: StorageService
-	test: StorageService
+	azure: IStorageService
+	test: IStorageService
 } = {
-	azure: azureStorageServiceInfrastructure,
-	test: testStorageServiceInfrastructure
+	azure: azureIStorageServiceInfrastructure,
+	test: testIStorageServiceInfrastructure
 }

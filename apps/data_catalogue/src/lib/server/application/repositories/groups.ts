@@ -7,7 +7,7 @@ import type {
 	UsersGroupsRequest
 } from '$lib/server/entities/models/groups'
 
-export type GroupsRepository = {
+export type IGroupsRepository = {
 	updateGroup: ({
 		data,
 		id

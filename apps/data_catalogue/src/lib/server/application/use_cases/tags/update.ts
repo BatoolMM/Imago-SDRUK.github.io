@@ -1,6 +1,6 @@
 import type { AppContext } from '$lib/server/application/context'
-import type { DatasetService } from '$lib/server/application/services/dataset'
-import type { TagsService } from '$lib/server/application/services/tags'
+import type { IDatasetService } from '$lib/server/application/services/dataset'
+import type { ITagsService } from '$lib/server/application/services/tags'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Tag } from '$lib/server/entities/models/datasets'
 
@@ -13,10 +13,10 @@ export const tagsMigrateUseCase = async ({
 	dataset_service,
 	configuration
 }: {
-	dataset_service: DatasetService
+	dataset_service: IDatasetService
 	dataset_id: string
 	vocabulary_name?: string
-	tags_service: TagsService
+	tags_service: ITagsService
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Dataset',

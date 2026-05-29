@@ -1,18 +1,19 @@
-import type { StorageService } from '$lib/server/application/services/storage'
+import type { IStorageService } from '$lib/server/application/services/storage'
+import { ok } from '$lib/server/entities/errors'
 
-export const getUploadUrl: StorageService['getUploadUrl'] = async () => {
-	return ''
+export const getUploadUrl: IStorageService['getUploadUrl'] = async () => {
+	return ok('')
 }
 
-export const getDownloadUrl: StorageService['getDownloadUrl'] = async () => {
-	return ''
+export const getDownloadUrl: IStorageService['getDownloadUrl'] = async () => {
+	return ok('')
 }
 
-export const deleteFile = async () => {
-	return true
+export const deleteFile: IStorageService['deleteFile'] = async () => {
+	return ok(true)
 }
 
-export const testStorageServiceInfrastructure: StorageService = {
+export const testIStorageServiceInfrastructure: IStorageService = {
 	getDownloadUrl,
 	getUploadUrl,
 	deleteFile

@@ -19,6 +19,7 @@ import { error, fail } from '@sveltejs/kit'
 import { resourceCreateController } from '$lib/server/interface/adapters/controllers/resources/create.js'
 import { resourceDeleteController } from '$lib/server/interface/adapters/controllers/resources/delete.js'
 import { jstr } from '@arturoguzman/art-ui'
+import { tagDeleteController } from '$lib/server/interface/adapters/controllers/tags/delete.js'
 
 export const load = async ({ locals, parent }) => {
 	const { dataset, permits } = await parent()
@@ -30,6 +31,10 @@ export const load = async ({ locals, parent }) => {
 		session: locals.session,
 		vocabulary_id: 'general'
 	})
+	const [vocabularies_err, vocabularies] = await tagsGetVocabulariesController()
+	if (vocabularies_err !== null) {
+		return error(500, { message: vocabularies_err.reason, id: 'voc-err' })
+	}
 
 	if (tags_err !== null) {
 		if (tags_err.reason !== 'Not Found') {
@@ -38,7 +43,8 @@ export const load = async ({ locals, parent }) => {
 	}
 	return {
 		dataset,
-		tags: tags?.items ?? []
+		tags: tags?.items ?? [],
+		vocabularies: vocabularies
 	}
 }
 
@@ -67,19 +73,12 @@ export const actions = {
 		const form = await request.formData()
 		const tag = formGetStringOrUndefined({ form, field: 'tag' })
 		const dataset_id = formGetStringOrUndefined({ form, field: 'dataset_id' })
-		const [errs, vocabularies] = await tagsGetVocabulariesController()
-		if (errs !== null) {
-			return fail(400, { message: `Error finding the vocabulary general` })
-		}
-		const vocabulary_id = vocabularies.find((v) => v.name === 'general')
-		if (!vocabulary_id) {
-			return fail(400, { message: `Error finding the vocabulary general` })
-		}
+		const vocabulary_id = formGetStringOrUndefined({ form, field: 'vocabulary_id' })
 		const [errors] = await datasetAddTagController({
 			configuration: locals.configuration,
 			session: locals.session,
 			id: dataset_id,
-			vocabulary_id: vocabulary_id.id,
+			vocabulary_id: vocabulary_id,
 			tag: String(tag)
 		})
 		if (errors !== null) {
@@ -103,6 +102,23 @@ export const actions = {
 			return fail(400, { message: errors.reason })
 		}
 		return { message: `Tag ${tag} removed` }
+	},
+
+	delete_tag: async ({ locals, request }) => {
+		const form = await request.formData()
+		const tag_id = formGetStringOrUndefined({ form, field: 'tag_id' })
+		const vocabulary_id = formGetStringOrUndefined({ form, field: 'vocabulary_id' })
+		const [errors] = await tagDeleteController({
+			configuration: locals.configuration,
+			session: locals.session,
+			tag_id,
+			vocabulary_id
+		})
+		if (errors !== null) {
+			console.log(errors)
+			return fail(400, { message: `Error deleting the tag` })
+		}
+		return { message: `Tag ${tag_id} deleted` }
 	},
 
 	update: async ({ request, locals }) => {

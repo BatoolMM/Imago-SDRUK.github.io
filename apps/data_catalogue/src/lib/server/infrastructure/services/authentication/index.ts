@@ -1,10 +1,10 @@
-import type { AuthenticationService } from '$lib/server/application/services/authentication'
+import type { IAuthenticationService } from '$lib/server/application/services/authentication'
 import { infrastructureServiceAuthenticationKratos } from '$lib/server/infrastructure/services/authentication/kratos'
 import { infrastructureServiceAuthenticationTest } from '$lib/server/infrastructure/services/authentication/test'
 
 export const authenticationServiceInfrastructure: {
-	kratos: AuthenticationService
-	test: AuthenticationService
+	kratos: IAuthenticationService
+	test: IAuthenticationService
 } = {
 	kratos: infrastructureServiceAuthenticationKratos,
 	test: infrastructureServiceAuthenticationTest
