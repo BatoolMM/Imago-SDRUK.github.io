@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
+	import { page } from '$app/state'
+	import CardContent from '$lib/ui/cards/card_content.svelte'
+	import CardProduct from '$lib/ui/cards/card_product.svelte'
 	import {
-		BaseCard,
 		Subtitle,
 		Input,
 		Title,
@@ -10,7 +12,9 @@
 		PlayerLottie,
 		Button,
 		Notice,
-		Paragraph
+		Paragraph,
+		Icon,
+		handleSearchParams
 	} from '@imago/ui'
 	let { data } = $props()
 	let search = $state()
@@ -28,41 +32,106 @@
 	<div class="animation-container">
 		<PlayerLottie play src="/lottie/city/data.json"></PlayerLottie>
 	</div>
-	<div class="content">
-		<div class="header">
-			<Title size="2xl">Search Imago datasets</Title>
-			<div class="search-bar">
-				<Input>
-					<Text
-						icon={search_icon}
-						name="search"
-						bind:value={search}
-						onkeydown={(e) => {
-							if (e.key === 'Enter') {
-								goto(`/datasets?search=${search}`)
-							}
-						}}
-					></Text>
-				</Input>
-				<Button umami_event="Search datasets" href="/datasets?search={search}">Search</Button>
-			</div>
-			<Notice level="warning">
-				<Subtitle current_colour>Data Catalogue: "In preview"</Subtitle>
-				<Paragraph current_colour>
-					You are accessing a preview of Imago's Data Catalogue. There may still be a few kinks that
-					need ironing. If you run into one of them, please let us know at imago@liverpool.ac.uk
-				</Paragraph>
-			</Notice>
-		</div>
+</div>
+<div class="page">
+	<header>
+		<Title size="2xl">Imago - Data catalogue</Title>
 
-		<!-- <div class="body"> -->
-		<!-- 	{#each stats as stat} -->
-		<!-- 		<button class="cta-card"> -->
-		<!-- 			<Title size="2xl" text={String(stat.count)}></Title> -->
-		<!-- 			<Title size="lg" text={stat.label}></Title> -->
-		<!-- 		</button> -->
-		<!-- 	{/each} -->
-		<!-- </div> -->
+		<div class="banner">
+			<div class="cards">
+				{#each stats as stat}
+					<button class="cta-card">
+						<Title size="xl" text={String(stat.count)}></Title>
+						<Title size="md" text={stat.label}></Title>
+					</button>
+				{/each}
+			</div>
+			<div class="search-bar">
+				<div class="search-input">
+					<Input>
+						<Text
+							icon={search_icon}
+							name="search"
+							bind:value={search}
+							onkeydown={(e) => {
+								if (e.key === 'Enter') {
+									goto(`/datasets?search=${search}`)
+								}
+							}}
+						></Text>
+					</Input>
+					<Button umami_event="Search datasets" href="/datasets?search={search}">Search</Button>
+				</div>
+
+				<Notice level="warning">
+					<Subtitle size="xs" weight={600} current_colour>Data Catalogue: "In preview"</Subtitle>
+					<Paragraph size="xs" current_colour>
+						You are accessing a preview of Imago's Data Catalogue. There may still be a few kinks
+						that need ironing. If you run into one of them, please let us know at
+						imago@liverpool.ac.uk
+					</Paragraph>
+				</Notice>
+			</div>
+		</div>
+	</header>
+	<div class="content">
+		<CardContent>
+			{#snippet title()}
+				<Subtitle size="md" weight={500}>
+					<Icon icon={{ icon: 'layout-grid', set: 'tabler' }}></Icon>
+					Topics</Subtitle
+				>
+			{/snippet}
+			<div class="buttons">
+				{#each data.tags as tag}
+					<div class="button-wrapper">
+						<Button
+							href={`/datasets${handleSearchParams({
+								url: page.url,
+								add: [{ key: 'vocab_general', value: typeof tag === 'string' ? tag : tag.name }]
+							})}`}>{typeof tag === 'string' ? tag : tag.display_name}</Button
+						>
+					</div>
+				{/each}
+			</div>
+		</CardContent>
+		<CardContent>
+			{#snippet title()}
+				<Subtitle size="md" weight={500}>
+					<Icon icon={{ icon: 'users-group', set: 'tabler' }}></Icon>
+					Groups</Subtitle
+				>
+			{/snippet}
+			<div class="buttons">
+				{#each data.groups as group}
+					<div class="button-wrapper">
+						<Button
+							href={`/datasets${handleSearchParams({
+								url: page.url,
+								add: [{ key: 'groups', value: typeof group === 'string' ? group : group.name }]
+							})}`}>{typeof group === 'string' ? group : group.display_name}</Button
+						>
+					</div>
+				{/each}
+			</div>
+		</CardContent>
+		<CardContent>
+			{#snippet title()}
+				<Subtitle size="md" weight={500}>
+					<Icon icon={{ icon: 'database-smile', set: 'tabler' }}></Icon>
+					Latest datasets</Subtitle
+				>
+			{/snippet}
+
+			<div class="dataset-cards">
+				{#each data.datasets.items as dataset}
+					<div class="button-wrapper">
+						<CardProduct {dataset}></CardProduct>
+						<!-- // <Button href={`/datasets/${dataset.name}`}>{dataset.title}</Button> -->
+					</div>
+				{/each}
+			</div>
+		</CardContent>
 	</div>
 </div>
 
@@ -75,14 +144,17 @@
 		display: flex;
 		gap: 4rem;
 		flex-direction: column;
-		padding: 1rem;
 		justify-content: center;
 		align-items: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		z-index: -1;
 	}
 
 	.bg-image-container {
 		height: 100lvh;
-		position: absolute;
+		position: relative;
 		top: 0;
 		left: 0;
 		z-index: -1;
@@ -104,13 +176,66 @@
 		aspect-ratio: auto;
 		object-fit: cover;
 	}
-	.header {
+	.page {
+		/* position: absolute; */
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		display: flex;
+		gap: 2rem;
+		flex-direction: column;
+		justify-items: center;
+		align-items: center;
+		margin-inline: auto;
+		padding: 6rem 1rem 4rem 1rem;
+		background: linear-gradient(to bottom, transparent 25%, var(--secondary) 45%);
+		/* background: red; */
+	}
+	.content {
+		width: min(100% - 2rem, 800px);
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		/* margin-bottom: 12rem; */
+	}
+	.cards {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.search-bar {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		width: min(100%, 800px);
+		justify-content: flex-end;
+	}
+	header {
 		text-align: center;
 		display: flex;
 		flex-direction: column;
-		gap: 4rem;
+
+		/* gap: 4rem; */
+		gap: 1rem;
+		margin-bottom: 2rem;
 	}
-	.search-bar {
+
+	.buttons {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		overflow: scroll;
+		scrollbar-width: none;
+		/* background: var(--background); */
+		padding: 0.25rem;
+		border-radius: var(--radius);
+		padding: 2rem;
+	}
+	.button-wrapper {
+		flex-shrink: 0;
+	}
+	.search-input {
 		display: flex;
 		gap: 1rem;
 	}
@@ -119,42 +244,46 @@
 		display: none;
 	}
 
-	.content {
-		position: absolute;
-		top: 0;
-		left: 0;
-		height: 100%;
-		width: min(100%);
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: minmax(0, 1fr);
-		justify-items: center;
-		align-items: center;
-		margin-inline: auto;
-		padding: 0 1rem;
-	}
-	.body {
+	.banner {
 		display: flex;
 		justify-content: center;
+		flex-direction: column-reverse;
 		gap: 1rem;
-		flex-direction: column;
 		padding: 2rem 0;
 		width: min(100%, 1024px);
+		margin-inline: auto;
 	}
+	.dataset-cards {
+		display: flex;
+		width: 100%;
+		overflow: scroll;
+		scrollbar-width: none;
+		gap: 1rem;
+		padding: 4rem;
+	}
+
 	.cta-card {
-		width: min(100%, 200px);
-		aspect-ratio: 1 / 1;
-		background-color: var(--quarternary);
+		/* width: min(100%, 200px); */
+		/* aspect-ratio: 1 / 1; */
+		background-color: var(--secondary);
 		padding: 1rem;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr);
-		grid-template-rows: minmax(0, 3fr) minmax(0, 1fr);
+		display: flex;
+		gap: 1rem;
+		/* display: grid; */
+		/* grid-template-columns: minmax(0, 1fr); */
+		/* grid-template-rows: minmax(0, 3fr) minmax(0, 1fr); */
 		justify-items: center;
 		align-items: center;
-		border: 1px solid var(--border);
+		/* border: 1px solid var(--border); */
 		border-radius: var(--radius);
 	}
 	@media (min-width: 768px) {
+		.banner {
+			flex-direction: row;
+		}
+		.page {
+			background: linear-gradient(to bottom, transparent 35%, var(--secondary) 45%);
+		}
 		.hero-section {
 			display: block;
 			padding: initial;
@@ -177,15 +306,11 @@
 			background: linear-gradient(transparent 75%, var(--secondary));
 			pointer-events: none;
 		}
+		.content {
+			padding: 10rem 1rem 0 1rem;
+		}
 		.bg-image-container {
 			display: none;
-		}
-		.body {
-			flex-direction: row;
-		}
-		.cta-card {
-			width: min(100%, 300px);
-			aspect-ratio: 1 / 1;
 		}
 	}
 </style>
