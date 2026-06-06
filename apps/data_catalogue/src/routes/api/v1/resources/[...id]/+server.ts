@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/private'
 import { downloadCreateController } from '$lib/server/interface/adapters/controllers/downloads/create.js'
 import { resourceVersionDownloadController } from '$lib/server/interface/adapters/controllers/resources/get.js'
 import { log } from '$lib/utils/server/logger.js'
@@ -5,7 +6,11 @@ import { error, redirect } from '@sveltejs/kit'
 
 export const GET = async ({ params, locals, url }) => {
 	if (locals.session?.identity.id === 'anonymous') {
-		redirect(307, '/auth/login')
+		const dataset = url.searchParams.get('dataset')
+		const login_endpoint = dataset
+			? `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser?return_to=/datasets/${dataset}/resources/${params.id}`
+			: `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser`
+		redirect(307, login_endpoint)
 	}
 	const version_id = url.searchParams.get('version')
 	if (!version_id) {

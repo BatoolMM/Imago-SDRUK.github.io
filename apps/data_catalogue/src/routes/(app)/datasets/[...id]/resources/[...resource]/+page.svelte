@@ -8,6 +8,7 @@
 	import type { CSVWColumn } from '$lib/types/csvw.js'
 	import CellText from '$lib/ui/tables/cell_text.svelte'
 	import Facts from '$lib/ui/cards/facts.svelte'
+	import { page } from '$app/state'
 
 	let { data } = $props()
 	let result = $derived(data.resource)
@@ -70,7 +71,7 @@
 			<!-- {#if result.versions.length > 0} -->
 			<div class="latest">
 				<Subtitle>Latest:</Subtitle>
-				<Button href={result.versions[0].url} download={result.name}>
+				<Button href={`${result.versions[0].url}&dataset=${page.params.id}`} download={result.name}>
 					Download: {result.name ?? result.description} - {result.versions[0].version}
 					<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
 				</Button>
@@ -81,7 +82,7 @@
 				<Subtitle>Available versions</Subtitle>
 				<div class="versions">
 					{#each data.resource.versions as version}
-						<Button href={version.url} download={result.name}>
+						<Button href={`${version.url}&dataset=${page.params.id}`} download={result.name}>
 							Version: {version.version}
 							<Icon icon={{ icon: 'file-download', set: 'tabler' }}></Icon>
 						</Button>
