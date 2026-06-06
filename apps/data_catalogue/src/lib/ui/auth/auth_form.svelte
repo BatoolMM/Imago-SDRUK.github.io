@@ -4,10 +4,9 @@
 	import { page } from '$app/state'
 	import AuthFormInputs from './auth_form_inputs.svelte'
 	import AuthFormButtons from './auth_form_buttons.svelte'
-	import { jstr } from '@arturoguzman/art-ui'
 	import { groupNodes } from '$lib/utils/auth/forms'
-	import AuthFormGroup from './auth_form_group.svelte'
-	let { form }: { form: IdentityFlow['ui'] } = $props()
+	let { form, return_to }: { form: IdentityFlow['ui']; return_to: IdentityFlow['return_to'] } =
+		$props()
 
 	const page_fields = [
 		{
@@ -148,16 +147,24 @@
 	{#if page.params.flow === 'login'}
 		<div class="form-bottom">
 			<Paragraph>
-				Don't have an account? <span><a href="/auth/registration">Sign Up</a></span>
+				Don't have an account? <span>
+					<a href="/auth/registration{return_to ? `?return_to=${return_to}` : ''}">Sign Up</a></span
+				>
 			</Paragraph>
 			<Paragraph>
-				<span><a href="/auth/recovery">Forgot your password?</a></span>
+				<span
+					><a href="/auth/recovery{return_to ? `?return_to=${return_to}` : ''}"
+						>Forgot your password?</a
+					></span
+				>
 			</Paragraph>
 		</div>
 	{:else if page.params.flow === 'registration'}
 		<div class="form-bottom">
 			<Paragraph>
-				Already have an account? <span><a href="/auth/login">Sign In</a></span>
+				Already have an account? <span
+					><a href="/auth/login{return_to ? `?return_to=${return_to}` : ''}">Sign In</a></span
+				>
 			</Paragraph>
 			<Paragraph>
 				Need help? <span><a href="/">Contact Us</a></span>
