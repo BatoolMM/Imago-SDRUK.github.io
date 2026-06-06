@@ -32,7 +32,6 @@ export const load = async ({
 			credentials: 'include',
 			headers: { cookie }
 		})
-		//@ts-expect-error ok ok ok
 		const data = (await handleOryResponse(res)) as {
 			logout_url: string
 			logout_token: string
@@ -45,7 +44,7 @@ export const load = async ({
 	}
 	if (!flow_id && params.flow !== 'error' && !aal) {
 		log.debug(`Getting a new flow for ${params.flow}`)
-		const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser`
+		const endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${params.flow}/browser${return_to ? `?return_to=${return_to}` : ''}`
 		redirect(303, endpoint)
 	}
 
@@ -113,6 +112,7 @@ export const load = async ({
 	}
 	url.searchParams.delete('flow_id')
 	return {
+		return_to: data.return_to,
 		form: data.ui
 	}
 }
