@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
+	import { notify } from '$lib/stores/notify.js'
 	import CardContent from '$lib/ui/cards/card_content.svelte'
 	import CardProduct from '$lib/ui/cards/card_product.svelte'
 	import {
@@ -11,18 +12,23 @@
 		type IconsSets,
 		PlayerLottie,
 		Button,
-		Notice,
-		Paragraph,
 		Icon,
 		handleSearchParams
 	} from '@imago/ui'
 	let { data } = $props()
-	let search = $state()
+	let search = $state('')
 	const search_icon: IconsSets = { icon: 'search', set: 'tabler' }
 	const stats: { label: string; count: number }[] = $derived([
 		{ label: 'Datasets', count: Number(data.package_count) },
 		{ label: 'Topics', count: Number(data.tag_count) }
 	])
+	const handleSearch = () => {
+		if (search.length >= 3) {
+			goto(`/datasets?search={search}`)
+			return
+		}
+		notify.send({ message: `You need to provide more than 3 characters` })
+	}
 </script>
 
 <div class="hero-section">
@@ -36,16 +42,7 @@
 <div class="page">
 	<header>
 		<Title size="2xl">Imago - Data catalogue</Title>
-
 		<div class="banner">
-			<div class="cards">
-				{#each stats as stat}
-					<button class="cta-card">
-						<Title size="xl" text={String(stat.count)}></Title>
-						<Title size="md" text={stat.label}></Title>
-					</button>
-				{/each}
-			</div>
 			<div class="search-bar">
 				<div class="search-input">
 					<Input>
@@ -55,46 +52,30 @@
 							bind:value={search}
 							onkeydown={(e) => {
 								if (e.key === 'Enter') {
-									goto(`/datasets?search=${search}`)
+									handleSearch()
 								}
 							}}
 						></Text>
 					</Input>
-					<Button umami_event="Search datasets" href="/datasets?search={search}">Search</Button>
+					<Button
+						umami_event="Search datasets"
+						onclick={() => {
+							handleSearch()
+						}}>Search</Button
+					>
 				</div>
-
-				<Notice level="warning">
-					<Subtitle size="xs" weight={600} current_colour>Data Catalogue: "In preview"</Subtitle>
-					<Paragraph size="xs" current_colour>
-						You are accessing a preview of Imago's Data Catalogue. There may still be a few kinks
-						that need ironing. If you run into one of them, please let us know at
-						imago@liverpool.ac.uk
-					</Paragraph>
-				</Notice>
+				<div class="cards">
+					{#each stats as stat}
+						<button class="cta-card">
+							<Title size="xl" text={String(stat.count)}></Title>
+							<Title size="md" text={stat.label}></Title>
+						</button>
+					{/each}
+				</div>
 			</div>
 		</div>
 	</header>
 	<div class="content">
-		<CardContent>
-			{#snippet title()}
-				<Subtitle size="md" weight={500}>
-					<Icon icon={{ icon: 'layout-grid', set: 'tabler' }}></Icon>
-					Topics</Subtitle
-				>
-			{/snippet}
-			<div class="buttons">
-				{#each data.tags as tag}
-					<div class="button-wrapper">
-						<Button
-							href={`/datasets${handleSearchParams({
-								url: page.url,
-								add: [{ key: 'vocab_general', value: typeof tag === 'string' ? tag : tag.name }]
-							})}`}>{typeof tag === 'string' ? tag : tag.display_name}</Button
-						>
-					</div>
-				{/each}
-			</div>
-		</CardContent>
 		<CardContent>
 			{#snippet title()}
 				<Subtitle size="md" weight={500}>
@@ -110,6 +91,26 @@
 								url: page.url,
 								add: [{ key: 'groups', value: typeof group === 'string' ? group : group.name }]
 							})}`}>{typeof group === 'string' ? group : group.display_name}</Button
+						>
+					</div>
+				{/each}
+			</div>
+		</CardContent>
+		<CardContent>
+			{#snippet title()}
+				<Subtitle size="md" weight={500}>
+					<Icon icon={{ icon: 'layout-grid', set: 'tabler' }}></Icon>
+					Topics</Subtitle
+				>
+			{/snippet}
+			<div class="buttons">
+				{#each data.tags as tag}
+					<div class="button-wrapper">
+						<Button
+							href={`/datasets${handleSearchParams({
+								url: page.url,
+								add: [{ key: 'vocab_general', value: typeof tag === 'string' ? tag : tag.name }]
+							})}`}>{typeof tag === 'string' ? tag : tag.display_name}</Button
 						>
 					</div>
 				{/each}
@@ -200,8 +201,8 @@
 		/* margin-bottom: 12rem; */
 	}
 	.cards {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
 		gap: 1rem;
 	}
 	.search-bar {
@@ -217,7 +218,7 @@
 		flex-direction: column;
 
 		/* gap: 4rem; */
-		gap: 1rem;
+		gap: 4rem;
 		margin-bottom: 2rem;
 	}
 
@@ -307,7 +308,7 @@
 			pointer-events: none;
 		}
 		.content {
-			padding: 10rem 1rem 0 1rem;
+			padding: 4rem 1rem 0 1rem;
 		}
 		.bg-image-container {
 			display: none;
