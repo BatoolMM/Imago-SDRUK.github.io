@@ -26,6 +26,7 @@ export const load = async ({ locals, params }) => {
 		error(400, { message: errors.reason, id: errors.reason })
 	}
 	return {
+		dataset,
 		activities
 	}
 }

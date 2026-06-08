@@ -160,6 +160,7 @@ export type IdentityFlow = {
 	}
 	organization_id?: null
 	state?: string
+	return_to?: string
 }
 
 export type IdentityLogout = {

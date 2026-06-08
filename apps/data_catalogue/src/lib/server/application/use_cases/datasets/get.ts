@@ -23,7 +23,7 @@ export const datasetGetPublicUseCase = async ({
 	if (dataset?.private === false) {
 		return ok({ data: dataset })
 	}
-	return err({ reason: 'Not Found' })
+	return err({ reason: 'Not Found', message: 'Dataset not found' })
 }
 
 export const datasetGetUseCase = async ({
@@ -42,7 +42,7 @@ export const datasetGetUseCase = async ({
 		return err(dataset_errors)
 	}
 	if (!dataset) {
-		return err({ reason: 'Not Found' })
+		return err({ reason: 'Not Found', message: `Dataset not found` })
 	}
 	const [errors, allowed] = await authorisation_module.authorise({
 		namespace: 'Dataset',
@@ -57,12 +57,6 @@ export const datasetGetUseCase = async ({
 	if (!allowed.allowed) {
 		return err({ reason: 'Unauthorised' })
 	}
-	const [errs, permission] = await authorisation_module.getPermissions({
-		namespace: 'Dataset',
-		object: dataset.id,
-		actor: session.identity.id
-	})
-
 	return ok(dataset)
 }
 
@@ -82,19 +76,6 @@ export const datasetsGetPaginatedUseCase = async ({
 	offset?: number
 	search?: string
 } & AppContext) => {
-	// const [errors, allowed] = await getAuthorisationModule().authorise({
-	// 	namespace: 'Action',
-	// 	object: 'datasets',
-	// 	permits: 'read',
-	// 	actor: session.identity.id
-	// })
-	// if (errors !== null) {
-	// 	return err(errors)
-	// }
-	// if (!allowed.allowed) {
-	// 	return err({ reason: 'Unauthorised' })
-	// }
-	// HACK: will overfecth for now, this does lead to duplicate results
 	const OVERFETCH = 20
 	const [errs, datasets] = await dataset_service.getDatasets({
 		page_size: page_size + OVERFETCH,
@@ -106,7 +87,7 @@ export const datasetsGetPaginatedUseCase = async ({
 		return err(errs)
 	}
 	if (!datasets) {
-		return err({ reason: 'Not Found' })
+		return err({ reason: 'Not Found', message: 'There are no datasets available' })
 	}
 	const permissions = await Promise.all(
 		datasets.items.map((dataset) =>
@@ -163,7 +144,7 @@ export const datasetsGetPaginatedPublicUseCase = async ({
 		return err(errs)
 	}
 	if (!datasets) {
-		return err({ reason: 'Not Found' })
+		return err({ reason: 'Not Found', message: `There are no datasets` })
 	}
 	const filtered = datasets.items.filter((dataset) => dataset.private === false)
 	return ok({ ...datasets, items: filtered })

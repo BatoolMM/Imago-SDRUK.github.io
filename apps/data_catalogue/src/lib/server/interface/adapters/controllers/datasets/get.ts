@@ -2,11 +2,9 @@ import {
 	datasetGetActivityPublicUseCase,
 	datasetGetActivityUseCase,
 	datasetGetPermissionsUseCase,
-	datasetGetPublicUseCase,
 	datasetGetUseCase,
 	datasetGetUserPermissionsUseCase,
 	datasetsCountGetPublicUseCase,
-	datasetsGetPaginatedPublicUseCase,
 	datasetsGetPaginatedUseCase
 } from '$lib/server/application/use_cases/datasets/get'
 import { getDatasetModule } from '$lib/server/modules/datasets'
@@ -31,14 +29,7 @@ export const datasetGetController = async ({
 	configuration: Configuration
 }) => {
 	if (!session) {
-		const [errors, dataset] = await datasetGetPublicUseCase({
-			id: id,
-			dataset_service: getDatasetModule()
-		})
-		if (errors !== null) {
-			return err(errors)
-		}
-		return ok(presenter({ dataset }))
+		return err({ reason: 'Unauthenticated' })
 	}
 	const [errors, dataset] = await datasetGetUseCase({
 		id: id,
@@ -69,17 +60,7 @@ export const datasetsGetController = async ({
 	configuration: Configuration
 }) => {
 	if (!session) {
-		const [errors, datasets] = await datasetsGetPaginatedPublicUseCase({
-			offset,
-			page_size,
-			url,
-			search,
-			dataset_service: getDatasetModule()
-		})
-		if (errors !== null) {
-			return err(errors)
-		}
-		return ok(datasets)
+		return err({ reason: 'Unauthenticated' })
 	}
 	const [errors, datasets] = await datasetsGetPaginatedUseCase({
 		offset,
@@ -96,7 +77,6 @@ export const datasetsGetController = async ({
 	return ok(datasets)
 }
 
-// TODO: must pass through a presenter
 export const datasetGetActivityController = async ({
 	session,
 	id,

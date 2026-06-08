@@ -94,12 +94,10 @@ const getDatasets: IDatasetService['getDatasets'] = async ({ page_size, offset, 
 			})
 		)
 		if (!data.success) {
-			console.log(data)
 			return err(handleCkanError(data, 'getDatasets'))
 		}
 		const max_pages = Math.floor(data.result.count / page_size)
 		const next = offset + 1 > max_pages ? max_pages : offset + 1
-
 		return ok({
 			items: data.result.results,
 			page_size,

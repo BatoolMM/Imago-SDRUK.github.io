@@ -62,7 +62,7 @@ export const getDownloadUrl: IStorageService['getDownloadUrl'] = async ({
 			blob_client.url + '?' + createSASReadString({ client: client.client, container_name })
 		)
 	} catch (_err) {
-		return err({ reason: 'Unexpected', errors: _err })
+		return err({ reason: 'Unexpected', error: _err })
 	}
 }
 

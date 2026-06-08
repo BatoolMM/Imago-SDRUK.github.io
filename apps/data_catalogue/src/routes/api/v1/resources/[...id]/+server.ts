@@ -1,17 +1,8 @@
-import { env } from '$env/dynamic/private'
-import { downloadCreateController } from '$lib/server/interface/adapters/controllers/downloads/create.js'
 import { resourceVersionDownloadController } from '$lib/server/interface/adapters/controllers/resources/get.js'
-import { log } from '$lib/utils/server/logger.js'
 import { error, redirect } from '@sveltejs/kit'
+import { env } from '$env/dynamic/private'
 
 export const GET = async ({ params, locals, url }) => {
-	if (locals.session?.identity.id === 'anonymous') {
-		const dataset = url.searchParams.get('dataset')
-		const login_endpoint = dataset
-			? `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser?return_to=/datasets/${dataset}/resources/${params.id}`
-			: `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser`
-		redirect(307, login_endpoint)
-	}
 	const version_id = url.searchParams.get('version')
 	if (!version_id) {
 		error(400, { message: `You need to provide an version`, id: 'missing-version' })
@@ -23,20 +14,15 @@ export const GET = async ({ params, locals, url }) => {
 		session: locals.session
 	})
 	if (errors !== null) {
-		console.log(errors)
+		if (errors.reason === 'Unauthenticated' || errors.reason === 'Unauthorised') {
+			const dataset = url.searchParams.get('dataset')
+			const login_endpoint = dataset
+				? `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser?return_to=/datasets/${dataset}/resources/${params.id}`
+				: `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser`
+			redirect(307, login_endpoint)
+		}
 		error(400, { message: errors.reason, id: errors.reason })
 	}
-	const [download_errors] = await downloadCreateController({
-		configuration: locals.configuration,
-		session: locals.session,
-		resource_id: params.id,
-		version_id
-	})
-
-	if (download_errors !== null) {
-		log.error({ message: 'Error registering the download' })
-	}
-
 	return fetch(signed_url)
 	/**
 	 * NOTE: this will open the resource on the same tab

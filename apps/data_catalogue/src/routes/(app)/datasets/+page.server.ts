@@ -1,6 +1,5 @@
 import type { PageServerLoadEvent } from './$types.js'
 import { error, fail, redirect } from '@sveltejs/kit'
-import licenses from '$lib/utils/ckan/licenses.json'
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
 import { datasetsGetController } from '$lib/server/interface/adapters/controllers/datasets/get.js'
 import {
@@ -28,7 +27,7 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 		session: locals.session
 	})
 	if (errs !== null) {
-		error(400, { message: 'Error getting the dataset', id: errs.reason })
+		error(400, { message: 'Error getting the datasets', id: errs.reason })
 	}
 	const [voc_errors, vocabularies] = await tagsGetVocabulariesController()
 	if (voc_errors !== null) {
@@ -43,17 +42,14 @@ export const load = async ({ locals, url }: PageServerLoadEvent) => {
 	if (errors !== null) {
 		error(400, { message: 'error getting tags', id: '' })
 	}
-
 	return {
 		datasets: datasets,
-		package_count: 0,
 		tags: tags.items,
 		resources: {
 			result: [
 				...new Set(datasets.items.flatMap(({ resources }) => resources).map((r) => r.format))
 			].filter((format) => format !== '')
-		},
-		licenses: { result: licenses }
+		}
 	}
 }
 

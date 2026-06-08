@@ -7,12 +7,7 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 
 const getResource: IResourceRepository['getResource'] = async ({ id }) => {
 	try {
-		const resource = await db
-			.select()
-			.from(resources)
-			.where(eq(resources.id, id))
-			.limit(1)
-			.catch(handleDBError('Resource not found'))
+		const resource = await db.select().from(resources).where(eq(resources.id, id)).limit(1)
 		if (resource.length === 1) {
 			return ok(resource[0])
 		}
@@ -32,7 +27,6 @@ const getResourceVersion: IResourceRepository['getResourceVersion'] = async ({
 			.where(and(eq(resource_versions.resource, resource), eq(resource_versions.id, version)))
 			.orderBy(desc(resource_versions.created_by))
 			.limit(1)
-			.catch(handleDBError('No version exists for this resource'))
 		if (resource_version.length === 1) {
 			return ok(resource_version[0])
 		}
@@ -78,7 +72,10 @@ const createResource: IResourceRepository['createResource'] = async ({ data, tx 
 	}
 }
 
-const createResourceVersion: IResourceRepository['createResourceVersion'] = async ({ data, tx }) => {
+const createResourceVersion: IResourceRepository['createResourceVersion'] = async ({
+	data,
+	tx
+}) => {
 	try {
 		const _tx = tx ?? db
 		const resource_version = await _tx
@@ -185,7 +182,6 @@ const updateVersionAddDownload: IResourceRepository['updateVersionAddDownload'] 
 			})
 			.where(eq(resource_versions.id, id))
 			.returning()
-			.catch(handleDBError('Error updating resource version'))
 		if (version.length === 1) {
 			return ok(version[0])
 		}
