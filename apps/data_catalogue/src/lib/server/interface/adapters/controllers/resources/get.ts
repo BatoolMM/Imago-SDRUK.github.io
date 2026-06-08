@@ -10,8 +10,7 @@ import type { Configuration } from '$lib/server/entities/models/configuration'
 import { getServerContext } from '$lib/server/application/context'
 import { log } from '$lib/utils/server/logger'
 import { getStorageModule } from '$lib/server/modules/storage'
-
-// const presenter = ({ dataset }: { dataset: Dataset }) => dataset
+import { getDownloadsModule } from '$lib/server/modules/downloads'
 
 export const resourceGetController = async ({
 	session,
@@ -86,7 +85,8 @@ export const resourceVersionDownloadController = async ({
 	const [errors, resource] = await resourceVersionGetDownloadUrlUseCase({
 		version_id,
 		resource_id,
-		resource_respository: getResourceRepositoryModule(),
+		resource_repository: getResourceRepositoryModule(),
+		downloads_repository: getDownloadsModule(),
 		storage_service: getStorageModule(),
 		...getServerContext({ session, configuration })
 	})
