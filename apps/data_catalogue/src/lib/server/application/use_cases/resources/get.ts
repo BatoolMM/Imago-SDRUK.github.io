@@ -54,9 +54,6 @@ export const resourceGetUseCase = async ({
 		return err(versions_errors)
 	}
 
-	console.log(
-		`ACTIVEEEEEE resource_metadata.datastore_active ${resource_metadata.datastore_active}${id}`
-	)
 	const transformed = versions.map((version) => ({
 		...version,
 		url: `/api/v1/resources/${resource.id}?version=${version.id}`

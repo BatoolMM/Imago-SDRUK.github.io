@@ -4,7 +4,7 @@ import type { IdentitySession } from '$lib/utils/auth/types'
 import { log } from '$lib/utils/server/logger'
 import { DateTime } from 'luxon'
 import jwt from 'jsonwebtoken'
-import { readFileSync } from 'fs'
+import { loadKey } from '$lib/utils'
 const validateSession: IAuthenticationService['validateSession'] = async ({
 	cookie,
 	token
@@ -19,10 +19,10 @@ const validateSession: IAuthenticationService['validateSession'] = async ({
 		headers['Cookie'] = `ory_kratos_session=${cookie}`
 	}
 	if (token) {
-		const file = readFileSync(`/Users/art/Documents/web_projects/imago/website/public.pem`, 'utf8')
+		const key = loadKey(env.IDENTITY_PUBLIC_KEY)
 		try {
-			const verified = jwt.verify(token, file)
-			if (verified) {
+			const verified = jwt.verify(token, key)
+			if (verified && typeof verified !== 'string') {
 				const _url = `${env.IDENTITY_SERVER_ADMIN}/admin/sessions/${verified.sid}?expand=identity`
 				const res = await fetch(_url)
 				const session = await res.json()
@@ -105,5 +105,6 @@ const validateSession: IAuthenticationService['validateSession'] = async ({
 }
 
 export const infrastructureServiceAuthenticationKratos: IAuthenticationService = {
-	validateSession
+	validateSession,
+	getIdentity: async () => {}
 }

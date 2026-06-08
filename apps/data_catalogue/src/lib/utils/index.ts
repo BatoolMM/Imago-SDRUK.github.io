@@ -41,3 +41,5 @@ export const parseLink = (link: string | null) => {
 export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+export const loadKey = (key: string) => Buffer.from(key, 'base64').toString().trim()

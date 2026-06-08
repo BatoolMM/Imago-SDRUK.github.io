@@ -1,17 +1,22 @@
-import { env } from '$env/dynamic/private'
+import type { IdentitySession } from '$lib/utils/auth/types'
 import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
-import { kratosRead, kratosWrite } from '$lib/utils/auth'
-import type { IdentitySession } from '$lib/utils/auth/types'
+import { handleOryResponse } from '$lib/utils/auth'
+import { Configuration, IdentityApi, FrontendApi } from '@ory/client-fetch'
 import { log } from '$lib/utils/server/logger'
 import { DateTime } from 'luxon'
+import { env } from '$env/dynamic/private'
+
+const kratosClient = new FrontendApi(new Configuration({ basePath: env.IDENTITY_SERVER_PUBLIC }))
+const kratosRead = new IdentityApi(new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN }))
+const kratosWrite = new IdentityApi(new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN }))
 
 const createSuperUser: IIdentityService['createSuperUser'] = async ({ data }) => {
 	try {
 		const identity = await kratosWrite.createIdentity({ createIdentityBody: data })
 		return ok(identity)
-	} catch (_err) {
-		return err({ reason: 'Unexpected', errors: _err })
+	} catch (error) {
+		return err({ reason: 'Unexpected', error })
 	}
 }
 
@@ -159,10 +164,111 @@ const sessionToToken: IIdentityService['sessionToToken'] = async ({
 	return ok(session)
 }
 
+const getFlow: IIdentityService['getFlow'] = async ({ action, url, cookie }) => {
+	try {
+		const flow_id = url.searchParams.get('flow')
+		const return_to = url.searchParams.get('return_to')
+		const id = url.searchParams.get('id')
+
+		log.debug({ message: 'Get identity flow', action, flow_id, return_to, id })
+		if (flow_id === null && action !== 'logout') {
+			log.debug({ message: `Flow id missing` })
+			if (return_to === null) {
+				return ok({
+					action: 'redirect',
+					path: `${env.IDENTITY_SERVER_PUBLIC}/self-service/${action}/browser`
+				})
+			} else {
+				return ok({
+					action: 'redirect',
+					path: `${env.IDENTITY_SERVER_PUBLIC}/self-service/${action}/browser?return_to=${return_to}`
+				})
+			}
+		}
+		if (action === 'logout') {
+			const f = await kratosClient.createBrowserLogoutFlow({ cookie })
+			return ok({
+				action: 'redirect',
+				path: f.logout_url
+			})
+		}
+
+		let endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/${action}/flows?id=${flow_id}`
+		if (action === 'error') {
+			endpoint = `${env.IDENTITY_SERVER_PUBLIC}/self-service/errors?id=${id}`
+		}
+		const res = await fetch(endpoint, {
+			credentials: 'include',
+			headers: { cookie }
+		})
+
+		const data = await handleOryResponse(res)
+		if ('expires_at' in data) {
+			/**
+			 * NOTE: its fixed to utc + 1, we need to get the timezone from the system
+			 **/
+			const expires_at = DateTime.fromISO(data.expires_at, { zone: 'utc+1' })
+			if (expires_at.diffNow().milliseconds < 0) {
+				if (return_to == null) {
+					return ok({
+						action: 'redirect',
+						path: `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser`
+					})
+				} else {
+					return ok({
+						action: 'redirect',
+						path: `${env.IDENTITY_SERVER_PUBLIC}/self-service/login/browser?return_to=${return_to}`
+					})
+				}
+			}
+			return ok({
+				action: 'form',
+				return_to: data.return_to,
+				form: data.ui
+			})
+		}
+		if ('logout_url' in data) {
+			return ok({
+				action: 'redirect',
+				path: data.logout_url
+			})
+		}
+
+		if (data.id === 'custom error') {
+			return ok({
+				action: 'redirect',
+				path: '/'
+			})
+		}
+		if (data.id === 'session_inactive') {
+			log.debug('session_inactive')
+			return ok({
+				action: 'reset'
+			})
+		}
+		if (data.id === 'security_csrf_violation') {
+			return ok({
+				action: 'reset'
+			})
+		}
+		if (data.id === 'security_identity_mismatch') {
+			return ok({
+				action: 'reset'
+			})
+		}
+		return ok({
+			action: 'reset'
+		})
+	} catch (error) {
+		return err({ reason: 'Unexpected', error })
+	}
+}
+
 export const infrastructureServiceIdentityKratos: IIdentityService = {
 	validateSession,
 	getIdentity,
 	getIdentities,
 	createSuperUser,
-	sessionToToken
+	sessionToToken,
+	getFlow
 }

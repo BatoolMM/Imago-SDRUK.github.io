@@ -5,7 +5,6 @@ import type { IdentityError, IdentityResponse, IdentitySession } from '$lib/util
 import {
 	RelationshipApi,
 	Configuration,
-	IdentityApi,
 	PermissionApi,
 	type CheckPermissionRequest
 } from '@ory/client-fetch'
@@ -40,13 +39,6 @@ export const verifyOrySession = (session: IdentitySession) => {
 	}
 	return true
 }
-
-export const kratosRead = new IdentityApi(
-	new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN })
-)
-export const kratosWrite = new IdentityApi(
-	new Configuration({ basePath: env.IDENTITY_SERVER_ADMIN })
-)
 
 export const ketoWrite = new RelationshipApi(
 	new Configuration({

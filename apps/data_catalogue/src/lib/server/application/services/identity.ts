@@ -1,7 +1,24 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
 import type { Session } from '$lib/server/entities/models/identity'
-import type { IdentitySession } from '$lib/utils/auth/types'
+import type { IdentityFlow, IdentitySession } from '$lib/utils/auth/types'
 import type { CreateIdentityBody, Identity } from '@ory/client-fetch'
+
+type ActionRedirect = {
+	action: 'redirect'
+	path: string
+}
+
+type ActionForm = {
+	action: 'form'
+	return_to?: string
+	form: IdentityFlow['ui']
+}
+
+type ActionReset = {
+	action: 'reset'
+}
+
+type FlowActions = ActionReset | ActionRedirect | ActionForm
 
 export type IIdentityService = {
 	// generateUserId: () => string;
@@ -38,4 +55,11 @@ export type IIdentityService = {
 		| [ErrTypes, null]
 		| [null, { first_name: string; last_name: string; email: string; id: string }[]]
 	>
+	getFlow: ({
+		action
+	}: {
+		action: string
+		url: URL
+		cookie: string
+	}) => Promise<[ErrTypes, null] | [null, FlowActions]>
 }
