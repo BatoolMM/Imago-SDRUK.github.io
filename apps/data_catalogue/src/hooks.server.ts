@@ -14,6 +14,7 @@ import { authenticationServiceInfrastructure } from '$lib/server/infrastructure/
 import { userGetMeController } from '$lib/server/interface/adapters/controllers/users/get'
 import type { ServerInit } from '@sveltejs/kit'
 import { configurationGetController } from '$lib/server/interface/adapters/controllers/configuration/get'
+import { identityValidateSessionController } from '$lib/server/interface/adapters/controllers/identities/get'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -150,7 +151,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	const cookie = event.cookies.get('ory_kratos_session')
 	const token = event.request.headers.get('authorization')
 	if ((cookie || token) && !event.url.pathname.startsWith('/auth/login')) {
-		const session = await authenticationServiceInfrastructure.kratos.validateSession({
+		const session = await identityValidateSessionController({
 			cookie,
 			token
 		})

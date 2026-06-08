@@ -5,6 +5,12 @@ import type { IStorageService } from '$lib/server/application/services/storage'
 import { err, ok } from '$lib/server/entities/errors'
 import type { AppContext } from '$lib/server/application/context'
 import { datastoreToCsvw } from '$lib/server/entities/utils/datastore'
+import { createInsertSchema } from 'drizzle-arktype'
+import { downloads } from '$lib/db/schema'
+import { type } from 'arktype'
+import type { IDownloadsRepository } from '$lib/server/application/repositories/downloads'
+import { log } from '$lib/utils/server/logger'
+import { handleArkErrors } from '$lib/db/validation'
 
 export const resourceGetUseCase = async ({
 	id,
@@ -20,9 +26,6 @@ export const resourceGetUseCase = async ({
 	resource_service: IResourceService
 	datastore_service: IDatastoreService
 } & AppContext) => {
-	// if (session.identity.id === 'anonymous') {
-	// 	return err({ reason: 'Unauthenticated' })
-	// }
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'Resource',
 		object: id,
@@ -40,52 +43,41 @@ export const resourceGetUseCase = async ({
 	if (errs !== null) {
 		return err(errs)
 	}
-	if (resource_metadata.datastore_active) {
-		const [resource, versions, datastore] = await Promise.all([
-			resource_respository.getResource({ id }),
-			resource_respository.getResourceVersions({ id }),
-			datastore_service.getStructuralMetadata({ id })
-		])
-		if (resource[0] === null && versions[0] === null && datastore[0] === null) {
-			const converted = datastoreToCsvw(datastore[1])
-			return ok({
-				...resource_metadata,
-				resource: resource[1],
-				versions: versions[1],
-				metadata: converted
-			})
-		}
-		if (resource[0] !== null) {
-			return err(resource[0])
-		}
-		if (versions[0] !== null) {
-			return err(versions[0])
-		}
-		if (datastore[0] !== null) {
-			return err(datastore[0])
-		}
-		return err({ reason: 'Unexpected', error: 'Error getting the resource' })
-	}
-	const [resource, versions] = await Promise.all([
+	const [[resource_errors, resource], [versions_errors, versions]] = await Promise.all([
 		resource_respository.getResource({ id }),
 		resource_respository.getResourceVersions({ id })
 	])
+	if (resource_errors !== null) {
+		return err(resource_errors)
+	}
+	if (versions_errors !== null) {
+		return err(versions_errors)
+	}
 
-	if (resource[0] === null && versions[0] === null) {
+	const transformed = versions.map((version) => ({
+		...version,
+		url: `/api/v1/resources/${resource.id}?version=${version.id}`
+	}))
+	if (resource_metadata.datastore_active) {
+		const [datastore_errors, datastore] = await datastore_service.getStructuralMetadata({ id })
+		if (datastore_errors !== null) {
+			return err(datastore_errors)
+		}
+		const converted = datastoreToCsvw(datastore)
 		return ok({
 			...resource_metadata,
-			resource: resource[1],
-			versions: versions[1],
-			metadata: null
+			resource: resource,
+			versions: transformed,
+			metadata: converted
 		})
 	}
-	if (resource[0] !== null) {
-		return err(resource[0])
-	}
-	if (versions[0] !== null) {
-		return err(versions[0])
-	}
-	return err({ reason: 'Unexpected', error: 'Error getting the resource' })
+
+	return ok({
+		...resource_metadata,
+		resource: resource,
+		versions: transformed,
+		metadata: null
+	})
 }
 
 export const resourceVersionGetDownloadUrlUseCase = async ({
@@ -95,12 +87,14 @@ export const resourceVersionGetDownloadUrlUseCase = async ({
 	session,
 	configuration,
 	authorisation_module,
-	resource_respository
+	resource_repository,
+	downloads_repository
 }: {
 	resource_id: string
 	version_id: string
-	resource_respository: IResourceRepository
+	resource_repository: IResourceRepository
 	storage_service: IStorageService
+	downloads_repository: IDownloadsRepository
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		namespace: 'ResourceVersion',
@@ -115,8 +109,23 @@ export const resourceVersionGetDownloadUrlUseCase = async ({
 	if (!permission.allowed) {
 		return err({ reason: 'Unauthorised' })
 	}
-	const [version_errors, version] = await resource_respository.getResourceVersion({
+
+	const schema = createInsertSchema(downloads)
+	const validated = schema({
+		version: version_id,
 		resource: resource_id,
+		user: session.identity.id
+	})
+	if (validated instanceof type.errors) {
+		return err({
+			reason: 'Invalid Data',
+			errors: handleArkErrors(validated),
+			message: validated.summary,
+			id: 'invalid-data'
+		})
+	}
+	const [version_errors, version] = await resource_repository.getResourceVersion({
+		resource: validated.resource,
 		version: version_id
 	})
 	if (version_errors !== null) {
@@ -125,6 +134,15 @@ export const resourceVersionGetDownloadUrlUseCase = async ({
 	const [errors_s, url] = await storage_service.getDownloadUrl({ filename: version.id })
 	if (errors_s !== null) {
 		return err(errors_s)
+	}
+
+	const [d_errors] = await downloads_repository.registerDownload({ data: validated })
+	if (d_errors !== null) {
+		log.error({ message: 'Error registering download' })
+	}
+	const [v_errors] = await resource_repository.updateVersionAddDownload({ id: version_id })
+	if (v_errors !== null) {
+		log.error({ message: 'Error updating the version download count' })
 	}
 	return ok(url)
 }

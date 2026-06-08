@@ -1,8 +1,7 @@
 import { env } from '$env/dynamic/private'
 import { resourceGetController } from '$lib/server/interface/adapters/controllers/resources/get.js'
 import { error, redirect } from '@sveltejs/kit'
-export const load = async ({ locals, params, parent, url }) => {
-	// const {dataset} = await parent()
+export const load = async ({ locals, params, url }) => {
 	const [errors, resource] = await resourceGetController({
 		configuration: locals.configuration,
 		session: locals.session,

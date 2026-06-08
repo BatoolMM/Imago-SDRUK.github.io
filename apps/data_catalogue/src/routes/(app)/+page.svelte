@@ -24,7 +24,7 @@
 	])
 	const handleSearch = () => {
 		if (search.length >= 3) {
-			goto(`/datasets?search={search}`)
+			goto(`/datasets?search=${search}`)
 			return
 		}
 		notify.send({ message: `You need to provide more than 3 characters` })
@@ -66,7 +66,12 @@
 				</div>
 				<div class="cards">
 					{#each stats as stat}
-						<button class="cta-card">
+						<button
+							class="cta-card"
+							onclick={() => {
+								goto(`/datasets`)
+							}}
+						>
 							<Title size="xl" text={String(stat.count)}></Title>
 							<Title size="md" text={stat.label}></Title>
 						</button>
