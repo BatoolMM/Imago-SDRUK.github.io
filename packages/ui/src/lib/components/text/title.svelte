@@ -44,7 +44,7 @@
 		line-height: clamp(2.25rem, 2rem + 1.25vw, 3rem);
 	}
 	h2[data-size='2xl'] {
-		font-size: clamp(3rem, 2.667rem + 1.667vw, 4rem);
+		font-size: clamp(2.5rem, 2.167rem + 1.667vw, 3.5rem);
 		line-height: clamp(3rem, 2.833rem + 0.833vw, 3.5rem);
 	}
 </style>

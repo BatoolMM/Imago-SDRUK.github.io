@@ -40,20 +40,9 @@
 		background: center / cover no-repeat var(--background-url);
 		position: relative;
 	}
-	.form-col[data-background]::before {
-		content: '';
-		background: color-mix(in oklab, var(--background) 80%, transparent 20%);
-		position: absolute;
-		height: 100%;
-		width: 100%;
-		top: 0;
-		left: 0;
-		pointer-events: none;
-	}
+
 	.img {
 		height: 100lvh;
 		object-fit: cover;
-		/* opacity: 1; */
-		/* mix-blend-mode: luminosity; */
 	}
 </style>

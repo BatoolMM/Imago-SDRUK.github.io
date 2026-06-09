@@ -30,78 +30,79 @@
 	<div class="bg-image-container">
 		<img class="bg-image" src="/static/ui/terrain_1.png" alt="" />
 	</div>
-	<div class="title-wrapper">
-		<Title size="2xl"
-			>Making satellite imagery more useful, usable and used across social research and policy</Title
-		>
-	</div>
-	<div class="beacons-buttons">
-		{#each ids as id (id)}
-			<button
-				class="beacon-button"
-				onclick={(ev) => {
-					id.action(ev)
-				}}>{id.label}</button
+	<div class="content">
+		<div class="title">
+			<Title size="2xl"
+				>Making satellite imagery more useful, usable and used across social research and policy</Title
 			>
-		{/each}
-	</div>
-	<div class="animation-container">
-		<LottiePlayer
-			src="/static/city/data.json"
-			mountAction={() => {
-				setTimeout(() => {
-					for (const id of ids) {
-						const el = document.getElementById(id.id)
-						if (el) {
-							el.style.cursor = 'pointer'
-							el.addEventListener('click', id.action)
+		</div>
+		<div class="beacons-buttons">
+			{#each ids as id (id)}
+				<button
+					class="beacon-button"
+					onclick={(ev) => {
+						id.action(ev)
+					}}>{id.label}</button
+				>
+			{/each}
+		</div>
+		<div class="animation-container">
+			<LottiePlayer
+				src="/static/city/data.json"
+				mountAction={() => {
+					setTimeout(() => {
+						for (const id of ids) {
+							const el = document.getElementById(id.id)
+							if (el) {
+								el.style.cursor = 'pointer'
+								el.addEventListener('click', id.action)
+							}
 						}
-					}
-				}, 1000)
-			}}
-		></LottiePlayer>
+					}, 1000)
+				}}
+			></LottiePlayer>
+		</div>
 	</div>
 </div>
 
 <style>
 	.hero-section {
-		position: relative;
-		background: linear-gradient(var(--background), var(--secondary));
-		transform: translate(0, -4rem);
-		height: 100lvh;
-		display: flex;
-		gap: 4rem;
-		flex-direction: column;
-		padding: 1rem;
-		justify-content: center;
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: 1fr;
+		/* display: flex; */
+		/* gap: 2rem; */
+		/* flex-direction: column; */
+		/* padding: 2rem; */
+		/* justify-content: center; */
 	}
 
 	.bg-image-container {
-		height: 100lvh;
-		position: absolute;
-		top: 0;
-		left: 0;
-		z-index: -1;
+		grid-column: 1 / -1;
+		grid-row: 1 /-1;
+		height: calc(100lvh);
+		transform: translate(0, -4rem);
 	}
-	.bg-image-container::after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: linear-gradient(
-			color-mix(in oklab, 75% var(--background), 25% transparent) 15%,
-			var(--secondary)
-		);
+
+	.content {
+		grid-column: 1 / -1;
+		grid-row: 1 /-1;
+		z-index: 1;
+		background: linear-gradient(transparent, var(--secondary) 50%);
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		padding-top: 2rem;
+		text-align: center;
+	}
+
+	.title {
+		padding: 0 2rem;
 	}
 	.bg-image {
 		height: 100lvh;
 		aspect-ratio: auto;
 		object-fit: cover;
-	}
-	.title-wrapper {
-		text-align: center;
 	}
 
 	.animation-container {
@@ -140,18 +141,23 @@
 			display: block;
 			padding: initial;
 		}
-		.title-wrapper {
-			text-align: center;
-			transform: translate(-50%, 100%);
-			left: 50%;
-			position: absolute;
+		.content {
+			display: grid;
+			height: 100lvh;
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-rows: minmax(0, 1fr) minmax(0, max-content);
+		}
+		.title {
+			padding: 4rem 0;
+			width: min(100% - 2rem, 800px);
+			margin-inline: auto;
 		}
 		.beacons-buttons {
 			display: none;
 		}
 		.animation-container {
 			display: flex;
-			height: 110lvh;
+			/* height: 110lvh; */
 			width: 100%;
 			overflow: hidden;
 			align-items: flex-end;
