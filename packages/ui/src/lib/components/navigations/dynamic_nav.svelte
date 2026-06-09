@@ -42,6 +42,7 @@
 	<div class="left-col">
 		{#if page.url.pathname !== '/'}
 			<button
+				aria-label="back page"
 				class="button-link"
 				onclick={() => {
 					history.back()
@@ -55,13 +56,13 @@
 				{@render children({ scroll })}
 			{/if}
 			{#if page.url.pathname !== '/'}
-				<a href="/">
+				<a href="/" aria-label="home">
 					<img class="icon" src="/favicon.png" alt="" />
 				</a>
 			{/if}
 		{/if}
 		{#if !desktop}
-			<a href="/">
+			<a href="/" aria-label="home">
 				<img class="icon" src="/favicon.png" alt="" />
 			</a>
 		{/if}
@@ -69,6 +70,7 @@
 	<div class="right-col">
 		{#if !desktop}
 			<button
+				aria-label="menu toggle"
 				onclick={() => {
 					menu_open = !menu_open
 				}}

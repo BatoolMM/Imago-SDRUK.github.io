@@ -8,14 +8,14 @@
 
 {#if footer}
 	<div class="logos">
-		<a href="/"> <img class="logo" src="/favicon.png" alt="" /> </a>
-		<a href="/">
+		<a href="/" aria-label="home"> <img class="logo" src="/favicon.png" alt="" /> </a>
+		<a href="/" aria-label="home">
 			<img class="logo" src="/favicon.png" alt="" />
 		</a>
-		<a href="/"> <img class="logo" src="/favicon.png" alt="" /> </a>
+		<a href="/" aria-label="home"> <img class="logo" src="/favicon.png" alt="" /> </a>
 	</div>
 {:else}
-	<a {href} class="logos">
+	<a {href} aria-label="home" class="logos">
 		{#if scroll > 256}
 			<img class="icon" src="/favicon.png" alt="" />
 		{:else}

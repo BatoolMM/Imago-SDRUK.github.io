@@ -47,6 +47,7 @@
 				<div class="search-input">
 					<Input>
 						<Text
+							aria-label="Search bar"
 							icon={search_icon}
 							name="search"
 							bind:value={search}
@@ -144,7 +145,7 @@
 <style>
 	.hero-section {
 		position: relative;
-		background: linear-gradient(var(--background), var(--secondary));
+		background: linear-gradient(var(--background), var(--secondary-accent));
 		transform: translate(0, -4rem);
 		height: 100lvh;
 		display: flex;
@@ -174,7 +175,7 @@
 		height: 100%;
 		background: linear-gradient(
 			color-mix(in oklab, 75% var(--background), 25% transparent) 15%,
-			var(--secondary)
+			var(--secondary-accent)
 		);
 	}
 	.bg-image {
@@ -271,7 +272,7 @@
 	.cta-card {
 		/* width: min(100%, 200px); */
 		/* aspect-ratio: 1 / 1; */
-		background-color: var(--secondary);
+		background-color: var(--secondary-muted);
 		padding: 1rem;
 		display: flex;
 		gap: 1rem;
