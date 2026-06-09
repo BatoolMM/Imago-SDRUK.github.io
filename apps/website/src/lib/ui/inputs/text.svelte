@@ -8,8 +8,10 @@
 		onfocusout,
 		onkeypress,
 		onblur,
-		current_colour
+		current_colour,
+		aria_label
 	}: {
+		aria_label?: string
 		key: string
 		design: 1 | 2 | 3 | 4
 		value?: string
@@ -22,6 +24,7 @@
 </script>
 
 <input
+	aria-label={aria_label}
 	name={key}
 	id={key}
 	type="text"

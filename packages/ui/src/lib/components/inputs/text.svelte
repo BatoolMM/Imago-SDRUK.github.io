@@ -8,6 +8,7 @@
 		style = 'border',
 		type,
 		icon,
+		'aria-label': aria_label,
 		...attrs
 	}: InputTextProps = $props()
 	const id = `text-input-${getId()}`
@@ -18,6 +19,7 @@
 	{#if type === 'password'}
 		{#if password_visible}
 			<input
+				aria-label={aria_label}
 				data-icon={icon ? true : undefined}
 				{id}
 				type="text"
@@ -28,6 +30,7 @@
 		{/if}
 		{#if !password_visible}
 			<input
+				aria-label={aria_label}
 				data-icon={icon ? true : undefined}
 				{id}
 				type="password"
@@ -38,6 +41,7 @@
 		{/if}
 		<div class="buttons">
 			<Button
+				aria_label="password toggle"
 				type="button"
 				active={password_visible}
 				onclick={() => {
@@ -50,6 +54,7 @@
 	{/if}
 	{#if type !== 'password'}
 		<input
+			aria-label={aria_label}
 			data-icon={icon ? true : undefined}
 			{id}
 			bind:value

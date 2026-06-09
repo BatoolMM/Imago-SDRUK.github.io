@@ -8,7 +8,7 @@
 	}: { title?: string; paragraph?: string } = $props()
 </script>
 
-<BaseCard border rounded shadow style="padded" size="md">
+<BaseCard border rounded shadow size="md">
 	<div class="newsletter-form">
 		<div class="title">
 			<Title text={title} size="lg"></Title>
@@ -33,10 +33,10 @@
 			}}
 		>
 			<Input label="Name">
-				<Text name="name"></Text>
+				<Text aria-label="name" name="name"></Text>
 			</Input>
 			<Input label="Email">
-				<Text type="email" name="email"></Text>
+				<Text aria-label="email" type="email" name="email"></Text>
 			</Input>
 			<div class="button-container">
 				<Button
@@ -53,22 +53,25 @@
 	.form-content {
 		display: grid;
 		gap: 0.5rem;
+		background-color: var(--background);
 	}
 	.button-container {
 		display: flex;
 		justify-content: flex-end;
 	}
 	.newsletter-form {
+		padding: 2rem;
 		/* width: min(100% - 1rem, 400px); */
 		margin-inline: auto;
-		z-index: 1;
 		/* border: 1px solid var(--theme-colour-text); */
 		/* padding: 2rem; */
 		/* border-radius: 1rem; */
 		/* box-shadow: var(--glass); */
 		/* border: 1px solid var(--theme-colour-quarternary); */
+		background-color: var(--background);
 	}
 	.form-content {
 		padding: 1rem 0;
+		background-color: var(--background);
 	}
 </style>

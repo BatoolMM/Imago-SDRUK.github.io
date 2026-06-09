@@ -4,40 +4,6 @@
 	import UKRI from '$lib/assets/logos/ukri_logo.png'
 	import { Button, Icon, Subtitle, Title } from '@imago/ui'
 	let { id }: { id?: string } = $props()
-	const platform_collection = [1, 2, 3].map((x) => ({
-		href: '/',
-		label: `Data product ${x}`
-	}))
-
-	// const documentation_collection = [
-	// 	{
-	// 		href: '/',
-	// 		label: 'Book of imagery'
-	// 	},
-	//
-	// 	{
-	// 		href: '/',
-	// 		label: 'Researchers'
-	// 	}
-	// ]
-	// const company_documentation = [
-	// 	{
-	// 		href: '/',
-	// 		label: 'Copyright'
-	// 	},
-	// 	{
-	// 		href: '/',
-	// 		label: 'Accessibility'
-	// 	},
-	// 	{
-	// 		href: '/',
-	// 		label: 'Privacy'
-	// 	},
-	// 	{
-	// 		href: '/',
-	// 		label: 'Contact'
-	// 	}
-	// ]
 	const now = new Date()
 </script>
 
@@ -51,15 +17,16 @@
 
 		<div class="bottom">
 			<div class="logos">
-				<a href="/"> <img class="logo" src={ImagoLogo} alt="" /> </a>
-				<a href="/">
+				<a href="/" aria-label="Home"> <img class="logo" src={ImagoLogo} alt="" /> </a>
+				<a href="/" aria-label="Home">
 					<img class="logo" src={SDRUK} alt="" />
 				</a>
-				<a href="/"> <img class="logo" src={UKRI} alt="" /> </a>
+				<a href="/" aria-label="Home"> <img class="logo" src={UKRI} alt="" /> </a>
 			</div>
 			<div class="social-media">
 				<Subtitle>Contact us:</Subtitle>
 				<Button
+					aria_label="Email"
 					umami_event="Contact email"
 					style="clean"
 					onclick={() => {
@@ -69,6 +36,7 @@
 					<Icon icon={{ icon: 'mail', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
+					aria_label="Linkedin"
 					umami_event="Linkedin"
 					style="clean"
 					onclick={() => {
@@ -78,6 +46,7 @@
 					<Icon icon={{ icon: 'brand-linkedin', set: 'tabler', size: 'lg' }}></Icon>
 				</Button>
 				<Button
+					aria_label="Github"
 					umami_event="Github"
 					style="clean"
 					onclick={() => {

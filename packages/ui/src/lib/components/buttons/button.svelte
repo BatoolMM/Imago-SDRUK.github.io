@@ -2,6 +2,7 @@
 	import type { Snippet } from 'svelte'
 	import type { MouseEventHandler, PointerEventHandler } from 'svelte/elements'
 	let {
+		aria_label,
 		hover_label,
 		href,
 		download,
@@ -20,6 +21,7 @@
 		umami_event,
 		width = 'auto'
 	}: {
+		aria_label?: string
 		hover_label?: string
 		href?: string
 		download?: string | boolean
@@ -42,6 +44,7 @@
 
 {#if href}
 	<a
+		aria-label={aria_label}
 		class="btn"
 		class:line-clamp={line_clamp}
 		class:active
@@ -63,6 +66,7 @@
 {/if}
 {#if href === undefined}
 	<button
+		aria-label={aria_label}
 		class="btn"
 		class:active
 		class:line-clamp={line_clamp}
@@ -88,7 +92,7 @@
 		color: var(--highlight);
 		font-family: var(--accent);
 		font-size: clamp(0.9rem, 0.875rem + 0.125vw, 0.975rem);
-		font-weight: 300;
+		font-weight: 400;
 		transition: all var(--animation-time) ease-in-out;
 		text-decoration: none;
 	}
@@ -96,7 +100,7 @@
 		justify-content: space-between;
 		align-items: center;
 		border: 1px solid var(--border);
-		background-color: var(--background);
+		background-color: var(--background-muted);
 		gap: 1rem;
 		padding: clamp(0.15rem, 0.117rem + 0.167vw, 0.25rem) clamp(1rem, 0.667rem + 1.667vw, 2rem);
 		border-radius: 999px;
@@ -155,7 +159,18 @@
 		align-items: center;
 		gap: 1rem;
 		transition: all var(--animation-time) ease-in-out;
+		position: relative;
 		background-color: var(--background);
+	}
+	.btn[data-style='anchor']::after {
+		content: '';
+		/* background-color: var(--background-muted); */
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		z-index: -1;
 	}
 
 	.btn[data-style='anchor']:hover {
@@ -211,6 +226,7 @@
 		border: 1px solid var(--border);
 	}
 	.btn[data-style='tag'] {
+		color: var(--highlight-accent);
 		border: 1px solid var(--background-accent);
 		padding: 0.5rem 1rem;
 		display: flex;

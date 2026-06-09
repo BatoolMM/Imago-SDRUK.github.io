@@ -7,13 +7,14 @@
 :root {
 	--primary: #4a4a49;
 	--primary-accent: color-mix(in oklab, var(--primary) 80%, white 20%);
-	--primary-muted: color-mix(in oklab, var(--primary) 80%, black 20%);
+	--primary-muted: color-mix(in oklab, var(--primary) 70%, black 30%);
 	--secondary: #8c91a8;
+	/* --secondary: #767d96; */
 	--secondary-accent: color-mix(in oklab, var(--secondary) 80%, white 20%);
-	--secondary-muted: color-mix(in oklab, var(--secondary) 80%, black 20%);
+	--secondary-muted: color-mix(in oklab, var(--secondary) 70%, black 30%);
 	--tertiary: #24226f;
 	--tertiary-accent: color-mix(in oklab, var(--tertiary) 80%, white 20%);
-	--tertiary-muted: color-mix(in oklab, var(--tertiary) 80%, black 20%);
+	--tertiary-muted: #181651;
 	--quarternary: #ff8f42;
 	--quarternary-accent: color-mix(in oklab, var(--quarternary) 80%, white 20%);
 	--quarternary-muted: color-mix(in oklab, var(--quarternary) 80%, black 20%);

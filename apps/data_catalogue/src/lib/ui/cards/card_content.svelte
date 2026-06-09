@@ -14,6 +14,10 @@
 </div>
 
 <style>
+	.card-title {
+		background-color: var(--secondary-muted);
+		border-radius: var(--radius) var(--radius) 0 0;
+	}
 	.card {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
