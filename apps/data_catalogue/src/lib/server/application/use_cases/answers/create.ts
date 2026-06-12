@@ -50,9 +50,13 @@ export const answerCreateUseCase = async ({
 				}
 			: undefined
 	)
-	const validated = schema(data)
+	const validated = schema({
+		...data,
+		question: data.question_id,
+		question_reference: question.question
+	})
 	if (validated instanceof type.errors) {
-		return err({ reason: 'Unauthorised', message: validated.summary })
+		return err({ reason: 'Invalid Data', message: validated.summary, id: '' })
 	}
 
 	const [errs, answer] = await answers_repository.createAnswer({ data: validated, tx })
