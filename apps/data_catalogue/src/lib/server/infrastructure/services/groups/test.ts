@@ -1,66 +1,60 @@
 import type { IGroupsService } from '$lib/server/application/services/groups'
-import { ok } from '$lib/server/entities/errors'
-const createGroup: IGroupsService['createGroup'] = async () => {
-	return ok({
-		id: '',
-		state: '',
-		approval_status: '',
-		created: '',
-		description: '',
-		display_name: '',
-		image_display_url: '',
-		image_url: '',
+import { err, ok } from '$lib/server/entities/errors'
+import type { CkanGroup } from '$lib/types/ckan'
+import { getId } from '@arturoguzman/art-ui'
+
+let mock: CkanGroup[] = []
+
+const createGroup: IGroupsService['createGroup'] = async ({ data }) => {
+	const result = {
+		id: data.id ?? getId(),
+		state: data.id ?? '',
+		approval_status: data.id ?? '',
+		created: data.id ?? '',
+		description: data.description ?? '',
+		display_name: data.id ?? '',
+		image_display_url: data.id ?? '',
+		image_url: data.id ?? '',
 		is_organization: false,
-		name: '',
+		name: data.name ?? '',
 		num_followers: 0,
 		package_count: 0,
-		title: '',
-		type: ''
-	})
+		title: data.title ?? '',
+		type: data.id ?? ''
+	}
+	mock.push(result)
+	return ok(result)
 }
 
-const getGroup: IGroupsService['getGroup'] = async () => {
-	return ok({
-		id: '',
-		state: '',
-		approval_status: '',
-		created: '',
-		description: '',
-		display_name: '',
-		image_display_url: '',
-		image_url: '',
-		is_organization: false,
-		name: '',
-		num_followers: 0,
-		package_count: 0,
-		title: '',
-		type: ''
-	})
+const getGroup: IGroupsService['getGroup'] = async ({ id }) => {
+	const result = mock.find((x) => x.id === id)
+	if (result) {
+		return ok(result)
+	}
+	return err({ reason: 'Not Found', message: `Group not found` })
 }
 
 const getGroups: IGroupsService['getGroups'] = async () => {
-	return ok([])
+	return ok(mock)
 }
 
-const updateGroup: IGroupsService['updateGroup'] = async () => {
-	return ok({
-		id: '',
-		state: '',
-		approval_status: '',
-		created: '',
-		description: '',
-		display_name: '',
-		image_display_url: '',
-		image_url: '',
-		is_organization: false,
-		name: '',
-		num_followers: 0,
-		package_count: 0,
-		title: '',
-		type: ''
-	})
+const updateGroup: IGroupsService['updateGroup'] = async ({ id, data }) => {
+	const index = mock.findIndex((x) => x.id === id)
+	if (index > -1) {
+		const result = {
+			...mock[index],
+			description: data.description ?? mock[index].title,
+			title: data.title ?? mock[index].description
+		}
+		return ok(result)
+	}
+	return err({ reason: 'Not Found', message: `Group not found` })
 }
-const deleteGroup: IGroupsService['deleteGroup'] = async () => {
+const deleteGroup: IGroupsService['deleteGroup'] = async ({ id }) => {
+	const index = mock.findIndex((x) => x.id === id)
+	if (index > -1) {
+		mock = [...mock.slice(0, index), ...mock.slice(index + 1)]
+	}
 	return ok(null)
 }
 
