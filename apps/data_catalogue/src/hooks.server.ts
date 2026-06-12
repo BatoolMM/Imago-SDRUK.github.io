@@ -15,6 +15,7 @@ import { userGetMeController } from '$lib/server/interface/adapters/controllers/
 import type { ServerInit } from '@sveltejs/kit'
 import { configurationGetController } from '$lib/server/interface/adapters/controllers/configuration/get'
 import { identityValidateSessionController } from '$lib/server/interface/adapters/controllers/identities/get'
+import { db } from '$lib/db'
 // export const crawlers = [
 // 	'Googlebot',
 // 	'Googlebot-Image',
@@ -30,20 +31,17 @@ export const init: ServerInit = async () => {
 		log.debug('building - skip')
 		return
 	}
-	// if (!env.ACCESS_MODE) {
-	// error(500, {
-	// id: 'server-error',
-	// message: `Sorry, you need to specify an access mode before deploying this website.`
-	// })
-	// }
-	// if (env.NODE_ENV === 'production') {
-	// log.info('initialising with the following envs')
-	// log.info(env)
-	// console.log('hey')
-	// throw Error('end')
 
 	await runMigration()
-	// }
+	process.on('sveltekit:shutdown', async (reason) => {
+		log.info('Closing application:', reason)
+		try {
+			await db.$client.end()
+			log.info('DB closed')
+		} catch (err) {
+			log.error({ error: err, message: `Error closing db client connection` })
+		}
+	})
 }
 
 const handleConfiguration: Handle = async ({ event, resolve }) => {

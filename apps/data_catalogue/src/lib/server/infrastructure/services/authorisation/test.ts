@@ -1,12 +1,13 @@
 import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { Relationships } from '$lib/server/entities/models/permissions'
+import { ok } from '$lib/server/entities/errors'
 
 const authorise: IAuthorisationService['authorise'] = async () => {
-	return [null, { allowed: true }]
+	return ok({ allowed: true })
 }
 
 const batchAuthorise: IAuthorisationService['batchAuthorise'] = async ({ permissions }) => {
-	return [null, { results: permissions.map(() => ({ allowed: true })) }]
+	return ok({ results: permissions.map(() => ({ allowed: true })) })
 }
 
 const createPermission: IAuthorisationService['createPermission'] = async ({
@@ -15,32 +16,29 @@ const createPermission: IAuthorisationService['createPermission'] = async ({
 	relation,
 	actor
 }) => {
-	return [
-		null,
-		{
-			namespace,
-			object,
-			relation,
-			actor
-		}
-	]
+	return ok({
+		namespace,
+		object,
+		relation,
+		actor
+	})
 }
 
 const createPermissions: IAuthorisationService['createPermissions'] = async () => {
-	return [null, null]
+	return ok(null)
 }
 
 const deletePermissions: IAuthorisationService['deletePermissions'] = async () => {
-	return [null, null]
+	return ok(null)
 }
 
 const deletePermission: IAuthorisationService['deletePermission'] = async () => {
-	return [null, null]
+	return ok(null)
 }
 
 const getPermissions: IAuthorisationService['getPermissions'] = async () => {
 	const relationships: Relationships = { next_page_token: '', relation_tuples: [] }
-	return [null, relationships]
+	return ok(relationships)
 }
 
 export const authorisationServiceInfrastructureTest: IAuthorisationService = {

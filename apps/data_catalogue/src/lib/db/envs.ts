@@ -15,13 +15,18 @@ const Env = type({
 	DB_SEEDING: 'string | boolean'
 })
 
-const validated = Env(process.env)
+function getEnvs() {
+	const validated = Env(process.env)
 
-if (validated instanceof type.errors) {
-	if (!process.env.BUILDING) {
-		// log.debug(process.env)
-		throw Error(validated.summary)
+	if (validated instanceof type.errors) {
+		if (!process.env.BUILDING) {
+			// log.debug(process.env)
+			throw Error(validated.summary)
+		}
+		return null
+	} else {
+		return validated
 	}
 }
 
-export const env = validated
+export const env = getEnvs()

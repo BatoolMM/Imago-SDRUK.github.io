@@ -1,46 +1,52 @@
 import type { ITagsService } from '$lib/server/application/services/tags'
-import { ok } from '$lib/server/entities/errors'
+import { err, ok } from '$lib/server/entities/errors'
+import type { Tag, Vocabulary } from '$lib/server/entities/models/datasets'
+import { getId } from '@arturoguzman/art-ui'
+const mock: Tag[] = []
+const mock_vocabularies: Vocabulary[] = []
 const getTags: ITagsService['getTags'] = async () => {
 	return ok({
-		total: 0,
-		limit: 0,
+		total: mock.length,
+		limit: mock.length,
 		next: 0,
-		items: []
+		items: mock
 	})
 }
 
-const createVocabulary: ITagsService['createVocabulary'] = async () => {
-	return ok({ name: '', tags: [], id: '' })
+const createVocabulary: ITagsService['createVocabulary'] = async ({ vocabulary }) => {
+	const result: Vocabulary = { name: vocabulary.name, id: getId(), tags: [] }
+	mock_vocabularies.push(result)
+	return ok(result)
 }
 const getVocabulary: ITagsService['getVocabulary'] = async ({ vocabulary_id }) => {
-	return ok({
-		name: '',
-		tags: [],
-		id: vocabulary_id
-	})
+	const result = mock_vocabularies.find((x) => x.id === vocabulary_id)
+	if (result) {
+		return ok(result)
+	}
+	return err({ reason: 'Not Found', message: `Vocabulary not found` })
 }
 
-const createTag: ITagsService['createTag'] = async () => {
-	return ok({
-		name: '',
-		vocabulary_id: '',
-		display_name: '',
+const createTag: ITagsService['createTag'] = async ({ tag }) => {
+	const result: Tag = {
+		name: tag.name,
+		id: getId(),
+		display_name: tag.name,
 		state: 'active',
-		id: ''
-	})
+		vocabulary_id: tag.vocabulary_id
+	}
+	mock.push(result)
+	return ok(result)
 }
 
-const getTag: ITagsService['getTag'] = async ({ id, vocabulary_id }) => {
-	return ok({
-		id,
-		vocabulary_id,
-		name: '',
-		state: 'draft',
-		display_name: ''
-	})
+const getTag: ITagsService['getTag'] = async ({ id }) => {
+	const result = mock.find((x) => x.id === id)
+	if (result) {
+		return ok(result)
+	}
+	return err({ reason: 'Not Found', message: `Vocabulary not found` })
 }
 const getVocabularies: ITagsService['getVocabularies'] = async () => {
-	return ok([])
+	return ok(mock_vocabularies)
 }
 
 export const infrastructureServiceTagsTest: ITagsService = {
