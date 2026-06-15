@@ -13,7 +13,9 @@
 		PlayerLottie,
 		Button,
 		Icon,
-		handleSearchParams
+		handleSearchParams,
+		Notice,
+		Paragraph
 	} from '@imago/ui'
 	let { data } = $props()
 	let search = $state('')
@@ -77,6 +79,15 @@
 							<Title size="md" text={stat.label}></Title>
 						</button>
 					{/each}
+					<div class="notice">
+						<Notice level="info">
+							<Paragraph
+								>If you run into an issue, please let us know at <a
+									href="mailto:imago@liverpool.ac.uk">imago@liverpool.ac.uk</a
+								></Paragraph
+							>
+						</Notice>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -134,7 +145,6 @@
 				{#each data.datasets.items as dataset}
 					<div class="button-wrapper">
 						<CardProduct {dataset}></CardProduct>
-						<!-- // <Button href={`/datasets/${dataset.name}`}>{dataset.title}</Button> -->
 					</div>
 				{/each}
 			</div>
@@ -184,7 +194,6 @@
 		object-fit: cover;
 	}
 	.page {
-		/* position: absolute; */
 		top: 0;
 		left: 0;
 		height: 100%;
@@ -204,7 +213,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 2rem;
-		/* margin-bottom: 12rem; */
 	}
 	.cards {
 		display: grid;
@@ -222,8 +230,6 @@
 		text-align: center;
 		display: flex;
 		flex-direction: column;
-
-		/* gap: 4rem; */
 		gap: 4rem;
 		margin-bottom: 2rem;
 	}
@@ -234,7 +240,6 @@
 		gap: 0.5rem;
 		overflow: scroll;
 		scrollbar-width: none;
-		/* background: var(--background); */
 		padding: 0.25rem;
 		border-radius: var(--radius);
 		padding: 2rem;
@@ -270,20 +275,19 @@
 	}
 
 	.cta-card {
-		/* width: min(100%, 200px); */
-		/* aspect-ratio: 1 / 1; */
 		background-color: var(--secondary-muted);
 		padding: 1rem;
 		display: flex;
 		gap: 1rem;
-		/* display: grid; */
-		/* grid-template-columns: minmax(0, 1fr); */
-		/* grid-template-rows: minmax(0, 3fr) minmax(0, 1fr); */
 		justify-items: center;
 		align-items: center;
-		/* border: 1px solid var(--border); */
 		border-radius: var(--radius);
 	}
+
+	.notice {
+		grid-column: 1 / -1;
+	}
+
 	@media (min-width: 768px) {
 		.banner {
 			flex-direction: row;
