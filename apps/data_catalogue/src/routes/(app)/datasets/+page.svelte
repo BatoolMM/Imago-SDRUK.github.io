@@ -163,7 +163,7 @@
 <style>
 	.datasets-section {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
+		grid-template-columns: minmax(0, 1fr);
 		/* overflow: hidden; */
 		gap: 1rem;
 		color: var(--text);
@@ -199,5 +199,10 @@
 	}
 	.tag-wrapper {
 		flex-shrink: 0;
+	}
+	@media (min-width: 768px) {
+		.datasets-section {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 4fr);
+		}
 	}
 </style>

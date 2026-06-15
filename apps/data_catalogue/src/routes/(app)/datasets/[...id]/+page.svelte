@@ -109,9 +109,11 @@
 	}
 	.dataset-section {
 		display: grid;
-		grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
-		grid-template-rows: minmax(0, 1fr);
+		grid-template-columns: minmax(0, 1fr);
 		gap: 2rem;
+	}
+	.left-col {
+		grid-row: 2/3;
 	}
 	.right-col {
 		display: flex;
@@ -136,5 +138,14 @@
 		gap: 0.25rem;
 		flex-wrap: wrap;
 		padding: 1rem 0;
+	}
+	@media (min-width: 768px) {
+		.left-col {
+			grid-row: initial;
+		}
+		.dataset-section {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+			grid-template-rows: minmax(0, 1fr);
+		}
 	}
 </style>
