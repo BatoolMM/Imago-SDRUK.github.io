@@ -19,8 +19,8 @@ export const load = async ({ locals, url }) => {
 		})
 	}
 	const voc_id = vocabularies.find((voc) => voc.name === 'general')
-	return {
-		datasets: await datasetsGetController({
+	const [datasets, tags, package_count, tag_count, groups] = await Promise.all([
+		datasetsGetController({
 			configuration: locals.configuration,
 			url,
 			session: locals.session
@@ -30,7 +30,7 @@ export const load = async ({ locals, url }) => {
 			}
 			return data
 		}),
-		tags: await tagsGetController({
+		tagsGetController({
 			configuration: locals.configuration,
 			vocabulary_id: voc_id?.id,
 			session: locals.session
@@ -38,10 +38,11 @@ export const load = async ({ locals, url }) => {
 			if (errors !== null) {
 				error(400, { message: `There's been an issue retrieving the tags`, id: errors.reason })
 			}
+
 			const reversed = data.items.reverse()
 			return reversed
 		}),
-		package_count: await datasetsGetCountController().then(([errors, count]) => {
+		datasetsGetCountController().then(([errors, count]) => {
 			if (errors !== null) {
 				error(400, {
 					message: `There's been an issue retrieving the package count`,
@@ -50,7 +51,7 @@ export const load = async ({ locals, url }) => {
 			}
 			return count
 		}),
-		tag_count: await tagsGetCountController().then(([errors, count]) => {
+		tagsGetCountController().then(([errors, count]) => {
 			if (errors !== null) {
 				error(400, {
 					message: `There's been an issue retrieving the tags count`,
@@ -59,7 +60,7 @@ export const load = async ({ locals, url }) => {
 			}
 			return count
 		}),
-		groups: await metadataGroupsGetController({
+		metadataGroupsGetController({
 			configuration: locals.configuration,
 			session: locals.session
 		}).then(([errors, data]) => {
@@ -68,5 +69,12 @@ export const load = async ({ locals, url }) => {
 			}
 			return data
 		})
+	])
+	return {
+		datasets,
+		tags,
+		package_count,
+		tag_count,
+		groups
 	}
 }
