@@ -22,9 +22,11 @@
 	import { applyAction, enhance } from '$app/forms'
 	import { notify } from '$lib/stores/notify.js'
 	import Facts from '$lib/ui/cards/facts.svelte'
+	import type { User } from '$lib/server/entities/models/users.js'
 	let { data } = $props()
 	const columns: (IColumnConfig & {
-		id: 'first_name' | 'last_name' | 'id' | 'email' | 'groups'
+		id: keyof User | 'first_name' | 'last_name' | 'email' | 'groups'
+		// id: 'first_name' | 'last_name' | 'id' | 'email' | 'groups'
 	})[] = [
 		{
 			id: 'first_name',
@@ -42,7 +44,12 @@
 			cell: CellText,
 			width: 300
 		},
-
+		{
+			id: 'created_at',
+			header: 'Created at',
+			cell: CellText,
+			width: 280
+		},
 		{
 			id: 'id',
 			header: 'ID',

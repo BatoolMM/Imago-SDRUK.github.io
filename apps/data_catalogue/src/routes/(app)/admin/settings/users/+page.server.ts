@@ -1,7 +1,6 @@
 import { error, fail } from '@sveltejs/kit'
 import {
 	userGetController,
-	userGetMeController,
 	usersGetController
 } from '$lib/server/interface/adapters/controllers/users/get.js'
 import { groupsGetController } from '$lib/server/interface/adapters/controllers/groups/get.js'
