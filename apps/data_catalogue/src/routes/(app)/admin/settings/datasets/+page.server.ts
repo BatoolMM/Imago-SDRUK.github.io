@@ -1,4 +1,4 @@
-import type { Dataset, Resource } from '$lib/server/entities/models/datasets.js'
+import type { Dataset, Resource, Tag, Vocabulary } from '$lib/server/entities/models/datasets.js'
 import type { AvailableActor, PermissionActor } from '$lib/server/entities/models/permissions.js'
 import { error, fail } from '@sveltejs/kit'
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
@@ -28,13 +28,18 @@ import { permissionUpdateController } from '$lib/server/interface/adapters/contr
 import { permissionDeleteController } from '$lib/server/interface/adapters/controllers/permissions/delete.js'
 import { metadataGroupCreateController } from '$lib/server/interface/adapters/controllers/metadata_groups/create.js'
 import { resourcesGetController } from '$lib/server/interface/adapters/controllers/resources/get.js'
-import type { ErrTypes } from '$lib/server/entities/errors.js'
+import { err, ok, type ErrTypes } from '$lib/server/entities/errors.js'
 import type {
 	ResourceVersion,
 	Resource as ResourceRepo
 } from '$lib/server/entities/models/resources.js'
 import type { CSVW } from '$lib/server/entities/models/datastore.js'
 import { tagsMigrateController } from '$lib/server/interface/adapters/controllers/tags/update.js'
+import {
+	tagsGetController,
+	tagsGetVocabulariesController
+} from '$lib/server/interface/adapters/controllers/tags/get.js'
+import { tagDeleteController } from '$lib/server/interface/adapters/controllers/tags/delete.js'
 export const load = async ({ locals, url }) => {
 	const offset = url.searchParams.get('offset') ? Number(url.searchParams.get('offset')) : 0
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 10
@@ -56,11 +61,57 @@ export const load = async ({ locals, url }) => {
 	}).then(([errors, data]) =>
 		errors !== null ? error(500, { message: errors.reason, id: errors.reason }) : data
 	)
+
+	const [vocabularies_err, vocabularies] = await tagsGetVocabulariesController()
+	if (vocabularies_err !== null) {
+		return error(500, { message: vocabularies_err.reason, id: 'voc-err' })
+	}
+	const tags = await Promise.all(
+		vocabularies.map((vocabulary) =>
+			tagsGetController({
+				configuration: locals.configuration,
+				session: locals.session,
+				vocabulary_id: vocabulary.id
+			}).then(([errors, data]) => {
+				if (errors !== null) {
+					return err(errors)
+				}
+				return ok({ ...data, vocabulary })
+			})
+		)
+	).then((res) =>
+		res.reduce(
+			(acc, [errors, data]) => {
+				if (errors !== null) {
+					acc.errors.push(errors)
+					return acc
+				}
+				acc.data.push(data)
+				return acc
+			},
+			{ data: [], errors: [] } as {
+				data: {
+					items: Tag[] | string[]
+					limit: number
+					next: number
+					total: number
+					vocabulary: Vocabulary
+				}[]
+				errors: ErrTypes[]
+			}
+		)
+	)
+	if (tags.errors.length > 0) {
+		if (tags.errors[0].reason !== 'Not Found') {
+			error(400, { message: tags.errors[0].reason, id: tags.errors[0].reason })
+		}
+	}
 	let dataset: Dataset | null = null
 	let resources: (Resource & { downloads: number })[] = []
 	let relationships: PermissionActor[] = []
 	let actors: AvailableActor[] = []
 	let metadata_group: GroupService | null = null
+
 	const edit_dataset = url.searchParams.get('edit_dataset')
 	const edit_metadata_group = url.searchParams.get('edit_metadata_group')
 	if (edit_dataset) {
@@ -126,7 +177,8 @@ export const load = async ({ locals, url }) => {
 		relationships,
 		actors,
 		dataset,
-		metadata_group
+		metadata_group,
+		tags: tags.data
 	}
 }
 
@@ -370,5 +422,21 @@ export const actions = {
 		return {
 			message: 'ok'
 		}
+	},
+	delete_tag: async ({ locals, request }) => {
+		const form = await request.formData()
+		const tag_id = formGetStringOrUndefined({ form, field: 'tag_id' })
+		const vocabulary_id = formGetStringOrUndefined({ form, field: 'vocabulary_id' })
+		const [errors] = await tagDeleteController({
+			configuration: locals.configuration,
+			session: locals.session,
+			tag_id,
+			vocabulary_id
+		})
+		if (errors !== null) {
+			console.log(errors)
+			return fail(400, { message: `Error deleting the tag` })
+		}
+		return { message: `Tag ${tag_id} deleted` }
 	}
 }
