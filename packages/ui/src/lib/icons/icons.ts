@@ -151,7 +151,8 @@ export enum TablerIconsEnum {
 	'versions',
 	'table-plus',
 	'table',
-	'database-smile'
+	'database-smile',
+	'filter-2'
 }
 
 export type HugeIconsSet = keyof typeof HugeIconsEnum
