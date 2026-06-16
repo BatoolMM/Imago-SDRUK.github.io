@@ -31,7 +31,7 @@
 	import { goto } from '$app/navigation'
 	import CellEditorCtx from '$lib/ui/tables/cell_editor_ctx.svelte'
 	import { handleEnhance } from '$lib/utils/forms/index.js'
-	import CardBlock from '$lib/ui/cards/card_block.svelte'
+	import { jstr } from '@arturoguzman/art-ui'
 	let { data } = $props()
 	let dataset_selected = $derived(
 		data.datasets.items?.findIndex(
@@ -252,6 +252,57 @@
 					></BaseTable>
 				</div>
 			</div>
+
+			<Title>Tags</Title>
+			{#each data.tags as tags}
+				<div class="section">
+					<Subtitle>Vocabulary: {tags.vocabulary.name}</Subtitle>
+					<div class="tags">
+						{#each tags.items as tag}
+							{#if typeof tag !== 'string'}
+								<div class="existing-tag">
+									<Paragraph>{tag.display_name}</Paragraph>
+									<div class="buttons">
+										<Button
+											style="tag"
+											hover_label={`Click to delete`}
+											onclick={() => {
+												toggleDialog(`delete-tag-${tag.id}`)
+											}}
+										>
+											<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+										</Button>
+										<Dialog id="delete-tag-{tag.id}">
+											<form
+												action="?/delete_tag"
+												method="POST"
+												use:enhance={handleEnhance({
+													onsuccess: () => {}
+												})}
+											>
+												<input type="hidden" hidden value={tag.id} name="tag_id" />
+												<input type="hidden" name="vocabulary_id" value={tags.vocabulary.id} />
+												<Subtitle
+													>Are you sure you want to delete this tag for all datasets?</Subtitle
+												>
+												<div class="buttons">
+													<Button
+														type="button"
+														onclick={() => {
+															toggleDialog(`delete-tag-${tag.id}`)
+														}}>Cancel</Button
+													>
+													<Button>Delete</Button>
+												</div>
+											</form>
+										</Dialog>
+									</div>
+								</div>
+							{/if}
+						{/each}
+					</div>
+				</div>
+			{/each}
 		</div>
 	{/snippet}
 	{#snippet rightCol()}
@@ -418,5 +469,20 @@
 		left: 0;
 		background-color: var(--background-muted);
 		padding: 1rem;
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+	.existing-tag {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 2rem;
+		width: 100%;
+		border: 1px solid var(--border-muted);
+		padding: 0.5rem 1rem;
+		border-radius: var(--radius);
 	}
 </style>

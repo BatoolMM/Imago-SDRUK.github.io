@@ -2,7 +2,7 @@ import type { IUsersRepository } from '$lib/server/application/repositories/user
 import { db } from '$lib/db'
 import { users, type UserRequest } from '$lib/server/entities/models/users'
 import { log } from '$lib/utils/server/logger'
-import { and, count, eq, inArray, sql } from 'drizzle-orm'
+import { and, count, desc, eq, inArray, sql } from 'drizzle-orm'
 import { groups, users_groups } from '$lib/db/schema'
 import { err, ok } from '$lib/server/entities/errors'
 
@@ -30,7 +30,12 @@ const getUser: IUsersRepository['getUser'] = async ({ id }) => {
 
 const getUsers: IUsersRepository['getUsers'] = async ({ limit, offset }) => {
 	try {
-		const items = await db.select().from(users).limit(limit).offset(offset)
+		const items = await db
+			.select()
+			.from(users)
+			.orderBy(desc(users.created_at))
+			.limit(limit)
+			.offset(offset)
 		const total = await db.select({ value: count() }).from(users)
 		return ok({ items, limit, offset, total: total[0].value })
 	} catch (_err) {
