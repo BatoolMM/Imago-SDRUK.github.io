@@ -4,10 +4,12 @@ import { error, fail } from '@sveltejs/kit'
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
 import {
 	datasetGetController,
-	datasetGetPermissionsController,
-	datasetsGetController
+	datasetGetPermissionsController
 } from '$lib/server/interface/adapters/controllers/datasets/get.js'
-import { permissionsGetActorsController } from '$lib/server/interface/adapters/controllers/permissions/get.js'
+import {
+	permissionsCheckController,
+	permissionsGetActorsController
+} from '$lib/server/interface/adapters/controllers/permissions/get.js'
 import { donwloadsGetByDatasetController } from '$lib/server/interface/adapters/controllers/downloads/get.js'
 import {
 	permissionCreateController,
@@ -40,13 +42,25 @@ import {
 	tagsGetVocabulariesController
 } from '$lib/server/interface/adapters/controllers/tags/get.js'
 import { tagDeleteController } from '$lib/server/interface/adapters/controllers/tags/delete.js'
+import { applicationGetDatasetsController } from '$lib/server/interface/adapters/controllers/application/get.js'
 export const load = async ({ locals, url }) => {
+	let allow_manage = false
+	const [check_errs, check] = await permissionsCheckController({
+		permissions: [{ namespace: 'Application', object: 'datasets', permits: 'manage' }],
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	if (check_errs === null) {
+		if (check.results.every((check) => check.allowed)) {
+			allow_manage = true
+		}
+	}
 	const offset = url.searchParams.get('offset') ? Number(url.searchParams.get('offset')) : 0
 	const limit = url.searchParams.get('limit') ? Number(url.searchParams.get('limit')) : 10
 	if (offset === 0) {
 		url.searchParams.delete('offset')
 	}
-	const datasets = await datasetsGetController({
+	const datasets = await applicationGetDatasetsController({
 		offset,
 		page_size: limit,
 		session: locals.session,
@@ -171,6 +185,7 @@ export const load = async ({ locals, url }) => {
 		)
 	}
 	return {
+		allow_manage,
 		datasets,
 		metadata_groups,
 		resources,

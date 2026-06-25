@@ -4,6 +4,7 @@
 	import type { InputSelectProps } from './types'
 	import { Paragraph } from '../text'
 	import Button from '../buttons/button.svelte'
+	import { tick } from 'svelte'
 	let {
 		value = $bindable(),
 		id,
@@ -13,14 +14,21 @@
 		options = [],
 		placeholder = 'Select an option',
 		multiple,
-		same_width = false
+		same_width = false,
+		onchange
 	}: InputSelectProps = $props()
 	const handleChange = (val?: string | Set<string>) => {
 		if (multiple && val instanceof Set) {
 			value = Array.from(val)
+			tick().then(() => {
+				onchange?.(value)
+			})
 			return
 		}
 		value = val
+		tick().then(() => {
+			onchange?.(value)
+		})
 	}
 	const select = $derived(
 		new Select<string>({
@@ -39,7 +47,7 @@
 			return val.map((v) => options.find((opt) => opt.value === v)?.label ?? v).join(', ')
 		}
 		if (val === '') return placeholder
-		if (val === null) return placeholder
+		if (val === null && !options.some((x) => x.value === null)) return placeholder
 		return options.find((opt) => opt.value === val)?.label ?? val
 	}
 	const getActive = (val: string | string[], opt: string) => {

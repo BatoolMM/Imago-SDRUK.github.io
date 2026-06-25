@@ -48,15 +48,17 @@
 			id: 'created_at',
 			header: 'Created at',
 			cell: CellText,
-			width: 280
-		},
-		{
+			width: 350
+		}
+	]
+	if (data.allow_manage) {
+		columns.push({
 			id: 'id',
 			header: 'ID',
 			cell: CellEditor,
 			width: 400
-		}
-	]
+		})
+	}
 	onMount(() => {
 		debug.data = data
 	})
@@ -114,6 +116,16 @@
 								url: page.url
 							})}>Next</Button
 						>
+						<Button
+							href={handleSearchParams({
+								add: [
+									{ key: 'page', value: Math.ceil(data.users.total / 20), set: true },
+									{ key: 'limit', value: 20, set: true }
+								],
+								remove: ['edit'],
+								url: page.url
+							})}>Last</Button
+						>
 					</div>
 				{/if}
 			</div>
@@ -141,13 +153,15 @@
 						</Button>
 					{/snippet}
 					{#snippet right()}
-						<Button
-							onclick={() => {
-								toggleDialog(`delete-${data.user?.id}`)
-							}}
-						>
-							<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
-						</Button>
+						{#if data.allow_manage}
+							<Button
+								onclick={() => {
+									toggleDialog(`delete-${data.user?.id}`)
+								}}
+							>
+								<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+							</Button>
+						{/if}
 					{/snippet}
 				</ActionBar>
 				<div class="section">
