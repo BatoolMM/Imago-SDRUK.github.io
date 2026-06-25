@@ -2,6 +2,7 @@
 	import { enhance } from '$app/forms'
 	import { goto } from '$app/navigation'
 	import { page } from '$app/state'
+	import { createResource } from '$lib/remotes/resources/create.remote'
 	import type { ResourceServiceDto } from '$lib/server/entities/models/resources.js'
 	import { notify } from '$lib/stores/notify.js'
 	import Dialog from '$lib/ui/cards/dialog.svelte'
@@ -21,6 +22,7 @@
 		Icon,
 		Input,
 		Notice,
+		Numerical,
 		Paragraph,
 		SectionEdit,
 		Subtitle,
@@ -56,7 +58,7 @@
 	const keys: (keyof ResourceServiceDto)[] = [
 		'name',
 		'created',
-		'format',
+		// 'format',
 		'id',
 		'mimetype',
 		'size',
@@ -409,40 +411,129 @@
 	<Upload name="resources" label="Add resources">
 		{#snippet children({ files, removeFile })}
 			{#each files as file, index}
-				<form
-					method="post"
-					action="?/add_resource"
-					use:enhance={handleEnhance({
-						onsubmit: () => {
-							enable_buttons = false
-						},
-						onfailure: async () => {
-							enable_buttons = true
-						},
-						onsuccess: async ({ result }) => {
-							if (result.type === 'success') {
-								if (result.data) {
-									if ('url' in result.data && typeof result.data.url === 'string') {
-										await xhrUpload({
-											file_preupload: file,
-											url: result.data.url,
-											headers: { 'x-ms-blob-type': 'BlockBlob' }
-										}).catch(() => {
-											enable_buttons = true
-											notify.send({
-												message: `There's been an issue uploading this file, please try to add the version again`
-											})
-											toggleDialog('add-resource')
-											return
-										})
+				<!-- <form -->
+				<!-- 					method="post" -->
+				<!-- 					action="?/add_resource" -->
+				<!-- 					use:enhance={handleEnhance({ -->
+				<!-- 						onsubmit: () => { -->
+				<!-- 							enable_buttons = false -->
+				<!-- 						}, -->
+				<!-- 						onfailure: async () => { -->
+				<!-- 							enable_buttons = true -->
+				<!-- 						}, -->
+				<!-- 						onsuccess: async ({ result }) => { -->
+				<!-- 							if (result.type === 'success') { -->
+				<!-- 								if (result.data) { -->
+				<!-- 									if ('url' in result.data && typeof result.data.url === 'string') { -->
+				<!-- 										await xhrUpload({ -->
+				<!-- 											file_preupload: file, -->
+				<!-- 											url: result.data.url, -->
+				<!-- 											headers: { 'x-ms-blob-type': 'BlockBlob' } -->
+				<!-- 										}).catch(() => { -->
+				<!-- 											enable_buttons = true -->
+				<!-- 											notify.send({ -->
+				<!-- 												message: `There's been an issue uploading this file, please try to add the version again` -->
+				<!-- 											}) -->
+				<!-- 											toggleDialog('add-resource') -->
+				<!-- 											return -->
+				<!-- 										}) -->
+				<!---->
+				<!-- 										enable_buttons = true -->
+				<!-- 										notify.send({ message: `${file.filename} successfully uploaded` }) -->
+				<!-- 										toggleDialog('add-resource') -->
+				<!-- 									} -->
+				<!-- 								} -->
+				<!-- 							} -->
+				<!-- 						} -->
+				<!-- 					})} -->
+				<!-- 				> -->
+				<!-- 					<div class="file-preview"> -->
+				<!-- 						{#if file.upload} -->
+				<!-- 							{#if file.upload.progress.current > 0 && file.upload.status === 'uploading'} -->
+				<!-- 								<div class="progress-bar" style:--progress="{file.upload.progress.current}%"> -->
+				<!-- 									<p>{file.upload.progress.current.toFixed(0)}%</p> -->
+				<!-- 								</div> -->
+				<!-- 							{/if} -->
+				<!-- 							{#if file.upload.progress.current === 0 && file.upload.status === 'uploading'} -->
+				<!-- 								<div class="progress-bar" style:--progress="{file.upload.progress.current}%"> -->
+				<!-- 									<p>Queued for upload</p> -->
+				<!-- 								</div> -->
+				<!-- 							{/if} -->
+				<!-- 							{#if file.upload.status === 'completed'} -->
+				<!-- 								<div class="progress-bar" style:--progress="{file.upload.progress.current}%"> -->
+				<!-- 									<p>File uploaded</p> -->
+				<!-- 								</div> -->
+				<!-- 							{/if} -->
+				<!-- 						{/if} -->
+				<!-- 						<div class="preview"> -->
+				<!-- 							<Subtitle>{file.filename}</Subtitle> -->
+				<!-- 							<input type="hidden" name="package_id" value={data.dataset.id} /> -->
+				<!-- 							<Input label="Name"> -->
+				<!-- 								<Text name="name" bind:value={file.filename}></Text> -->
+				<!-- 							</Input> -->
+				<!-- 							<Input label="Description"> -->
+				<!-- 								<Textarea name="description" bind:value={file.description}></Textarea> -->
+				<!-- 							</Input> -->
+				<!-- 							<Input label="Format"> -->
+				<!-- 								<Text name="type" bind:value={file.type}></Text> -->
+				<!-- 							</Input> -->
+				<!-- 							<Input label="Version"> -->
+				<!-- 								<Text name="version"></Text> -->
+				<!-- 							</Input> -->
+				<!-- 							<Input label="Changelog"> -->
+				<!-- 								<Textarea name="changelog"></Textarea> -->
+				<!-- 							</Input> -->
+				<!-- 						</div> -->
+				<!-- 					</div> -->
+				<!-- 					<div class="buttons" data-disabled={enable_buttons ? undefined : true}> -->
+				<!-- 						<Button -->
+				<!-- 							type="button" -->
+				<!-- 							onclick={() => { -->
+				<!-- 								removeFile({ index }) -->
+				<!-- 								toggleDialog('add-resource') -->
+				<!-- 							}}>Cancel</Button -->
+				<!-- 						> -->
+				<!-- 						<Button>Upload</Button> -->
+				<!-- 					</div> -->
+				<!-- 				</form> -->
+				<!-- 			{/each} -->
+				<!-- 			{#if files.length === 0} -->
+				<!-- 				<div class="buttons"> -->
+				<!-- 					<Button -->
+				<!-- 						type="button" -->
+				<!-- 						onclick={() => { -->
+				<!-- 							toggleDialog('add-resource') -->
+				<!-- 						}}>Cancel</Button -->
+				<!-- 					> -->
+				<!-- 				</div> -->
+				<!-- 			{/if} -->
 
-										enable_buttons = true
-										notify.send({ message: `${file.filename} successfully uploaded` })
-										toggleDialog('add-resource')
-									}
-								}
+				<form
+					{...createResource.enhance(async ({ submit }) => {
+						enable_buttons = false
+						const valid = await submit()
+						if (valid) {
+							const result = createResource.result
+							if (result?.url) {
+								await xhrUpload({
+									file_preupload: file,
+									url: result.url,
+									headers: { 'x-ms-blob-type': 'BlockBlob' }
+								}).catch(() => {
+									enable_buttons = true
+									notify.send({
+										message: `There's been an issue uploading this file, please try to add the version again`
+									})
+									toggleDialog('add-resource')
+									return
+								})
+
+								enable_buttons = true
+								notify.send({ message: `${file.filename} successfully uploaded` })
+								toggleDialog('add-resource')
 							}
 						}
+						enable_buttons = true
 					})}
 				>
 					<div class="file-preview">
@@ -464,22 +555,56 @@
 							{/if}
 						{/if}
 						<div class="preview">
-							<Subtitle>{file.filename}</Subtitle>
+							<!-- <Subtitle>{file.filename}</Subtitle> -->
 							<input type="hidden" name="package_id" value={data.dataset.id} />
 							<Input label="Name">
-								<Text name="name" bind:value={file.filename}></Text>
+								{#snippet message()}
+									{#each createResource.fields.name.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Text {...createResource.fields.name.as('text')}></Text>
 							</Input>
 							<Input label="Description">
-								<Textarea name="description" bind:value={file.description}></Textarea>
+								{#snippet message()}
+									{#each createResource.fields.description.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Textarea {...createResource.fields.description.as('text')}></Textarea>
 							</Input>
 							<Input label="Format">
-								<Text name="type" bind:value={file.type}></Text>
+								{#snippet message()}
+									{#each createResource.fields.mimetype.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Text {...createResource.fields.mimetype.as('text', file.type)}></Text>
+							</Input>
+
+							<Input label="Size">
+								{#snippet message()}
+									{#each createResource.fields.size.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Numerical {...createResource.fields.size.as('number', file.size)}></Numerical>
 							</Input>
 							<Input label="Version">
-								<Text name="version"></Text>
+								{#snippet message()}
+									{#each createResource.fields.version.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Text {...createResource.fields.version.as('text')}></Text>
 							</Input>
 							<Input label="Changelog">
-								<Textarea name="changelog"></Textarea>
+								{#snippet message()}
+									{#each createResource.fields.changelog.issues() as issue}
+										<Paragraph size="xs">{issue.message}</Paragraph>
+									{/each}
+								{/snippet}
+								<Textarea {...createResource.fields.changelog.as('text')}></Textarea>
 							</Input>
 						</div>
 					</div>
