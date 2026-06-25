@@ -39,6 +39,11 @@ export const db = drizzle({
 	logger: false
 })
 
+export const dbMock = drizzle.mock({
+	schema,
+	logger: false
+})
+
 export const dbMigration = drizzle({
 	client,
 	logger: true

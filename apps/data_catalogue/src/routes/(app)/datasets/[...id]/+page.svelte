@@ -31,6 +31,7 @@
 							</button>
 						{/snippet}
 						<div class="facts">
+							<Paragraph size="xs">{ctx.dataset.id}</Paragraph>
 							{#if ctx.dataset.author}
 								<Fact
 									size="xs"
