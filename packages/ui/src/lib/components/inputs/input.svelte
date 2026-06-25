@@ -13,11 +13,13 @@
 		children,
 		required,
 		message,
-		subgrid
+		subgrid,
+		width = 'full'
 	}: InputComponentProps & { children: Snippet<[string]> } = $props()
 </script>
 
 <div
+	data-width={width}
 	class="input-layout"
 	data-layout={layout}
 	data-message={message ? true : undefined}
@@ -46,7 +48,7 @@
 </div>
 
 <style>
-	.input-layout {
+	.input-layout[data-width='full'] {
 		width: 100%;
 	}
 	.input-layout[data-layout='default'] > *,

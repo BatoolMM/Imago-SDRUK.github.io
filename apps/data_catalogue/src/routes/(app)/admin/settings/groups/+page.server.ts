@@ -7,23 +7,35 @@ import {
 	groupAddAllUsersController,
 	groupAddUserController,
 	groupRemoveUserController,
-	groupToggleAutoenrollController,
 	groupUpdateController
 } from '$lib/server/interface/adapters/controllers/groups/update.js'
 import {
 	groupGetController,
-	groupGetUsersController,
-	groupsGetController
+	groupGetUsersController
 } from '$lib/server/interface/adapters/controllers/groups/get.js'
 import { usersSearchController } from '$lib/server/interface/adapters/controllers/users/get.js'
 import type { Group } from '$lib/server/entities/models/groups.js'
-import { permissionsGetController } from '$lib/server/interface/adapters/controllers/permissions/get.js'
-import type { PermissionRequest, Relationships } from '$lib/server/entities/models/permissions.js'
-import { permissionCreateController } from '$lib/server/interface/adapters/controllers/permissions/create.js'
-import { permissionDeleteController } from '$lib/server/interface/adapters/controllers/permissions/delete.js'
+import {
+	permissionsCheckController,
+	permissionsGetController
+} from '$lib/server/interface/adapters/controllers/permissions/get.js'
+import type { Relationships } from '$lib/server/entities/models/permissions.js'
+import { applicationGetGroupsController } from '$lib/server/interface/adapters/controllers/application/get.js'
 
 export const load = async ({ locals, url }) => {
-	const [errors, groups] = await groupsGetController({
+	let allow_manage = false
+	const [check_errs, check] = await permissionsCheckController({
+		permissions: [{ namespace: 'Application', object: 'groups', permits: 'manage' }],
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	if (check_errs === null) {
+		if (check.results.every((check) => check.allowed)) {
+			allow_manage = true
+		}
+	}
+
+	const [errors, groups] = await applicationGetGroupsController({
 		configuration: locals.configuration,
 		session: locals.session
 	})
@@ -33,50 +45,68 @@ export const load = async ({ locals, url }) => {
 	const edit = url.searchParams.get('edit')
 	let group: Group | null = null
 	let group_users: { first_name: string; last_name: string; email: string; id: string }[] = []
-	let group_permissions: Relationships | null = null
+	let group_permissions_actions: Relationships | null = null
+	let group_permissions_settings: Relationships | null = null
 	// let existing: Relationships | null = null
 	if (edit) {
-		;[group, group_users, group_permissions] = await Promise.all([
-			await groupGetController({
-				configuration: locals.configuration,
-				session: locals.session,
-				id: edit
-			}).then(([errors, users]) => {
-				if (errors !== null) {
-					error(500, { message: errors.reason, id: errors.reason })
-				}
-				return users
-			}),
-			await groupGetUsersController({
-				configuration: locals.configuration,
-				session: locals.session,
-				group_id: edit
-			}).then(([errors, users]) => {
-				if (errors !== null) {
-					error(500, { message: errors.reason, id: errors.reason })
-				}
-				return users
-			}),
-			await permissionsGetController({
-				configuration: locals.configuration,
-				session: locals.session,
-				data: {
-					namespace: 'Action',
-					actor: { namespace: 'Group', object: edit, relation: 'members' }
-				}
-			}).then(([errors, users]) => {
-				if (errors !== null) {
-					error(500, { message: errors.reason, id: errors.reason })
-				}
-				return users
-			})
-		])
+		;[group, group_users, group_permissions_actions, group_permissions_settings] =
+			await Promise.all([
+				await groupGetController({
+					configuration: locals.configuration,
+					session: locals.session,
+					id: edit,
+					permissions: [{ namespace: 'Application', object: 'groups', permits: 'read' }]
+				}).then(([errors, users]) => {
+					if (errors !== null) {
+						error(500, { message: errors.reason, id: errors.reason })
+					}
+					return users
+				}),
+				await groupGetUsersController({
+					configuration: locals.configuration,
+					session: locals.session,
+					group_id: edit
+				}).then(([errors, users]) => {
+					if (errors !== null) {
+						error(500, { message: errors.reason, id: errors.reason })
+					}
+					return users
+				}),
+				await permissionsGetController({
+					configuration: locals.configuration,
+					session: locals.session,
+					data: {
+						namespace: 'Action',
+						actor: { namespace: 'Group', object: edit, relation: 'members' }
+					}
+				}).then(([errors, users]) => {
+					if (errors !== null) {
+						error(500, { message: errors.reason, id: errors.reason })
+					}
+					return users
+				}),
+				await permissionsGetController({
+					configuration: locals.configuration,
+					session: locals.session,
+					data: {
+						namespace: 'Application',
+						actor: { namespace: 'Group', object: edit, relation: 'members' }
+					}
+				}).then(([errors, users]) => {
+					if (errors !== null) {
+						error(500, { message: errors.reason, id: errors.reason })
+					}
+					return users
+				})
+			])
 	}
 	return {
+		allow_manage,
 		groups,
 		group_users,
 		group,
-		group_permissions
+		group_permissions_actions,
+		group_permissions_settings
 	}
 }
 
@@ -115,26 +145,26 @@ export const actions = {
 			message: 'Group updated'
 		}
 	},
-	toggle_autoenroll: async ({ locals, request }) => {
-		const form = await request.formData()
-		const id = formGetStringOrUndefined({ form, field: 'id' })
-		const autoenroll = formGetStringOrUndefined({ form, field: 'autoenroll' })
-		const is_autoenroll = autoenroll === 'on' ? true : false
-		const [errors, group] = await groupToggleAutoenrollController({
-			configuration: locals.configuration,
-			id,
-			autoenroll: is_autoenroll,
-			session: locals.session
-		})
-		if (errors !== null) {
-			console.log(errors)
-			return fail(500, { message: errors.message ?? errors.reason })
-		}
-		console.log(group)
-		return {
-			message: `Group autoenroll set to ${group.autoenroll}`
-		}
-	},
+	// toggle_autoenroll: async ({ locals, request }) => {
+	// 	const form = await request.formData()
+	// 	const id = formGetStringOrUndefined({ form, field: 'id' })
+	// 	const autoenroll = formGetStringOrUndefined({ form, field: 'autoenroll' })
+	// 	const is_autoenroll = autoenroll === 'on' ? true : false
+	// 	const [errors, group] = await groupToggleAutoenrollController({
+	// 		configuration: locals.configuration,
+	// 		id,
+	// 		autoenroll: is_autoenroll,
+	// 		session: locals.session
+	// 	})
+	// 	if (errors !== null) {
+	// 		console.log(errors)
+	// 		return fail(500, { message: errors.message ?? errors.reason })
+	// 	}
+	// 	console.log(group)
+	// 	return {
+	// 		message: `Group autoenroll set to ${group.autoenroll}`
+	// 	}
+	// },
 	delete: async ({ locals, request }) => {
 		const form = await request.formData()
 		const id = formGetStringOrUndefined({ form, field: 'id' })
@@ -219,49 +249,49 @@ export const actions = {
 			message: `Ok`,
 			users
 		}
-	},
-	add_action: async ({ locals, request }) => {
-		const form = await request.formData()
-		const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
-		const object = formGetStringOrUndefined({ form, field: 'object' })
-		const payload: PermissionRequest = {
-			actor: { object: group_id, namespace: 'Group', relation: 'members' },
-			namespace: 'Action',
-			object: object,
-			relation: 'groups'
-		}
-		const [errors, permission] = await permissionCreateController({
-			configuration: locals.configuration,
-			session: locals.session,
-			data: payload
-		})
-		if (errors !== null) {
-			return fail(500, { message: errors.reason })
-		}
-		return {
-			message: 'ok'
-		}
-	},
-	remove_action: async ({ locals, request }) => {
-		const form = await request.formData()
-		const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
-		const object = formGetStringOrUndefined({ form, field: 'object' })
-		const payload: PermissionRequest = {
-			actor: { object: group_id, namespace: 'Group', relation: 'members' },
-			namespace: 'Action',
-			object: object,
-			relation: 'groups'
-		}
-		const [errors, permission] = await permissionDeleteController({
-			configuration: locals.configuration,
-			session: locals.session,
-			data: payload
-		})
-		if (errors !== null) {
-			return fail(500, { message: errors.reason })
-		}
-		return {
-			message: 'ok'
-		}
 	}
+	// add_action: async ({ locals, request }) => {
+	// 	const form = await request.formData()
+	// 	const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
+	// 	const object = formGetStringOrUndefined({ form, field: 'object' })
+	// 	const payload: PermissionRequest = {
+	// 		actor: { object: group_id, namespace: 'Group', relation: 'members' },
+	// 		namespace: 'Action',
+	// 		object: object,
+	// 		relation: 'groups'
+	// 	}
+	// 	const [errors, permission] = await permissionCreateController({
+	// 		configuration: locals.configuration,
+	// 		session: locals.session,
+	// 		data: payload
+	// 	})
+	// 	if (errors !== null) {
+	// 		return fail(500, { message: errors.reason })
+	// 	}
+	// 	return {
+	// 		message: 'ok'
+	// 	}
+	// },
+	// remove_action: async ({ locals, request }) => {
+	// 	const form = await request.formData()
+	// 	const group_id = formGetStringOrUndefined({ form, field: 'group_id' })
+	// 	const object = formGetStringOrUndefined({ form, field: 'object' })
+	// 	const payload: PermissionRequest = {
+	// 		actor: { object: group_id, namespace: 'Group', relation: 'members' },
+	// 		namespace: 'Action',
+	// 		object: object,
+	// 		relation: 'groups'
+	// 	}
+	// 	const [errors, permission] = await permissionDeleteController({
+	// 		configuration: locals.configuration,
+	// 		session: locals.session,
+	// 		data: payload
+	// 	})
+	// 	if (errors !== null) {
+	// 		return fail(500, { message: errors.reason })
+	// 	}
+	// 	return {
+	// 		message: 'ok'
+	// 	}
+	// }
 }

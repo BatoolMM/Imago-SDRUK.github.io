@@ -81,10 +81,9 @@
 					{/each}
 					<div class="notice">
 						<Notice level="warning">
-							<Paragraph current_colour
-								>If you run into an issue, please let us know at <a
-									href="mailto:imago@liverpool.ac.uk">imago@liverpool.ac.uk</a
-								></Paragraph
+							<Paragraph current_colour>
+								This data catalogue is in preview. For any issues or feedback, contact us at
+								<a href="mailto:imago@liverpool.ac.uk">imago@liverpool.ac.uk</a></Paragraph
 							>
 						</Notice>
 					</div>

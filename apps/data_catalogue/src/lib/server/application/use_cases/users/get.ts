@@ -21,7 +21,7 @@ export const userGetUseCase = async ({
 }) => {
 	const [errors, permission] = await getAuthorisationModule().authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'users',
 		permits: 'read',
 		configuration
@@ -216,7 +216,6 @@ export const usersGetUseCase = async ({
 	}
 	const [errs, users] = await user_repository.getUsers({ limit, offset })
 	if (errs !== null) {
-		console.log('users repo errors')
 		return err(errs)
 	}
 	if (!users) {

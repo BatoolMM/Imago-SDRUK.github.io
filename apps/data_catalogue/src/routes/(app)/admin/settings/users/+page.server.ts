@@ -1,12 +1,24 @@
 import { error, fail } from '@sveltejs/kit'
-import {
-	userGetController,
-	usersGetController
-} from '$lib/server/interface/adapters/controllers/users/get.js'
-import { groupsGetController } from '$lib/server/interface/adapters/controllers/groups/get.js'
+import { userGetController } from '$lib/server/interface/adapters/controllers/users/get.js'
 import { isItANumber } from '@arturoguzman/art-ui'
 import type { User } from '$lib/server/entities/models/users.js'
+import { permissionsCheckController } from '$lib/server/interface/adapters/controllers/permissions/get.js'
+import {
+	applicationGetGroupsController,
+	applicationGetUsersController
+} from '$lib/server/interface/adapters/controllers/application/get.js'
 export const load = async ({ locals, url }) => {
+	let allow_manage = false
+	const [check_errs, check] = await permissionsCheckController({
+		permissions: [{ namespace: 'Application', object: 'users', permits: 'manage' }],
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	if (check_errs === null) {
+		if (check.results.every((check) => check.allowed)) {
+			allow_manage = true
+		}
+	}
 	const page = url.searchParams.get('page')
 	const _limit = url.searchParams.get('limit')
 	let offset = 0
@@ -22,7 +34,7 @@ export const load = async ({ locals, url }) => {
 		}
 	}
 
-	const [u_errs, users] = await usersGetController({
+	const [u_errs, users] = await applicationGetUsersController({
 		configuration: locals.configuration,
 		session: locals.session,
 		offset: offset,
@@ -32,7 +44,7 @@ export const load = async ({ locals, url }) => {
 		console.log(u_errs, 'users errors')
 		error(500, { message: u_errs.reason, id: u_errs.reason })
 	}
-	const [g_errs, groups] = await groupsGetController({
+	const [g_errs, groups] = await applicationGetGroupsController({
 		configuration: locals.configuration,
 		session: locals.session
 	})
@@ -56,6 +68,7 @@ export const load = async ({ locals, url }) => {
 		})
 	}
 	return {
+		allow_manage,
 		user,
 		users,
 		groups,

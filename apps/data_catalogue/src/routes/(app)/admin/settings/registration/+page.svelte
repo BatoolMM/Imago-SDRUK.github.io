@@ -14,7 +14,7 @@
 	})
 
 	let question: Question = $state({
-		sort: generateKeyBetween(questions.at(-1).sort, null),
+		sort: generateKeyBetween(questions.at(-1)?.sort, null),
 		id: '',
 		conditionals: [],
 		question: '',
@@ -41,45 +41,47 @@
 </script>
 
 <div class="page">
-	<div class="left-col">
-		<Title>Add a question</Title>
-		<form
-			class="form"
-			action="?/create_question"
-			use:enhance={handleEnhance({
-				onsuccess: () => {
-					resetQuestion({
-						sort: generateKeyBetween(questions.at(-1).sort, null),
-						id: '',
-						conditionals: [],
-						question: '',
-						required: false,
-						status: 'draft',
-						visibility: false,
-						created_by: '',
-						updated_by: '',
-						created_at: DateTime.now().toJSDate(),
-						deleted_at: DateTime.now().toJSDate(),
-						updated_at: DateTime.now().toJSDate(),
-						description: '',
-						group: '',
-						label: '',
-						options: [],
-						type: null
-					})
-				}
-			})}
-			method="post"
-		>
-			<div class="inputs">
-				<QuestionInputs bind:question questions={data.questions}></QuestionInputs>
-			</div>
-			<div class="buttons">
-				<Button type="reset">Clear</Button>
-				<Button type="submit">Save</Button>
-			</div>
-		</form>
-	</div>
+	{#if data.allow_manage}
+		<div class="left-col">
+			<Title>Add a question</Title>
+			<form
+				class="form"
+				action="?/create_question"
+				use:enhance={handleEnhance({
+					onsuccess: () => {
+						resetQuestion({
+							sort: generateKeyBetween(questions.at(-1).sort, null),
+							id: '',
+							conditionals: [],
+							question: '',
+							required: false,
+							status: 'draft',
+							visibility: false,
+							created_by: '',
+							updated_by: '',
+							created_at: DateTime.now().toJSDate(),
+							deleted_at: DateTime.now().toJSDate(),
+							updated_at: DateTime.now().toJSDate(),
+							description: '',
+							group: '',
+							label: '',
+							options: [],
+							type: null
+						})
+					}
+				})}
+				method="post"
+			>
+				<div class="inputs">
+					<QuestionInputs bind:question questions={data.questions}></QuestionInputs>
+				</div>
+				<div class="buttons">
+					<Button type="reset">Clear</Button>
+					<Button type="submit">Save</Button>
+				</div>
+			</form>
+		</div>
+	{/if}
 	<div class="right-col">
 		<Title size="md">Existing questions</Title>
 		{#each questions as question, index (question.id)}

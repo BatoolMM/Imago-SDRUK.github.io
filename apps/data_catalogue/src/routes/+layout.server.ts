@@ -1,8 +1,11 @@
 import { env } from '$env/dynamic/private'
-import { ADMIN_ROUTES, ROUTES } from '$lib/globals/routes'
+import { ROUTES } from '$lib/globals/routes'
 import { COOKIES } from '$lib/globals/server.js'
-import { userGetGroupsController } from '$lib/server/interface/adapters/controllers/users/get.js'
-import { error } from '@sveltejs/kit'
+import { dashboard_routes, dashboard_routes_group } from '$lib/routes/dashboard.js'
+import { getNavigation } from '$lib/routes/index.js'
+import { settings_routes, settings_routes_group } from '$lib/routes/settings.js'
+// import { userGetGroupsController } from '$lib/server/interface/adapters/controllers/users/get.js'
+// import { error } from '@sveltejs/kit'
 export const load = async ({ locals, cookies }) => {
 	const allow_debug = env.NODE_ENV !== 'production'
 	const expire = cookies.get(COOKIES.expire)
@@ -26,17 +29,28 @@ export const load = async ({ locals, cookies }) => {
 			allow_debug
 		}
 	}
-	const [errors, users_groups] = await userGetGroupsController({
+	// const [errors, users_groups] = await userGetGroupsController({
+	// 	configuration: locals.configuration,
+	// 	session
+	// })
+	// if (errors !== null) {
+	// 	error(500, { message: errors.reason, id: errors.reason })
+	// }
+
+	const [dashboard_errors, dashboard] = await getNavigation({
+		groups: dashboard_routes_group,
+		routes: dashboard_routes,
 		configuration: locals.configuration,
-		session
+		session: locals.session
 	})
-	if (errors !== null) {
-		error(500, { message: errors.reason, id: errors.reason })
-	}
-	if (users_groups.find((group) => group.group === 'Admin')) {
-		routes.push(ADMIN_ROUTES)
-	}
-	routes.push({
+	const [settings_errors, settings] = await getNavigation({
+		groups: settings_routes_group,
+		routes: settings_routes,
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	const merged = [...routes, ...(dashboard ?? []), ...(settings ?? [])]
+	merged.push({
 		label: `Hello, ${locals.session?.identity.first_name}`,
 		href: '/user/account',
 		subpaths: [
@@ -44,9 +58,8 @@ export const load = async ({ locals, cookies }) => {
 			{ label: 'Logout', href: '/auth/logout' }
 		]
 	})
-
 	return {
-		routes,
+		routes: merged,
 		session,
 		expire,
 		allow_debug

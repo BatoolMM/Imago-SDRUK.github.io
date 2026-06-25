@@ -5,6 +5,7 @@ import {
 } from '$lib/server/application/use_cases/questions/get'
 import { err, ok } from '$lib/server/entities/errors'
 import type { Configuration } from '$lib/server/entities/models/configuration'
+import type { Permission } from '$lib/server/entities/models/permissions'
 import { getQuestionsModule } from '$lib/server/modules/questions'
 
 export const questionGetController = async ({
@@ -36,16 +37,17 @@ export const questionsGetController = async ({
 }: {
 	session: App.Locals['session']
 	configuration: Configuration
+	permission?: Permission
 }) => {
 	if (!session) {
 		return err({ reason: 'Unauthenticated' })
 	}
-	const [errors, answer] = await questionsGetUseCase({
+	const [errors, questions] = await questionsGetUseCase({
 		questions_repository: getQuestionsModule(),
 		...getServerContext({ session, configuration })
 	})
 	if (errors !== null) {
 		return err(errors)
 	}
-	return ok(answer)
+	return ok(questions)
 }

@@ -10,6 +10,7 @@ export const load = async ({ locals, params }) => {
 		session: locals.session,
 		configuration: locals.configuration
 	})
+	console.log(errs)
 	if (errs !== null) {
 		error(400, { message: `There's been an error retreiving this dataset`, id: '' })
 	}

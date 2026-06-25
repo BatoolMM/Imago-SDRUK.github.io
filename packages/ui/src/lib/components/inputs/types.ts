@@ -1,6 +1,18 @@
 import type { IconsSets } from '$lib/icons'
 import type { Snippet } from 'svelte'
-import type { HTMLInputAttributes, HTMLTextareaAttributes } from 'svelte/elements'
+import type {
+	FocusEventHandler,
+	HTMLInputAttributes,
+	HTMLTextareaAttributes,
+	KeyboardEventHandler
+} from 'svelte/elements'
+
+export type BaseInputProps = {
+	id?: string
+	required?: boolean
+	placeholder?: string
+	disabled?: boolean
+}
 
 export type InputComponentProps = {
 	id?: string
@@ -10,6 +22,7 @@ export type InputComponentProps = {
 	label_size?: 'sm' | 'md' | 'lg'
 	style?: 'border' | 'floating'
 	information?: string
+	width?: 'auto' | 'full'
 	message?: Snippet
 	icon?: IconsSets
 	subgrid?: boolean
@@ -26,17 +39,36 @@ export type InputTextAreaProps = Omit<HTMLTextareaAttributes, 'popover'> & Input
 
 export type InputNumberProps = {
 	buttons?: boolean
+	current_colour?: boolean
+	value?: number
 } & Omit<HTMLInputAttributes, 'popover' | 'type'> &
 	InputComponentProps
 
+export type BaseNumberInputProps = {
+	name?: string
+	'aria-invalid'?: boolean | 'false' | 'true' | undefined
+	value?: string | number | null
+	min?: number
+	max?: number
+	step?: number
+	onfocusin?: FocusEventHandler<HTMLInputElement>
+	onfocusout?: FocusEventHandler<HTMLInputElement>
+	onkeydown?: KeyboardEventHandler<HTMLInputElement>
+	onkeyup?: KeyboardEventHandler<HTMLInputElement>
+	onblur?: FocusEventHandler<HTMLInputElement>
+	current_colour?: boolean
+	buttons?: boolean
+} & BaseInputProps
+
 export type InputDateProps = {
 	time?: boolean
-} & Omit<HTMLInputAttributes, 'popover'> &
-	InputComponentProps
+	width?: 'auto' | 'full'
+} & Omit<HTMLInputAttributes, 'popover'>
 
 export type InputSelectProps = {
+	name?: string
 	children?: Snippet
-	options?: { label: string; value: string }[]
+	options?: { label: string; value: string | null }[]
 	disabled?: boolean
 	placeholder?: string
 	design_type?: 'dropdown' | 'list'
@@ -44,5 +76,6 @@ export type InputSelectProps = {
 	multiple?: boolean
 	value?: string | string[]
 	same_width?: boolean
-} & Omit<HTMLInputAttributes, 'popover'> &
-	InputComponentProps
+	onchange: (value?: string | Set<string> | null) => void
+} & InputComponentProps
+// } & Omit<HTMLInputAttributes, 'popover'> &

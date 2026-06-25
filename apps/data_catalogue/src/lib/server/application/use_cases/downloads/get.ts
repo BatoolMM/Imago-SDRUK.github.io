@@ -78,7 +78,10 @@ export const dowloadsGetAggregatesUseCase = async ({
 	from,
 	to,
 	downloads_repository,
-	resource_repository
+	resource_repository,
+	authorisation_module,
+	session,
+	configuration
 }: {
 	from: string
 	to: string
@@ -86,6 +89,21 @@ export const dowloadsGetAggregatesUseCase = async ({
 	authorisation_module: IAuthorisationService
 	resource_repository: IResourceRepository
 } & AppContext) => {
+	const [permission_errors, permission] = await authorisation_module.authorise({
+		namespace: 'Application',
+		object: 'dashboard',
+		permits: 'read',
+		actor: session.identity.id,
+		configuration
+	})
+
+	if (permission_errors) {
+		return err(permission_errors)
+	}
+	if (!permission.allowed) {
+		return err({ reason: 'Unauthorised' })
+	}
+
 	const _to = getDate(to)
 	const _from = getDate(from)
 	const [downloads_error, downloads] = await downloads_repository.getDownloadsAggregate({

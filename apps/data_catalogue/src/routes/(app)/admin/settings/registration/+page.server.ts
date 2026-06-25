@@ -1,12 +1,24 @@
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms/index.js'
 import { error, fail } from '@sveltejs/kit'
-import { questionsGetController } from '$lib/server/interface/adapters/controllers/questions/get.js'
 import { questionCreateController } from '$lib/server/interface/adapters/controllers/questions/create.js'
 import { questionUpdateController } from '$lib/server/interface/adapters/controllers/questions/update.js'
 import { questionDeleteController } from '$lib/server/interface/adapters/controllers/questions/delete.js'
+import { applicationGetQuestionsController } from '$lib/server/interface/adapters/controllers/application/get.js'
+import { permissionsCheckController } from '$lib/server/interface/adapters/controllers/permissions/get.js'
 
 export const load = async ({ locals }) => {
-	const [errors, questions] = await questionsGetController({
+	let allow_manage = false
+	const [check_errs, check] = await permissionsCheckController({
+		permissions: [{ namespace: 'Application', object: 'registration', permits: 'manage' }],
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	if (check_errs === null) {
+		if (check.results.every((check) => check.allowed)) {
+			allow_manage = true
+		}
+	}
+	const [errors, questions] = await applicationGetQuestionsController({
 		session: locals.session,
 		configuration: locals.configuration
 	})
@@ -14,6 +26,7 @@ export const load = async ({ locals }) => {
 		error(500, { message: errors.reason, id: errors.reason })
 	}
 	return {
+		allow_manage,
 		questions
 	}
 }

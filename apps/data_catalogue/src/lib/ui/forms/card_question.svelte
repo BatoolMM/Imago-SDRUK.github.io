@@ -1,16 +1,24 @@
 <script lang="ts">
 	import { generateKeyBetween } from 'fractional-indexing'
 	import { enhance } from '$app/forms'
-	import { Button, BaseCard, Subtitle, Icon, ActionBar } from '@imago/ui'
+	import { Button, BaseCard, Subtitle, Icon, ActionBar, Paragraph } from '@imago/ui'
 	import { invalidateAll } from '$app/navigation'
 	import QuestionInputs from '../forms/question_inputs.svelte'
 	import type { Question } from '$lib/server/entities/models/questions'
 	import { handleEnhance } from '$lib/utils/forms'
+	import Facts from '../cards/facts.svelte'
+	import { jstr } from '@arturoguzman/art-ui'
 	let {
 		question = $bindable(),
 		questions,
-		sorting = $bindable()
-	}: { question: Question; questions: Question[]; sorting: { dragging: string | null } } = $props()
+		sorting = $bindable(),
+		allow_manage = false
+	}: {
+		question: Question
+		questions: Question[]
+		sorting: { dragging: string | null }
+		allow_manage?: boolean
+	} = $props()
 	let open = $state(false)
 	const index = $derived(questions.findIndex((q) => q.id === question.id))
 	const handleSort = async () => {
@@ -64,17 +72,19 @@
 				{/snippet}
 
 				{#snippet right()}
-					<Button
-						active={open}
-						onclick={() => {
-							open = !open
-						}}
-					>
-						<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
-					</Button>
+					{#if allow_manage}
+						<Button
+							active={open}
+							onclick={() => {
+								open = !open
+							}}
+						>
+							<Icon icon={{ icon: 'edit', set: 'tabler' }}></Icon>
+						</Button>
+					{/if}
 				{/snippet}
 			</ActionBar>
-			{#if open}
+			{#if open && allow_manage}
 				<form action="?/delete_question" method="post" use:enhance={handleEnhance()}>
 					<input type="text" hidden value={question.id} name="id" />
 					<Button>
@@ -84,8 +94,7 @@
 				<form class="form" action="?/update_question" method="post" use:enhance={handleEnhance()}>
 					<div class="inputs">
 						<input type="text" hidden bind:value={question.id} name="id" />
-						<input type="text" bind:value={question.sort} name="sort" />
-
+						<input type="hidden" bind:value={question.sort} name="sort" />
 						<QuestionInputs {questions} bind:question></QuestionInputs>
 					</div>
 					<div class="buttons">
@@ -98,6 +107,22 @@
 						<Button type="submit">Save</Button>
 					</div>
 				</form>
+			{/if}
+			{#if !allow_manage}
+				<Facts record={question} keys={['id', 'created_at', 'updated_at', 'description']}></Facts>
+				{#if question.type === 'select'}
+					<Paragraph>Options</Paragraph>
+					{#each question.options as options}
+						<Facts record={options} keys={['label']}></Facts>
+					{/each}
+				{/if}
+
+				{#if question.conditionals && question.conditionals.length > 0}
+					<Paragraph>Conditionals</Paragraph>
+					{#each question.conditionals as condition}
+						<Facts record={condition} keys={['question', 'operator', 'action', 'value']}></Facts>
+					{/each}
+				{/if}
 			{/if}
 		</div>
 	</BaseCard>

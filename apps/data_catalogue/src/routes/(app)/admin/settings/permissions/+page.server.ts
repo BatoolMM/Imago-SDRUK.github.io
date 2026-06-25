@@ -1,19 +1,30 @@
-import { permissionsCreateUseCase } from '$lib/server/application/use_cases/permissions/create.js'
-import { permissionsDeleteUseCase } from '$lib/server/application/use_cases/permissions/delete.js'
 import type { PermissionRequest } from '$lib/server/entities/models/permissions.js'
 import { permissionCreateController } from '$lib/server/interface/adapters/controllers/permissions/create'
 import {
 	permissionDeleteController,
-	permissionResetNamespaceController,
-	permissionsDeleteController
+	permissionResetNamespaceController
 } from '$lib/server/interface/adapters/controllers/permissions/delete.js'
-import { permissionsGetController } from '$lib/server/interface/adapters/controllers/permissions/get.js'
+import {
+	permissionsCheckController,
+	permissionsGetController
+} from '$lib/server/interface/adapters/controllers/permissions/get.js'
 import { formGetStringOrUndefined, safeJSONParse } from '$lib/utils/forms'
 import { jstr } from '@arturoguzman/art-ui'
 import { error } from '@sveltejs/kit'
 import { fail } from '@sveltejs/kit'
 
 export const load = async ({ locals }) => {
+	const [allowed_errors, allowed] = await permissionsCheckController({
+		permissions: [{ namespace: 'Application', object: 'permissions', permits: 'read' }],
+		configuration: locals.configuration,
+		session: locals.session
+	})
+	if (allowed_errors !== null) {
+		return error(500, { message: allowed_errors.reason, id: allowed_errors.reason })
+	}
+	if (!allowed.results[0].allowed) {
+		return error(400, { message: 'Unauthorised', id: 'Unauthorised' })
+	}
 	const [permissions, dataset_permissions, group_permissions, resources_permissions] =
 		await Promise.all([
 			permissionsGetController({

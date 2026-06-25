@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { type IColumnConfig } from '@svar-ui/svelte-grid'
+	import type { Group } from '$lib/server/entities/models/groups.js'
 	import { applyAction, enhance } from '$app/forms'
 	import { debug } from '$lib/globals/dev.svelte.js'
 	import { jstr } from '@arturoguzman/art-ui'
@@ -26,12 +27,16 @@
 	import CellText from '$lib/ui/tables/cell_text.svelte'
 	import { page } from '$app/state'
 	import CellEditor from '$lib/ui/tables/cell_editor.svelte'
-	import { DateTime } from 'luxon'
-	import type { Group } from '$lib/server/entities/models/groups.js'
 	import { handleEnhance } from '$lib/utils/forms'
 	import type { PermissionRequest } from '$lib/server/entities/models/permissions'
 	import CardBlock from '$lib/ui/cards/card_block.svelte'
 	import Facts from '$lib/ui/cards/facts.svelte'
+	import {
+		togglePermission,
+		toggleSettingsPermission
+	} from '$lib/remotes/permissions/update.remote'
+	import { invalidateAll } from '$app/navigation'
+	import { toggleAutoEnroll } from '$lib/remotes/groups/update.remote.js'
 
 	let { data } = $props()
 	let delete_group = $state('')
@@ -76,41 +81,95 @@
 	let available_users = $derived(
 		search_results.filter((au) => !data.group_users.find((gu) => gu.id === au.id))
 	)
-	const available_actions = (actor: PermissionRequest['actor']): PermissionRequest[] => [
+	const available_actions = (
+		actor: PermissionRequest['actor']
+	): (PermissionRequest & { id: string })[] => [
 		{
+			id: '65678111-ba51-45dd-ba98-ff54b98fc2ed',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'permissions',
 			actor
 		},
 		{
+			id: 'df15c06c-f8ed-4a9d-9837-9cdd1f2bed14',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'users',
 			actor
 		},
 		{
+			id: '2f826f94-6c62-4ccf-9f0a-5d117d5119b9',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'groups',
 			actor
 		},
 		{
+			id: '32d95b70-3342-499c-a99a-03c99e8735dd',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'datasets',
 			actor
 		},
 		{
+			id: '909ba0d7-7bdb-4855-a410-70a18519d379',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'answers',
 			actor
 		},
 		{
+			id: 'ea9b86b4-48d5-45f8-b7c1-41ff68b256f2',
 			namespace: 'Action',
 			relation: 'groups',
 			object: 'questions',
+			actor
+		}
+	]
+	const available_settings = (
+		actor: PermissionRequest['actor']
+	): (PermissionRequest & { id: string })[] => [
+		{
+			id: 'f342d080-bbbf-41b9-8a7e-7060749ea1ed',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'dashboard',
+			actor
+		},
+		{
+			id: 'a9f32522-5f6d-45cb-b303-74bc491065f3',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'datasets',
+			actor
+		},
+		{
+			id: 'bd45c009-510d-4517-a2c7-673f018660a3',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'groups',
+			actor
+		},
+		{
+			id: '7d962b89-7632-4096-8cea-aeef9d7c59ce',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'permissions',
+			actor
+		},
+		{
+			id: '7cf673bd-f794-4de8-8e21-8696dee49ca9',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'registration',
+			actor
+		},
+		{
+			id: '1694ecb4-b06e-4457-9ab9-e0684f9d0f33',
+			namespace: 'Application',
+			relation: 'admins',
+			object: 'users',
 			actor
 		}
 	]
@@ -122,14 +181,16 @@
 		{#snippet leftCol()}
 			<ActionBar>
 				{#snippet right()}
-					<Button
-						width="auto"
-						onclick={() => {
-							toggleDialog('add-group')
-						}}
-					>
-						<Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon>
-					</Button>
+					{#if data.allow_manage}
+						<Button
+							width="auto"
+							onclick={() => {
+								toggleDialog('add-group')
+							}}
+						>
+							<Icon icon={{ icon: 'plus', set: 'tabler' }}></Icon>
+						</Button>
+					{/if}
 				{/snippet}
 			</ActionBar>
 			<div class="groups">
@@ -147,15 +208,25 @@
 							</Button>
 						{/snippet}
 						{#snippet right()}
-							<Button
-								width="auto"
-								onclick={() => {
-									delete_group = group.id
-									toggleDialog('delete-group')
-								}}
-							>
-								<Icon icon={{ icon: 'trash', set: 'tabler' }} />
-							</Button>
+							{#if data.allow_manage}
+								<Button
+									width="auto"
+									onclick={() => {
+										delete_group = group.id
+										toggleDialog('delete-group')
+									}}
+								>
+									<Icon icon={{ icon: 'trash', set: 'tabler' }} />
+								</Button>
+								<Button
+									active={edit}
+									onclick={() => {
+										edit = !edit
+									}}
+								>
+									<Icon icon={{ icon: 'edit', set: 'tabler' }} />
+								</Button>
+							{/if}
 						{/snippet}
 					</ActionBar>
 					<div class="section">
@@ -164,16 +235,6 @@
 								<ActionBar>
 									{#snippet left()}
 										<Subtitle>{group.title}</Subtitle>
-									{/snippet}
-									{#snippet right()}
-										<Button
-											active={edit}
-											onclick={() => {
-												edit = !edit
-											}}
-										>
-											<Icon icon={{ icon: 'edit', set: 'tabler' }} />
-										</Button>
 									{/snippet}
 								</ActionBar>
 							{/snippet}
@@ -193,7 +254,6 @@
 											use:enhance={() => {
 												return async ({ result, update }) => {
 													if (result.type === 'error') {
-														console.log(result)
 														notify.send({ message: result.error.message })
 													}
 													if ('data' in result && result.data) {
@@ -426,51 +486,163 @@
 						</CardBlock>
 					</div>
 					{#if edit}
-						<div class="section">
-							<CardBlock>
-								{#snippet header()}
-									<Subtitle>Permissions</Subtitle>
-								{/snippet}
-								{#snippet content()}
-									<div class="section">
-										<form action="?/toggle_autoenroll" method="post" use:enhance={handleEnhance()}>
-											<input type="hidden" value={group.id} name="id" />
-											<Input label="Autoenroll" layout="horizontal">
-												<Checkbox name="autoenroll"></Checkbox>
+						<CardBlock>
+							{#snippet header()}
+								<Subtitle>Permissions</Subtitle>
+							{/snippet}
+							{#snippet content()}
+								{@const enabled = group.autoenroll ?? false}
+								<div class="sections">
+									<div class="section-grid">
+										<form
+											class="form-grid"
+											{...toggleAutoEnroll.enhance(async ({ submit }) => {
+												await submit()
+											})}
+										>
+											<input {...toggleAutoEnroll.fields.id.as('hidden', group.id)} />
+											<Input
+												subgrid
+												label={enabled ? `Autoenroll enabled` : `Autoenroll disabled`}
+												layout="horizontal"
+											>
+												<Checkbox
+													{...toggleAutoEnroll.fields.autoenroll.as('checkbox', enabled)}
+													onchange={async () => {
+														const valid = await toggleAutoEnroll.submit()
+														if (valid) {
+															await invalidateAll()
+															return
+														}
+													}}
+												></Checkbox>
 											</Input>
-											<Button>
-												<Paragraph>Save</Paragraph>
-											</Button>
 										</form>
+									</div>
+									<div class="section-grid">
 										{#each available_actions( { namespace: 'Group', relation: 'members', object: group.id } ) as action (action)}
-											<div class="card">
-												{#if data.group_permissions?.relation_tuples?.find((rt) => rt.subject_set?.object === group.id && rt.object === action.object)}
-													<form
-														action="?/remove_action"
-														method="post"
-														use:enhance={handleEnhance()}
-													>
-														<input type="hidden" name="group_id" value={group.id} />
-														<input type="hidden" name="object" value={action.object} />
-														<Input label="Disable create {action.object}" layout="horizontal">
-															<Button active style="alt">Enabled</Button>
-														</Input>
-													</form>
-												{:else}
-													<form action="?/add_action" method="post" use:enhance={handleEnhance()}>
-														<input type="hidden" name="group_id" value={group.id} />
-														<input type="hidden" name="object" value={action.object} />
-														<Input label="Enable create {action.object}" layout="horizontal">
-															<Button style="alt">Disabled</Button>
-														</Input>
-													</form>
-												{/if}
-											</div>
+											{@const form = togglePermission.for(action.id)}
+											{@const enabled = data.group_permissions_actions?.relation_tuples?.find(
+												(rt) => rt.subject_set?.object === group.id && rt.object === action.object
+											)
+												? true
+												: false}
+											<form
+												class="form-grid"
+												{...form.enhance(async ({ submit }) => {
+													await submit()
+												})}
+											>
+												<input {...form.fields.namespace.as('hidden', action.namespace)} />
+												<input {...form.fields.relation.as('hidden', action.relation)} />
+												<input {...form.fields.object.as('hidden', action.object)} />
+												<input
+													{...form.fields.actor.namespace.as(
+														'hidden',
+														typeof action.actor === 'string' ? 'Group' : action.actor.namespace
+													)}
+												/>
+												<input
+													{...form.fields.actor.object.as(
+														'hidden',
+														typeof action.actor === 'string' ? group.id : action.actor.object
+													)}
+												/>
+												<input
+													{...form.fields.actor.relation.as(
+														'hidden',
+														typeof action.actor === 'string' ? 'groups' : action.actor.relation
+													)}
+												/>
+												<Input
+													subgrid
+													label={enabled
+														? `Create ${action.object} enabled`
+														: `Create ${action.object} disabled`}
+													layout="horizontal"
+												>
+													<Checkbox
+														{...form.fields.create.as('checkbox', enabled)}
+														onchange={async (e) => {
+															const valid = await form.submit()
+															if (valid) {
+																await invalidateAll()
+																return
+															}
+														}}
+													></Checkbox>
+												</Input>
+											</form>
 										{/each}
 									</div>
-								{/snippet}
-							</CardBlock>
-						</div>
+								</div>
+							{/snippet}
+						</CardBlock>
+						<CardBlock>
+							{#snippet header()}
+								<Subtitle>Dashboard access</Subtitle>
+							{/snippet}
+							{#snippet content()}
+								<div class="section">
+									{#each available_settings( { namespace: 'Group', relation: 'members', object: group.id } ) as action (action)}
+										{@const form = toggleSettingsPermission.for(action.id)}
+										{@const enabled = data.group_permissions_settings?.relation_tuples?.find(
+											(rt) => rt.subject_set?.object === group.id && rt.object === action.object
+										)}
+										<form
+											class="form-grid"
+											{...form.enhance(async ({ submit }) => {
+												await submit()
+											})}
+										>
+											<input {...form.fields.namespace.as('hidden', action.namespace)} />
+											<input {...form.fields.object.as('hidden', action.object)} />
+											<input
+												{...form.fields.actor.namespace.as(
+													'hidden',
+													typeof action.actor === 'string' ? 'Group' : action.actor.namespace
+												)}
+											/>
+											<input
+												{...form.fields.actor.object.as(
+													'hidden',
+													typeof action.actor === 'string' ? group.id : action.actor.object
+												)}
+											/>
+											<input
+												{...form.fields.actor.relation.as(
+													'hidden',
+													typeof action.actor === 'string' ? '' : action.actor.relation
+												)}
+											/>
+											{#each form.fields.relation.issues() as issue}
+												<p class="issue">{issue.message}</p>
+											{/each}
+											<Input
+												subgrid
+												label={enabled
+													? `Access ${action.object} enabled`
+													: `Access ${action.object} disabled`}
+												layout="horizontal"
+											>
+												<Select
+													{...form.fields.relation.as('select', enabled ? enabled.relation : null)}
+													same_width
+													options={[
+														{ label: 'None', value: null },
+														{ label: 'Viewer', value: 'viewers' },
+														{ label: 'Admin', value: 'admins' }
+													]}
+													onchange={() => {
+														form.submit()
+													}}
+												></Select>
+											</Input>
+										</form>
+									{/each}
+								</div>
+							{/snippet}
+						</CardBlock>
 					{/if}
 				{/if}
 			</div>
@@ -610,5 +782,21 @@
 		background-color: var(--background-muted);
 		padding: 1rem;
 		border: 1px solid var(--border);
+	}
+	.sections {
+		display: grid;
+		grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
+		gap: 1rem;
+	}
+	.section-grid {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: subgrid;
+		gap: 1rem;
+	}
+	.form-grid {
+		grid-column: 1 / -1;
+		display: grid;
+		grid-template-columns: subgrid;
 	}
 </style>

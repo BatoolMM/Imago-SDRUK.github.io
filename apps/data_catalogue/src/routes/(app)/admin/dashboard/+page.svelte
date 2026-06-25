@@ -2,7 +2,16 @@
 	import { page } from '$app/state'
 	import BaseTable from '$lib/ui/tables/base_table.svelte'
 	import CellText from '$lib/ui/tables/cell_text.svelte'
-	import { BaseSection, Button, handleSearchParams, Input, Subtitle, Title } from '@imago/ui'
+	import {
+		ActionBar,
+		BaseSection,
+		Button,
+		Calendar,
+		handleSearchParams,
+		Input,
+		Subtitle,
+		Title
+	} from '@imago/ui'
 	import type { IColumnConfig } from '@svar-ui/svelte-grid'
 	import { DateTime } from 'luxon'
 
@@ -26,19 +35,28 @@
 
 <div class="page">
 	<Title>Downloads</Title>
-	<div class="filters">
-		<input type="date" name="" id="" bind:value={from} />
-		<input type="date" name="" id="" bind:value={to} />
-		<Button
-			href={handleSearchParams({
-				url: page.url,
-				add: [
-					{ key: 'from', value: from, set: true },
-					{ key: 'to', value: to, set: true }
-				]
-			})}>Filter</Button
-		>
-	</div>
+	<ActionBar>
+		{#snippet right()}
+			<div class="filters">
+				<Input width="auto" label="From">
+					<Calendar bind:value={from}></Calendar>
+				</Input>
+				<Input width="auto" label="To">
+					<Calendar bind:value={to}></Calendar>
+				</Input>
+				<Button
+					href={handleSearchParams({
+						url: page.url,
+						add: [
+							{ key: 'from', value: from, set: true },
+							{ key: 'to', value: to, set: true }
+						]
+					})}>Filter</Button
+				>
+			</div>
+		{/snippet}
+	</ActionBar>
+
 	<div class="table-wrapper">
 		<BaseTable data={data.downloads} {columns}></BaseTable>
 	</div>

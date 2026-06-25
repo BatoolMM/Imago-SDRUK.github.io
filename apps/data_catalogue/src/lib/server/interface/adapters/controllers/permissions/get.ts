@@ -1,6 +1,7 @@
 import type { Session } from '$lib/server/entities/models/identity'
-import type { PermissionQuery } from '$lib/server/entities/models/permissions'
+import type { Permission, PermissionQuery } from '$lib/server/entities/models/permissions'
 import {
+	permissionsCheckUseCase,
 	permissionsGetActorsUseCase,
 	permissionsGetUseCase
 } from '$lib/server/application/use_cases/permissions/get'
@@ -53,4 +54,25 @@ export const permissionsGetActorsController = async ({
 		return err(errors)
 	}
 	return ok(actors)
+}
+
+export const permissionsCheckController = async ({
+	permissions,
+	configuration,
+	session
+}: {
+	permissions: Omit<Permission, 'actor'>[]
+	session?: Session
+	configuration: Configuration
+}) => {
+	if (!session) {
+		return err({ reason: 'Unauthenticated' })
+	}
+	const [errors, res] = await permissionsCheckUseCase({
+		...getServerContext({ session, configuration, permissions })
+	})
+	if (errors !== null) {
+		return err(errors)
+	}
+	return ok(res)
 }

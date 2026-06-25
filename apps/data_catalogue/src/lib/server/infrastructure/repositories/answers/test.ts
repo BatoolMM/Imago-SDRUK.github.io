@@ -1,12 +1,15 @@
 import type { IAnswersRepository } from '$lib/server/application/repositories/answers'
 import type { Answer } from '$lib/server/entities/models/questions'
-import { ok } from '$lib/server/entities/errors'
+import { err, ok } from '$lib/server/entities/errors'
 import { DateTime } from 'luxon'
+import { getId } from '@arturoguzman/art-ui'
+
+let mock: Answer[] = []
 
 const createAnswer: IAnswersRepository['createAnswer'] = async ({ data }) => {
 	const answer: Answer = {
 		...data,
-		id: '',
+		id: getId(),
 		number: data.number ?? null,
 		free_text: data.free_text ?? null,
 		bool: data.bool ?? false,
@@ -20,13 +23,14 @@ const createAnswer: IAnswersRepository['createAnswer'] = async ({ data }) => {
 		created_by: data.created_by ?? null,
 		updated_by: data.updated_by ?? null
 	}
+	mock.push(answer)
 	return ok(answer)
 }
 
 const createAnswers: IAnswersRepository['createAnswers'] = async ({ data }) => {
 	const answers: Answer[] = data.map((data) => ({
 		...data,
-		id: '',
+		id: getId(),
 		number: data.number ?? null,
 		free_text: data.free_text ?? null,
 		bool: data.bool ?? false,
@@ -40,51 +44,47 @@ const createAnswers: IAnswersRepository['createAnswers'] = async ({ data }) => {
 		created_by: data.created_by ?? null,
 		updated_by: data.updated_by ?? null
 	}))
-
+	mock = [...mock, ...answers]
 	return ok(answers)
 }
 
 const updateAnswer: IAnswersRepository['updateAnswer'] = async ({ id, data }) => {
-	const answer: Answer = {
-		...data,
-		id: id,
-		number: data.number ?? null,
-		free_text: data.free_text ?? null,
-		bool: data.bool ?? false,
-		time: data.time ?? null,
-		answer: data.answer ?? null,
-		question_reference: data.question_reference ?? null,
-		status: 'published',
-		created_at: DateTime.now().toJSDate(),
-		updated_at: DateTime.now().toJSDate(),
-		deleted_at: null,
-		created_by: data.created_by ?? null,
-		updated_by: data.updated_by ?? null,
-		question: ''
+	const index = mock.findIndex((x) => x.id === id)
+	if (index > -1) {
+		const result = {
+			id: mock[index].id,
+			number: data.number ?? mock[index].number,
+			free_text: data.free_text ?? mock[index].free_text,
+			bool: data.bool ?? mock[index].bool,
+			time: data.time ?? mock[index].time,
+			answer: data.answer ?? mock[index].answer,
+			question_reference: data.question_reference ?? mock[index].question_reference,
+			status: data.status ?? mock[index].status,
+			created_at: mock[index].created_at,
+			updated_at: DateTime.now().toJSDate(),
+			deleted_at: null,
+			created_by: data.created_by ?? mock[index].created_by,
+			updated_by: data.updated_by ?? mock[index].updated_by,
+			question: data.question ?? mock[index].question
+		}
+		mock[index] = result
+		return ok(result)
 	}
-	return ok(answer)
+	return err({ reason: 'Not Found', message: `Answer not found` })
 }
 const getAnswer: IAnswersRepository['getAnswer'] = async ({ id }) => {
-	const answer: Answer = {
-		id: id,
-		number: null,
-		free_text: null,
-		bool: false,
-		time: null,
-		answer: null,
-		question_reference: null,
-		status: 'published',
-		created_at: DateTime.now().toJSDate(),
-		updated_at: DateTime.now().toJSDate(),
-		deleted_at: null,
-		created_by: null,
-		updated_by: null,
-		question: ''
+	const answer = mock.find((x) => x.id === id)
+	if (answer) {
+		return ok(answer)
 	}
-	return ok(answer)
+	return err({ reason: 'Not Found', message: `Answer not found` })
 }
 
-const deleteAnswer: IAnswersRepository['deleteAnswer'] = async () => {
+const deleteAnswer: IAnswersRepository['deleteAnswer'] = async ({ id }) => {
+	const index = mock.findIndex((x) => x.id === id)
+	if (index > -1) {
+		mock = [...mock.slice(0, index), ...mock.slice(index + 1)]
+	}
 	return ok(null)
 }
 

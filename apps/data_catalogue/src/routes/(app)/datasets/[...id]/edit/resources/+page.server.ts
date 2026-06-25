@@ -149,34 +149,6 @@ export const actions = {
 			message: `Datastore updated`
 		}
 	},
-	add_resource: async ({ request, locals }) => {
-		const form = await request.formData()
-		const parsed = parseForm(form) as {
-			name: string
-			description: string
-			type: string
-			package_id: string
-		}
-
-		const [errors, version] = await resourceCreateControllerWithVersion({
-			session: locals.session,
-			configuration: locals.configuration,
-			data: parsed,
-			version_data: {
-				changelog: formGetStringOrUndefined({ form, field: 'changelog' }),
-				version: formGetStringOrUndefined({ form, field: 'version' })
-			}
-		})
-		if (errors !== null) {
-			console.log(errors)
-			return fail(500, { message: errors.message ?? errors.reason })
-		}
-		return {
-			message: 'Resource created, uploading file',
-			url: version.url
-		}
-	},
-
 	delete_resource: async ({ request, locals }) => {
 		const form = await request.formData()
 		const resource_id = formGetStringOrUndefined({ form, field: 'resource_id' })

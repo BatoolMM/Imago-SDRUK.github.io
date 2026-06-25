@@ -20,9 +20,9 @@ export const permissionUpdateUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'edit',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {
@@ -42,18 +42,30 @@ export const permissionUpdateUseCase = async ({
 	}
 
 	if (previous_schema.namespace !== new_schema.namespace) {
-		return err({ reason: 'Invalid Data', message: `Permission must be of the same namespace` })
+		return err({
+			reason: 'Invalid Data',
+			message: `Permission must be of the same namespace`,
+			id: 'namespace-err'
+		})
 	}
 	if (previous_schema.object !== new_schema.object) {
-		return err({ reason: 'Invalid Data', message: `Permission must be of the same object` })
+		return err({
+			reason: 'Invalid Data',
+			message: `Permission must be of the same object`,
+			id: 'object-err'
+		})
 	}
 
 	if (previous_schema.actor !== new_schema.actor) {
-		return err({ reason: 'Invalid Data', message: `Permission must be of the same actor` })
+		return err({
+			reason: 'Invalid Data',
+			message: `Permission must be of the same actor`,
+			id: 'actor-err'
+		})
 	}
 	const [errs_d] = await authorisation_module.deletePermission(previous_schema)
 	if (errs_d) {
-		return err({ reason: 'Unexpected' })
+		return err({ reason: 'Unexpected', error: errs_d })
 	}
 
 	const [errs, permissions] = await authorisation_module.createPermission(new_schema)

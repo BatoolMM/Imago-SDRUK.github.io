@@ -52,15 +52,20 @@ export const metadataGroupsGetController = async ({
 	session: App.Locals['session']
 	configuration: Configuration
 }) => {
+	// if (!session) {
+	// 	const [errors, groups] = await metadataGroupsGetPublicUseCase({
+	// 		groups_service: getGroupsServiceModule(),
+	// 	})
+	// 	if (errors === null) {
+	// 		return ok(groups)
+	// 	}
+	// 	return err(errors)
+	// }
+	//
 	if (!session) {
-		const [errors, groups] = await metadataGroupsGetPublicUseCase({
-			groups_service: getGroupsServiceModule()
-		})
-		if (errors === null) {
-			return ok(groups)
-		}
-		return err(errors)
+		return err({ reason: 'Unauthenticated' })
 	}
+
 	const [errors, groups] = await metadataGroupsGetUseCase({
 		groups_service: getGroupsServiceModule(),
 		...getServerContext({ session, configuration })

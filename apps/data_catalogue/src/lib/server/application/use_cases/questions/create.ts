@@ -49,7 +49,7 @@ export const questionCreateUseCase = async ({
 		updated_at: DateTime.now().toJSDate()
 	})
 	if (validated instanceof type.errors) {
-		return err({ reason: 'Unauthorised', message: validated.summary })
+		return err({ reason: 'Invalid Data', message: validated.summary, id: 'invalid' })
 	}
 
 	const [errs, question] = await questions_repository.createQuestion({ data: validated })

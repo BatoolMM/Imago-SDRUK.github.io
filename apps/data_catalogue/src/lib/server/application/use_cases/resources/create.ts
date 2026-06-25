@@ -286,7 +286,7 @@ export const resourceVersionPipelineCreateUseCase = async ({
 				relation: 'resources',
 				actor: {
 					namespace: 'Resource',
-					object: validated.id,
+					object: validated.resource,
 					relation: ''
 				}
 			}
