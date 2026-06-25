@@ -80,8 +80,8 @@
 						</button>
 					{/each}
 					<div class="notice">
-						<Notice level="info">
-							<Paragraph
+						<Notice level="warning">
+							<Paragraph current_colour
 								>If you run into an issue, please let us know at <a
 									href="mailto:imago@liverpool.ac.uk">imago@liverpool.ac.uk</a
 								></Paragraph
