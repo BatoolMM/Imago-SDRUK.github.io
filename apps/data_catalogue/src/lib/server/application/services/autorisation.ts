@@ -23,6 +23,8 @@ export type IAuthorisationService = {
 		permissions
 	}: {
 		permissions: Permission[]
+		configuration?: Configuration
+		actor: Permission['actor']
 	}) => Promise<[ErrTypes, null] | [null, { results: { allowed: boolean; error?: string }[] }]>
 
 	createPermission: ({
