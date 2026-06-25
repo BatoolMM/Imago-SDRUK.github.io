@@ -1,10 +1,11 @@
 import type { IDownloadsRepository } from '$lib/server/application/repositories/downloads'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { IDatasetService } from '$lib/server/application/services/dataset'
-import type { Resource } from '$lib/server/entities/models/datasets'
 import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { AppContext } from '$lib/server/application/context'
 import { DateTime } from 'luxon'
+import type { IResourceRepository } from '$lib/server/application/repositories/resource'
+import type { Resource } from '$lib/server/entities/models/resources'
 
 export const downloadsGetByDatasetUseCase = async ({
 	id,
@@ -76,12 +77,14 @@ export const downloadsGetByDatasetUseCase = async ({
 export const dowloadsGetAggregatesUseCase = async ({
 	from,
 	to,
-	downloads_repository
+	downloads_repository,
+	resource_repository
 }: {
 	from: string
 	to: string
 	downloads_repository: IDownloadsRepository
 	authorisation_module: IAuthorisationService
+	resource_repository: IResourceRepository
 } & AppContext) => {
 	const _to = getDate(to)
 	const _from = getDate(from)
@@ -92,7 +95,26 @@ export const dowloadsGetAggregatesUseCase = async ({
 	if (downloads_error !== null) {
 		return err(downloads_error)
 	}
-	return ok(downloads)
+	const enriched = await Promise.all(
+		downloads.map((download) =>
+			resource_repository.getResource({ id: download.resource_id }).then(([errors, resource]) => {
+				if (errors !== null) {
+					return err(errors)
+				}
+				return ok({ ...resource, downloads: download.count })
+			})
+		)
+	)
+	const result = enriched.reduce(
+		(acc, [errors, data]) => {
+			if (errors === null) {
+				acc.push(data)
+			}
+			return acc
+		},
+		[] as (Resource & { downloads: number })[]
+	)
+	return ok(result)
 }
 
 const getDate = (str: string) => {
@@ -106,3 +128,15 @@ const getDate = (str: string) => {
 		return DateTime.now().toJSDate()
 	}
 }
+
+// const reduceAggregates = <T>(
+// 	acc: { errors: ErrTypes[]; data: T[] },
+// 	el: [ErrTypes, null] | [null, T]
+// ) => {
+// 	if (el[0] !== null) {
+// 		acc.errors.push(el[0])
+// 		return acc
+// 	}
+// 	acc.data.push(el[1])
+// 	return acc
+// }
