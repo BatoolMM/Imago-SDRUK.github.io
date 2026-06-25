@@ -3,7 +3,7 @@ import type { Dataset, DatasetActivity, DatasetRequest } from '$lib/server/entit
 
 export type IDatasetService = {
 	getDataset: ({ id }: { id: string }) => Promise<[ErrTypes, null] | [null, Dataset | null]>
-	getDatasetsCount: () => Promise<[ErrTypes, null] | [null, number | null]>
+	getDatasetsCount: () => Promise<[ErrTypes, null] | [null, number]>
 	getDatasetActivity: ({
 		id
 	}: {

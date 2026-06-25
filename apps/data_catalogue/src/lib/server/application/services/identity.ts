@@ -1,7 +1,7 @@
 import type { ErrTypes } from '$lib/server/entities/errors'
-import type { Session } from '$lib/server/entities/models/identity'
+import type { Session, Identity, CreateIdentityBody } from '$lib/server/entities/models/identity'
 import type { IdentityFlow, IdentitySession } from '$lib/utils/auth/types'
-import type { CreateIdentityBody, Identity } from '@ory/client-fetch'
+// import type { Identity } from '@ory/client-fetch'
 
 type ActionRedirect = {
 	action: 'redirect'
