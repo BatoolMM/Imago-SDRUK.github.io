@@ -86,7 +86,7 @@ export const metadataGroupsGetPublicUseCase = async ({
 		return err(errs)
 	}
 	if (!groups) {
-		return err({ reason: 'Not Found' })
+		return err({ reason: 'Not Found', message: `Groups not found` })
 	}
 
 	// TODO: add get user groups logic

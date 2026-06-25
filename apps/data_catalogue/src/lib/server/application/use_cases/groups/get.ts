@@ -3,46 +3,34 @@ import type { IGroupsRepository } from '$lib/server/application/repositories/gro
 import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok } from '$lib/server/entities/errors'
 
-export const groupGetPublicUseCase = async ({
-	id,
-	groups_repository
-}: {
-	id: string
-	groups_repository: IGroupsRepository
-}) => {
-	const [errors, service_group] = await groups_repository.getGroup({ id })
-	const [rg_errors] = await groups_repository.getGroup({ id })
-	if (errors !== null) {
-		return err(errors)
-	}
-	if (rg_errors !== null) {
-		return err(rg_errors)
-	}
-
-	return ok(service_group)
-}
-
 export const groupGetUseCase = async ({
 	id,
 	session,
 	groups_repository,
 	configuration,
-	authorisation_module
+	authorisation_module,
+	permissions
 }: {
 	id: string
 	groups_repository: IGroupsRepository
 } & AppContext) => {
-	const [errors, permission] = await authorisation_module.authorise({
-		actor: session.identity.id,
-		namespace: 'Group',
-		object: id,
-		permits: 'users',
-		configuration
+	const [errors, permission] = await authorisation_module.batchAuthorise({
+		permissions: [
+			{
+				actor: session.identity.id,
+				namespace: 'Group',
+				object: id,
+				permits: 'members'
+			},
+			...(permissions?.map((x) => ({ ...x, actor: session.identity.id })) ?? [])
+		],
+		configuration,
+		actor: session.identity.id
 	})
 	if (errors) {
 		return err(errors)
 	}
-	if (!permission.allowed) {
+	if (!permission.results.some((res) => res.allowed)) {
 		return err({ reason: 'Unauthorised' })
 	}
 	const [rg_errors, group] = await groups_repository.getGroup({ id })
@@ -65,7 +53,7 @@ export const groupsGetUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'groups',
 		permits: 'read',
 		configuration
@@ -102,7 +90,7 @@ export const groupGetUsersUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'groups',
 		permits: 'read',
 		configuration

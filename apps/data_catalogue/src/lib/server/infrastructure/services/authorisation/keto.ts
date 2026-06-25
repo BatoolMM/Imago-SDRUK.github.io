@@ -5,6 +5,7 @@ import { env } from '$env/dynamic/private'
 import { RelationshipApi, Configuration, PermissionApi } from '@ory/client-fetch'
 import { err, ok } from '$lib/server/entities/errors'
 import type { Permission, Relationship } from '$lib/server/entities/models/permissions'
+import { jstr } from '@arturoguzman/art-ui'
 
 export const ketoWrite = new RelationshipApi(
 	new Configuration({
@@ -106,18 +107,36 @@ const authorise: IAuthorisationService['authorise'] = async ({
 		log.trace({ namespace, object, permits, actor, permission: value })
 		return ok(value)
 	} catch (_err) {
+		console.log(_err)
 		log.trace({ namespace, object, permits, actor, message: 'permissions error', errors: _err })
 		return err({ reason: 'Unexpected', error: _err })
 	}
 }
 
-const batchAuthorise: IAuthorisationService['batchAuthorise'] = async ({ permissions }) => {
+const batchAuthorise: IAuthorisationService['batchAuthorise'] = async ({
+	permissions,
+	configuration,
+	actor
+}) => {
 	try {
 		log.trace({
 			message: `Evaluating`,
 			permissions
 		})
+		if (
+			configuration &&
+			configuration.superusers?.includes(typeof actor === 'string' ? actor : actor.object)
+		) {
+			const results = permissions.map(({ actor }) =>
+				configuration.superusers?.includes(typeof actor === 'string' ? actor : actor.object)
+					? { allowed: true }
+					: { allowed: false }
+			)
+			log.trace({ allowed: true, method: 'superuser' })
+			return ok({ results })
+		}
 		const payload = permissions.map(permissionToKetoUnderscore)
+		console.log(jstr(payload))
 		const result = await ketoCheck.batchCheckPermission({
 			batchCheckPermissionBody: { tuples: payload }
 		})

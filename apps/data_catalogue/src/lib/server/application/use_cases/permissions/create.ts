@@ -16,9 +16,9 @@ export const permissionCreateUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'create',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {
@@ -48,9 +48,9 @@ export const permissionsCreateUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'create',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {

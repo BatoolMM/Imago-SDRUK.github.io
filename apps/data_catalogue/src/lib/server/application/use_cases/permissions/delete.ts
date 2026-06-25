@@ -16,9 +16,9 @@ export const permissionResetNamespaceUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'delete',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {
@@ -44,9 +44,9 @@ export const permissionDeleteUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'delete',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {
@@ -76,9 +76,9 @@ export const permissionsDeleteUseCase = async ({
 } & AppContext) => {
 	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
-		namespace: 'Action',
+		namespace: 'Application',
 		object: 'permissions',
-		permits: 'create',
+		permits: 'manage',
 		configuration
 	})
 	if (errors) {

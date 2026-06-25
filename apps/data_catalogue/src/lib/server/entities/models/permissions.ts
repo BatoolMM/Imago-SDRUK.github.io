@@ -79,6 +79,7 @@ export interface Relationships {
 }
 
 type AvailableNamespaces =
+	| 'Application'
 	| 'Answer'
 	| 'Question'
 	| 'ResourceVersion'
@@ -89,7 +90,7 @@ type AvailableNamespaces =
 	| 'User'
 
 const AvailableNamespaces = type(
-	'"Answer" | "Question" | "ResourceVersion" | "Resource" | "Dataset" | "Group" | "User" | "Action" '
+	' "Application" | "Answer" | "Question" | "ResourceVersion" | "Resource" | "Dataset" | "Group" | "User" | "Action"'
 )
 
 const Actor = type({

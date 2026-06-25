@@ -1,6 +1,7 @@
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import {
 	PermissionQuerySchema,
+	type Permission,
 	type PermissionRequest
 } from '$lib/server/entities/models/permissions'
 import { type } from 'arktype'
@@ -10,6 +11,25 @@ import type { IIdentityService } from '$lib/server/application/services/identity
 import type { User } from '$lib/server/entities/models/users'
 import type { AppContext } from '$lib/server/application/context'
 
+export const permissionsCheckUseCase = async ({
+	permissions,
+	session,
+	configuration,
+	authorisation_module
+}: {
+	permissions?: Omit<Permission, 'actor'>[]
+} & AppContext) => {
+	const [result_errors, results] = await authorisation_module.batchAuthorise({
+		permissions: permissions?.map((p) => ({ ...p, actor: session.identity.id })) ?? [],
+		configuration,
+		actor: session.identity.id
+	})
+	if (result_errors !== null) {
+		return err(result_errors)
+	}
+	return ok(results)
+}
+
 export const permissionsGetUseCase = async ({
 	data,
 	session,
@@ -18,19 +38,6 @@ export const permissionsGetUseCase = async ({
 }: {
 	data: unknown
 } & AppContext) => {
-	const [errors, permission] = await authorisation_module.authorise({
-		actor: session.identity.id,
-		namespace: 'Action',
-		object: 'permissions',
-		permits: 'read',
-		configuration
-	})
-	if (errors) {
-		return err(errors)
-	}
-	if (!permission.allowed) {
-		return err({ reason: 'Unauthorised' })
-	}
 	const schema = PermissionQuerySchema(data)
 	if (schema instanceof type.errors) {
 		return err({ reason: 'Invalid Data', message: schema.summary, id: 'invalid-data' })
@@ -54,19 +61,6 @@ export const permissionsGetActorsUseCase = async ({
 	users_repository: IUsersRepository
 	identity_service: IIdentityService
 } & AppContext) => {
-	const [errors, permission] = await authorisation_module.authorise({
-		actor: session.identity.id,
-		namespace: 'Action',
-		object: 'permissions',
-		permits: 'read',
-		configuration
-	})
-	if (errors) {
-		return err(errors)
-	}
-	if (!permission.allowed) {
-		return err({ reason: 'Unauthorised' })
-	}
 	const [groups_err, groups] = await groups_repository.getGroups({ limit: 999, offset: 0 })
 	if (groups_err !== null) {
 		return err(groups_err)
