@@ -2,40 +2,8 @@
 	import { page } from '$app/state'
 	import { BaseSection, Button, Title, type Routes } from '@imago/ui'
 
-	let { children } = $props()
-	const dashboard_routes: Routes = [{ label: 'Dashboard', href: '/admin/dashboard', subpaths: [] }]
-	const settings_routes: Routes = [
-		{ label: 'Datasets', href: '/admin/settings/datasets', subpaths: [] },
-		{ label: 'Groups', href: '/admin/settings/groups', subpaths: [] },
-		{
-			label: 'Permissions',
-			href: '/admin/settings/permissions',
-			subpaths: [
-				// {
-				// 	label: 'Datasets',
-				// 	href: `/admin/settings/permissions/datasets`
-				// },
-				// {
-				// 	label: 'Endpoints',
-				// 	href: `/admin/settings/permissions/endpoints`
-				// },
-				// {
-				// 	label: 'Groups',
-				// 	href: `/admin/settings/permissions/groups`
-				// },
-				// {
-				// 	label: 'Resources',
-				// 	href: `/admin/settings/permissions/resources`
-				// },
-				// {
-				// 	label: 'Users',
-				// 	href: `/admin/settings/permissions/users`
-				// }
-			]
-		},
-		{ label: 'Registration', href: '/admin/settings/registration', subpaths: [] },
-		{ label: 'Users', href: '/admin/settings/users', subpaths: [] }
-	]
+	let { children, data } = $props()
+	const allowed_groups = ['settings', 'dashboard']
 </script>
 
 <BaseSection style="extra-large">
@@ -49,7 +17,7 @@
 			<!-- 		>{label}</Button -->
 			<!-- 	> -->
 			<!-- {/each} -->
-			{#each dashboard_routes as { label, href, subpaths }}
+			{#each data.routes.filter( (x) => allowed_groups.includes(x.label.toLowerCase()) ) as { label, href, subpaths }}
 				<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
 					>{label}</Button
 				>
@@ -65,22 +33,22 @@
 					{/if}
 				{/if}
 			{/each}
-			{#each settings_routes as { label, href, subpaths }}
-				<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
-					>{label}</Button
-				>
-				{#if page.url.pathname.startsWith(href)}
-					{#if subpaths && subpaths.length > 0}
-						<div class="subpaths">
-							{#each subpaths as { label, href }}
-								<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href}
-									>{label}</Button
-								>
-							{/each}
-						</div>
-					{/if}
-				{/if}
-			{/each}
+			<!-- {#each settings_routes as { label, href, subpaths }} -->
+			<!-- 	<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href} -->
+			<!-- 		>{label}</Button -->
+			<!-- 	> -->
+			<!-- 	{#if page.url.pathname.startsWith(href)} -->
+			<!-- 		{#if subpaths && subpaths.length > 0} -->
+			<!-- 			<div class="subpaths"> -->
+			<!-- 				{#each subpaths as { label, href }} -->
+			<!-- 					<Button style="nav" active={page.url.pathname.startsWith(href)} line_clamp {href} -->
+			<!-- 						>{label}</Button -->
+			<!-- 					> -->
+			<!-- 				{/each} -->
+			<!-- 			</div> -->
+			<!-- 		{/if} -->
+			<!-- 	{/if} -->
+			<!-- {/each} -->
 		</nav>
 		<div class="content">
 			{@render children()}
