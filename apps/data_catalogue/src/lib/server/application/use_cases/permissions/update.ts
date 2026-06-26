@@ -55,8 +55,9 @@ export const permissionUpdateUseCase = async ({
 			id: 'object-err'
 		})
 	}
-
-	if (previous_schema.actor !== new_schema.actor) {
+	const previous_actor = JSON.stringify(previous_schema.actor)
+	const new_actor = JSON.stringify(new_schema.actor)
+	if (previous_actor !== new_actor) {
 		return err({
 			reason: 'Invalid Data',
 			message: `Permission must be of the same actor`,
