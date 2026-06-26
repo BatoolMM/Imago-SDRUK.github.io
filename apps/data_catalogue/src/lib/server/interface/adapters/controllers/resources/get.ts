@@ -35,6 +35,7 @@ export const resourceGetController = async ({
 		log.error({ controller: 'resourceGetController', errors })
 		return err(errors)
 	}
+	// TODO: this should be moved outside of the application/controller
 	const versions = resource.versions.map((version) => ({
 		...version,
 		url: `/api/v1/resources/${resource.id}?version=${version.id}`

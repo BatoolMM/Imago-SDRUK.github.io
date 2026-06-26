@@ -11,15 +11,23 @@
 <div class="dataset-layout">
 	<nav>
 		{#each data.subroutes as { href, label }}
-			<Button active={page.url.pathname === href} {href}>{label}</Button>
+			{#if label === 'Delete'}
+				<Button
+					onclick={() => {
+						toggleDialog('dataset-delete')
+					}}>Delete</Button
+				>
+			{:else}
+				<Button active={page.url.pathname === href} {href}>{label}</Button>
+			{/if}
 		{/each}
 
 		{#if data.subroutes.length > 0}
-			<Button
-				onclick={() => {
-					toggleDialog('dataset-delete')
-				}}>Delete</Button
-			>
+			<!-- <Button -->
+			<!-- 	onclick={() => { -->
+			<!-- 		toggleDialog('dataset-delete') -->
+			<!-- 	}}>Delete</Button -->
+			<!-- > -->
 		{/if}
 	</nav>
 	<div class="dataset">

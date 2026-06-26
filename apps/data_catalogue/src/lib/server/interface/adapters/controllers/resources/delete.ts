@@ -37,7 +37,6 @@ export const resourceDeleteController = async ({
 		id: resource_id,
 		resource_service: getResourceServiceModule(),
 		datastore_service: getDatastoreModule(),
-		storage_service: getStorageModule(),
 		...getServerContext({ session, configuration })
 	})
 	if (s_errors !== null) {

@@ -1,3 +1,4 @@
+import { errFmt } from '$lib/server/entities/errors.js'
 import {
 	datasetGetController,
 	datasetGetUserPermissionsController
@@ -18,7 +19,7 @@ export const load = async ({ locals, params }) => {
 		if (errs.reason === 'Unauthorised') {
 			redirect(307, '/datasets')
 		}
-		error(400, { message: `There's been an error retreiving this dataset`, id: '' })
+		error(...errFmt(errs))
 	}
 	if (dataset === null) {
 		error(404, { message: `Not found`, id: 'not-found' })
@@ -30,11 +31,14 @@ export const load = async ({ locals, params }) => {
 		id: dataset.id
 	})
 	if (errors !== null) {
-		return error(400, { message: errors.reason, id: errors.reason })
+		return error(...errFmt(errors))
 	}
 	if (permits.includes('edit')) {
 		subroutes.push({ label: 'Preview', href: `/datasets/${params.id}` })
 		subroutes.push({ label: 'Edit', href: `/datasets/${params.id}/edit` })
+	}
+	if (permits.includes('delete')) {
+		subroutes.push({ label: 'Delete', href: `/datasets/${params.id}` })
 	}
 	return {
 		dataset,
