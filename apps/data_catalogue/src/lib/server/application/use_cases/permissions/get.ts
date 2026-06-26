@@ -32,8 +32,6 @@ export const permissionsCheckUseCase = async ({
 
 export const permissionsGetUseCase = async ({
 	data,
-	session,
-	configuration,
 	authorisation_module
 }: {
 	data: unknown
@@ -50,12 +48,9 @@ export const permissionsGetUseCase = async ({
 }
 
 export const permissionsGetActorsUseCase = async ({
-	session,
 	groups_repository,
 	users_repository,
-	identity_service,
-	configuration,
-	authorisation_module
+	identity_service
 }: {
 	groups_repository: IGroupsRepository
 	users_repository: IUsersRepository
@@ -128,4 +123,23 @@ export const permissionsGetActorsUseCase = async ({
 		{ label: 'Public', actor: 'anonymous' }
 	]
 	return ok(parsed)
+}
+
+export const permissionCheckUseCase = async ({
+	permission,
+	session,
+	configuration,
+	authorisation_module
+}: {
+	permission: Omit<Permission, 'actor'>
+} & AppContext) => {
+	const [result_errors, result] = await authorisation_module.authorise({
+		...permission,
+		configuration,
+		actor: session.identity.id
+	})
+	if (result_errors !== null) {
+		return err(result_errors)
+	}
+	return ok(result)
 }

@@ -104,13 +104,15 @@
 						<Subtitle>{data.resource?.name}</Subtitle>
 					{/snippet}
 					{#snippet right()}
-						<Button
-							onclick={() => {
-								toggleDialog('delete-resource')
-							}}
-						>
-							<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
-						</Button>
+						{#if data.allow_delete}
+							<Button
+								onclick={() => {
+									toggleDialog('delete-resource')
+								}}
+							>
+								<Icon icon={{ icon: 'trash', set: 'tabler' }}></Icon>
+							</Button>
+						{/if}
 					{/snippet}
 				</ActionBar>
 				<Facts record={data.resource ?? {}} {keys}></Facts>

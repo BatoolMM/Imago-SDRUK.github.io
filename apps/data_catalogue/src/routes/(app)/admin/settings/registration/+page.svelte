@@ -85,7 +85,12 @@
 	<div class="right-col">
 		<Title size="md">Existing questions</Title>
 		{#each questions as question, index (question.id)}
-			<CardQuestion {questions} bind:question={questions[index]} bind:sorting></CardQuestion>
+			<CardQuestion
+				allow_manage={data.allow_manage}
+				{questions}
+				bind:question={questions[index]}
+				bind:sorting
+			></CardQuestion>
 		{/each}
 	</div>
 </div>

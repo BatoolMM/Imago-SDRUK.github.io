@@ -5,11 +5,19 @@ import { ckanWrapper, handleCkanError } from '$lib/server/infrastructure/utils/s
 import { create, createCkanClient, get, remove } from '$lib/utils/ckan/ckan'
 
 const getResource: IResourceService['getResource'] = async ({ id }) => {
-	const ckan = createCkanClient({
-		url: env.CKAN_URL,
-		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
-	})
-	return ckanWrapper(() => ckan.request(get('resource_show', { id })))
+	try {
+		const ckan = createCkanClient({
+			url: env.CKAN_URL,
+			token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
+		})
+		const res = await ckan.request(get('resource_show', { id }))
+		if (res.success) {
+			return ok(res.result)
+		}
+		return err({ reason: 'Not Found', message: `Not found` })
+	} catch (error) {
+		return err({ reason: 'Unexpected', error })
+	}
 }
 
 const getResources: IResourceService['getResources'] = async ({ id }) => {

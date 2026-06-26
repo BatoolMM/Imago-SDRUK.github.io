@@ -18,10 +18,14 @@ import type {
 	ResourceVersion
 } from '$lib/server/entities/models/resources.js'
 import type { CSVW } from '$lib/types/csvw.js'
-import { err, ok } from '$lib/server/entities/errors.js'
+import { err, errFmt, ok } from '$lib/server/entities/errors.js'
 import { datastoreCreateController } from '$lib/server/interface/adapters/controllers/datastore/create.js'
 import { jstr } from '@arturoguzman/art-ui'
 import { datastoreResetController } from '$lib/server/interface/adapters/controllers/datastore/delete.js'
+import {
+	permissionCheckController,
+	permissionsCheckController
+} from '$lib/server/interface/adapters/controllers/permissions/get.js'
 
 export const load = async ({ locals, parent, url }) => {
 	const { permits, dataset } = await parent()
@@ -37,6 +41,7 @@ export const load = async ({ locals, parent, url }) => {
 		  })
 		| null = null
 	const edit = url.searchParams.get('edit')
+	let allow_delete = false
 	if (edit) {
 		resource = await resourceGetController({
 			id: edit,
@@ -44,14 +49,25 @@ export const load = async ({ locals, parent, url }) => {
 			session: locals.session
 		}).then(([errors, users]) => {
 			if (errors !== null) {
-				error(500, { message: errors.reason, id: errors.reason })
+				error(...errFmt(errors))
 			}
 			return users
 		})
+		const [allow_errors, allow] = await permissionCheckController({
+			configuration: locals.configuration,
+			session: locals.session,
+			permission: {
+				namespace: 'Resource',
+				object: edit,
+				permits: 'delete'
+			}
+		})
+		allow_delete = allow?.allowed ?? false
 	}
 	return {
 		dataset,
-		resource
+		resource,
+		allow_delete
 	}
 }
 

@@ -1,0 +1,31 @@
+<script lang="ts">
+	import { page } from '$app/state'
+	import { NAV_HEIGHT } from '$lib/globals/style'
+	import { Title } from '@imago/ui'
+</script>
+
+<div class="error-section" style:--nav-height={NAV_HEIGHT}>
+	<div class="error-message">
+		<Title text={`${page.status} ${page.error?.message}`}></Title>
+		<div class="button-container"></div>
+	</div>
+</div>
+
+<style>
+	.error-section {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+	}
+	.error-message {
+		width: min(100% - 2rem, 600px);
+		margin-inline: auto;
+		text-align: center;
+	}
+	.button-container {
+		margin: 2rem 0;
+		display: flex;
+		justify-content: center;
+	}
+</style>
