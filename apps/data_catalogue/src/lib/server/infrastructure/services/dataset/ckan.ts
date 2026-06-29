@@ -152,7 +152,7 @@ const deleteDataset: IDatasetService['deleteDataset'] = async ({ id }) => {
 			url: env.CKAN_URL,
 			token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined
 		})
-		const dataset = await ckan.request(remove('package_delete', { id }))
+		const dataset = await ckan.request(remove('dataset_purge', { id }))
 		if (!dataset.success) {
 			return err(handleCkanError(dataset, 'deleteDataset'))
 		}
