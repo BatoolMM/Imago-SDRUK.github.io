@@ -100,7 +100,7 @@ export const DatasetSchema = type({
 	'name?': 'string',
 	'owner_org?': 'string',
 	'private?': 'boolean',
-	'state?': '"draft" | "published"',
+	'state?': '"draft" | "active"',
 	'type?': 'string',
 	'creator_user_id?': 'string | null',
 	'isopen?': 'boolean',
