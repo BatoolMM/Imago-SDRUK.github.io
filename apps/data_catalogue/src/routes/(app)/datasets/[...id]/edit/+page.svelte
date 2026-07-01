@@ -110,6 +110,25 @@
 									<Text name="version" bind:value={ctx.dataset.version}></Text>
 								</Input>
 							</InputBlock>
+
+							<InputBlock design="row">
+								<Input label="State">
+									<Select
+										name="state"
+										bind:value={ctx.dataset.state}
+										options={[
+											{
+												label: 'Draft',
+												value: 'draft'
+											},
+											{
+												label: 'Active',
+												value: 'active'
+											}
+										]}
+									></Select>
+								</Input>
+							</InputBlock>
 							<Subtitle>Metadata</Subtitle>
 							{#each ctx.dataset.extras as extra (extra)}
 								<Input label={labels[extra.key]}>
