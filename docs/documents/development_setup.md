@@ -37,7 +37,7 @@ flowchart TD
     B --> C("`Run /scripts/db/* to initialise the databases (otherwise manually create the databases)`")
 ```
 
-CKAN and friends:
+[CKAN and friends](https://github.com/Imago-SDRUK/ckan):
 
 ```mermaid
 flowchart TD
@@ -46,7 +46,7 @@ flowchart TD
     C --> D[Run docker-compose.yml file]
 ```
 
-Ory Kratos & Ory Keto:
+[Ory Kratos & Ory Keto](https://github.com/artgpz/imago-ory):
 
 ```mermaid
 flowchart TD
@@ -55,7 +55,7 @@ flowchart TD
     C --> D[Run docker-compose.yml file]
 ```
 
-Monorepo:
+Imago web:
 
 ```mermaid
 flowchart TD
@@ -77,6 +77,7 @@ Before you begin, ensure you have the following installed:
 - **PNPM**: [ˆ11](#pnpm-and-nodejs)
 - **Node.JS**: [LTS](#pnpm-and-nodejs)
 - **PostgreSQL**: [Postgis ˆ18](#postgres)
+- Docker
 
 ### PNPM and NodeJS
 
