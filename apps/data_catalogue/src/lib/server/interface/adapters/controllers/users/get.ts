@@ -80,6 +80,7 @@ export const userGetMeController = async ({
 		...getServerContext({ session, configuration })
 	})
 	let _user = user
+	// HACK: might need to move this somewhere else...?
 	if (errors?.reason === 'Not Found' && !_user) {
 		const [errors] = await userCreateController({
 			configuration,

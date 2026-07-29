@@ -4,11 +4,8 @@ import type { IIdentityService } from '$lib/server/application/services/identity
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
-import { users, type User } from '$lib/server/entities/models/users'
+import { type User } from '$lib/server/entities/models/users'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
-import { log } from '$lib/utils/server/logger'
-import { type } from 'arktype'
-import { createInsertSchema } from 'drizzle-arktype'
 
 export const userGetUseCase = async ({
 	id,
