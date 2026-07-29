@@ -150,7 +150,7 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 			redirect(307, `/user/register`)
 		}
 		if (profile.status === 'preregister' || profile.status === 'draft') {
-			if (event.url.pathname !== '/user/register') {
+			if (event.url.pathname !== '/user/register' && event.url.pathname !== '/auth/logout') {
 				log.warn(`redirect user to /user/register as profile exists but status is preregister`)
 				redirect(307, `/user/register`)
 			}

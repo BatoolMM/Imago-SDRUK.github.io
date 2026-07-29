@@ -1,10 +1,14 @@
 import type { IUsersRepository } from '$lib/server/application/repositories/users'
+import type { IAuthorisationService } from '$lib/server/application/services/autorisation'
 import type { IIdentityService } from '$lib/server/application/services/identity'
 import { err, ok, type ErrTypes } from '$lib/server/entities/errors'
 import type { Configuration } from '$lib/server/entities/models/configuration'
 import type { Session } from '$lib/server/entities/models/identity'
-import type { User } from '$lib/server/entities/models/users'
+import { users, type User } from '$lib/server/entities/models/users'
 import { getAuthorisationModule } from '$lib/server/modules/authorisation'
+import { log } from '$lib/utils/server/logger'
+import { type } from 'arktype'
+import { createInsertSchema } from 'drizzle-arktype'
 
 export const userGetUseCase = async ({
 	id,
@@ -66,14 +70,34 @@ export const userGetMeUseCase = async ({
 	user_repository,
 	identity_service,
 	session,
-	configuration
+	configuration,
+	authorisation_module
 }: {
 	session: Session
 	user_repository: IUsersRepository
 	identity_service: IIdentityService
 	configuration: Configuration
+	authorisation_module: IAuthorisationService
 }) => {
-	const [errors, permission] = await getAuthorisationModule().authorise({
+	const [errs_identity, identity] = await identity_service.getIdentity({ id: session.identity.id })
+	if (errs_identity !== null) {
+		return err({ reason: 'Unauthorised' })
+	}
+	if (identity === null) {
+		return err({ reason: 'Unauthorised' })
+	}
+	if (!identity.verified) {
+		return err({ reason: 'Invalid Data', message: 'Identity not verified', id: 'not-verified' })
+	}
+
+	const [errs, user] = await user_repository.getUser({ id: session.identity.id })
+	if (errs !== null) {
+		return err(errs)
+	}
+	if (user === null) {
+		return err({ reason: 'Not Found', message: 'User not found' })
+	}
+	const [errors, permission] = await authorisation_module.authorise({
 		actor: session.identity.id,
 		namespace: 'User',
 		object: session.identity.id,
@@ -84,25 +108,6 @@ export const userGetMeUseCase = async ({
 		return err(errors)
 	}
 	if (!permission.allowed) {
-		return err({ reason: 'Unauthorised' })
-	}
-	const [errs, user] = await user_repository.getUser({ id: session.identity.id })
-	if (errs !== null) {
-		// TODO: check if identity exists - this must be done
-		// if identity doesnt exist throw err
-		// if identity exists and not verified redir to verification
-		// if identity and verified create user
-		return err(errs)
-	}
-	if (!user) {
-		return err({ reason: 'Not Found', message: 'User not found' })
-	}
-	const [errs_identity, identity] = await identity_service.getIdentity({ id: session.identity.id })
-	if (errs_identity !== null) {
-		return err({ reason: 'Unauthorised' })
-	}
-
-	if (identity === null) {
 		return err({ reason: 'Unauthorised' })
 	}
 	return ok({
