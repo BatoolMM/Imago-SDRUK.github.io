@@ -4,13 +4,10 @@ import { createCkanClient } from '$lib/utils/ckan/ckan'
 import { getId } from '@arturoguzman/art-ui'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
-import { COOKIES } from '$lib/globals/server'
 import { log } from '$lib/utils/server/logger'
 
 import { runMigration } from '$lib/db/migrate'
 import { DateTime } from 'luxon'
-// import { createUser } from '$lib/server/application/use_cases/users/user_create'
-import { authenticationServiceInfrastructure } from '$lib/server/infrastructure/services/authentication'
 import { userGetMeController } from '$lib/server/interface/adapters/controllers/users/get'
 import type { ServerInit } from '@sveltejs/kit'
 import { configurationGetController } from '$lib/server/interface/adapters/controllers/configuration/get'
@@ -150,7 +147,7 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 			redirect(307, `/user/register`)
 		}
 		if (profile.status === 'preregister' || profile.status === 'draft') {
-			if (event.url.pathname !== '/user/register') {
+			if (event.url.pathname !== '/user/register' && event.url.pathname !== '/auth/logout') {
 				log.warn(`redirect user to /user/register as profile exists but status is preregister`)
 				redirect(307, `/user/register`)
 			}
