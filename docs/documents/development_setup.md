@@ -24,6 +24,52 @@ For data catalogue:
 
 ## Setup
 
+### Overview
+
+Recommended steps
+
+Postgres:
+
+```mermaid
+flowchart TD
+    A["`Install postgres (if not installed)`"]
+    A --> B(Configure your server)
+    B --> C("`Run /scripts/db/* to initialise the databases (otherwise manually create the databases)`")
+```
+
+CKAN and friends:
+
+```mermaid
+flowchart TD
+    A["`Install docker (if not installed)`"] -->| | B(Clone repository)
+    B --> C(Setup .env file)
+    C --> D[Run docker-compose.yml file]
+```
+
+Ory Kratos & Ory Keto:
+
+```mermaid
+flowchart TD
+    A["`Install docker (if not installed)`"] -->| | B(Clone repository)
+    B --> C(Setup .env file)
+    C --> D[Run docker-compose.yml file]
+```
+
+Monorepo:
+
+```mermaid
+flowchart TD
+    A[Install pnpm, node] -->| | B(Clone repository)
+    B --> C(Install dependencies)
+    C -->|CMS| D[Setup .env file]
+    C -->|Data catalogue| E[Setup .env file]
+    C -->|Website| F[Setup .env file]
+    D --> G
+    E --> G
+    F --> G
+    G(Run monorepo from root folder)
+```
+
 ### Requirements
 
 Before you begin, ensure you have the following installed:
@@ -53,6 +99,8 @@ We're using version 18. Install as [per their instructions](https://www.postgres
 
 > [!NOTE]
 > Directus requires a [Postgis](https://github.com/postgis/docker-postgis) image to be used for geometry support.
+
+If you choose to have one Postgres server to host all the required databases, you can use the scripts located in /scripts/db to initialise your development environment. Please ask a teammate for the required credentials.
 
 ### Services
 
