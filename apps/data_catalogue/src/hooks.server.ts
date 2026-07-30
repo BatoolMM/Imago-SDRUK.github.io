@@ -137,7 +137,8 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 	if (
 		event.locals.session &&
 		event.locals.session.identity &&
-		event.locals.session.identity.id !== 'anonymous'
+		event.locals.session.identity.id !== 'anonymous' &&
+		event.url.pathname !== '/auth/verification'
 	) {
 		const [error, profile] = await userGetMeController({
 			session: event.locals.session,
