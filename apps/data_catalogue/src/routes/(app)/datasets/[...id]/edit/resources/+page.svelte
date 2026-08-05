@@ -450,7 +450,7 @@
 					{...updateResourceService.fields.description.as('text', data.resource?.description ?? '')}
 				></Textarea>
 			</Input>
-			<Input label="Format">
+			<Input label="MIMEType">
 				{#snippet message()}
 					{#each updateResourceService.fields.mimetype.issues() as issue}
 						<Paragraph size="xs">{issue.message}</Paragraph>
