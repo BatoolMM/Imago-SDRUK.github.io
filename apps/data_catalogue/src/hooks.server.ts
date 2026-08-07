@@ -107,6 +107,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	const cookie = event.cookies.get('ory_kratos_session')
 	const token = event.request.headers.get('authorization')
 	if ((cookie || token) && !event.url.pathname.startsWith('/auth/login')) {
+		log.trace({ message: `cookie or token exist and pathname is not /auth/login` })
 		const session = await identityValidateSessionController({
 			cookie,
 			token
@@ -114,12 +115,14 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		if ('session' in session) {
 			event.locals.session = session.session
 			if (session.session.redirect_browser_to) {
+				log.trace({ message: `applying a redirec to` })
 				redirect(303, session.session.redirect_browser_to)
 			}
 			return resolve(event)
 		}
 		const { action } = session
 		if (action === 'invalidate') {
+			log.trace({ message: `invalidating session` })
 			event.cookies.delete('ory_kratos_session', { path: '/' })
 			event.request.headers.delete('authorization')
 			redirect(307, '/auth/login')
@@ -140,11 +143,13 @@ const handleProfile: Handle = async ({ event, resolve }) => {
 		event.locals.session.identity.id !== 'anonymous' &&
 		event.url.pathname !== '/auth/verification'
 	) {
+		log.trace({ message: `getting user profile` })
 		const [error, profile] = await userGetMeController({
 			session: event.locals.session,
 			configuration: event.locals.configuration
 		})
 		if (error !== null) {
+			log.trace({ message: `theres been an error getting the user profile` })
 			redirect(307, `/user/register`)
 		}
 		if (profile.status === 'preregister' || profile.status === 'draft') {
