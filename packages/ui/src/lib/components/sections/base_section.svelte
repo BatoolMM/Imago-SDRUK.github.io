@@ -91,7 +91,7 @@
 	section[data-style='title'] {
 		padding: 1rem 1rem 2rem 1rem;
 		width: min(100% - 4rem, 1440px);
-		border: 1px solid var(--border-muted);
+		border: 1px solid var(--border);
 		border-radius: var(--radius);
 		display: grid;
 		grid-template-columns: minmax(0, 1fr);
