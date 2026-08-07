@@ -42,6 +42,7 @@ export const init: ServerInit = async () => {
 }
 
 const handleConfiguration: Handle = async ({ event, resolve }) => {
+	log.trace({ message: 'start handle configuration' })
 	const [errors, configuration] = await configurationGetController()
 	if (event.url.pathname === '/configuration') {
 		if (configuration !== null) {
@@ -67,6 +68,7 @@ const handleConfiguration: Handle = async ({ event, resolve }) => {
 }
 
 const handleCkan: Handle = async ({ event, resolve }) => {
+	log.trace({ message: 'start handle ckan' })
 	event.locals.ckan = createCkanClient({
 		url: env.CKAN_URL,
 		token: env.CKAN_TOKEN ? env.CKAN_TOKEN : undefined,
@@ -92,6 +94,7 @@ const handleCkan: Handle = async ({ event, resolve }) => {
 }
 
 const handleAuthentication: Handle = async ({ event, resolve }) => {
+	log.trace({ message: 'start handle authentication' })
 	event.locals.session = {
 		identity: {
 			id: 'anonymous',
@@ -137,6 +140,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 }
 
 const handleProfile: Handle = async ({ event, resolve }) => {
+	log.trace({ message: 'start handle profile' })
 	if (
 		event.locals.session &&
 		event.locals.session.identity &&
@@ -185,10 +189,10 @@ export const handle =
 	process.env.NODE_ENV === 'production'
 		? sequence(
 				handleConfiguration,
-				Sentry.sentryHandle(),
 				handleAuthentication,
 				handleProfile,
-				handleCkan
+				handleCkan,
+				Sentry.sentryHandle()
 			)
 		: sequence(handleConfiguration, handleAuthentication, handleProfile, handleCkan)
 export const handleError =
