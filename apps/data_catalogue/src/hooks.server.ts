@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/sveltekit'
 import { env } from '$env/dynamic/private'
 import { createCkanClient } from '$lib/utils/ckan/ckan'
-import { getId } from '@arturoguzman/art-ui'
+import { getId, jstr } from '@arturoguzman/art-ui'
 import { error, redirect, type Handle, type HandleServerError } from '@sveltejs/kit'
 import { sequence } from '@sveltejs/kit/hooks'
 import { log } from '$lib/utils/server/logger'
@@ -109,6 +109,9 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 	}
 	const cookie = event.cookies.get('ory_kratos_session')
 	const token = event.request.headers.get('authorization')
+	log.trace({ message: `cookie is ${cookie}` })
+	log.trace({ message: `token is ${token}` })
+	log.trace({ message: `pathname is ${event.url.pathname}` })
 	if ((cookie || token) && !event.url.pathname.startsWith('/auth/login')) {
 		log.trace({ message: `cookie or token exist and pathname is not /auth/login` })
 		const session = await identityValidateSessionController({
@@ -141,6 +144,10 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 
 const handleProfile: Handle = async ({ event, resolve }) => {
 	log.trace({ message: 'start handle profile' })
+	log.trace({ message: `session is ${jstr(event.locals.session)}` })
+	log.trace({ message: `identity is ${jstr(event.locals.session?.identity)}` })
+	log.trace({ message: `identity is anon ${event.locals.session?.identity.id === 'anonymous'}` })
+	log.trace({ message: `pathname is  ${event.url.pathname}` })
 	if (
 		event.locals.session &&
 		event.locals.session.identity &&
