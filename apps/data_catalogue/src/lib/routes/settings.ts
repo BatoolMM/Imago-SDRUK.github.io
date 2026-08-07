@@ -2,7 +2,7 @@ import type { Routes, Tab } from '@imago/ui'
 type NavigationFeatures =
 	| 'datasets'
 	| 'groups'
-	| 'permissions'
+	// | 'permissions'
 	| 'registration'
 	| 'users'
 	| 'configuration'
@@ -32,13 +32,13 @@ export const settings_routes: Record<
 			href: `/admin/settings/groups`
 		}
 	}),
-	permissions: () => ({
-		group: 'Settings',
-		route: {
-			label: 'Permissions',
-			href: `/admin/settings/permissions`
-		}
-	}),
+	// permissions: () => ({
+	// 	group: 'Settings',
+	// 	route: {
+	// 		label: 'Permissions',
+	// 		href: `/admin/settings/permissions`
+	// 	}
+	// }),
 	registration: () => ({
 		group: 'Settings',
 		route: {
