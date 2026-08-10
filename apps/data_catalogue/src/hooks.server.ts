@@ -107,7 +107,6 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		id: 'anonymous',
 		verified: true
 	}
-	console.log(event.request)
 	const cookie = event.cookies.get('ory_kratos_session')
 	const token = event.request.headers.get('authorization')
 	log.trace({ message: `cookie is ${cookie}` })
