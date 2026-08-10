@@ -107,9 +107,12 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		id: 'anonymous',
 		verified: true
 	}
-	console.log(event.request)
 	const cookie = event.cookies.get('ory_kratos_session')
 	const token = event.request.headers.get('authorization')
+	const ckan_token = event.request.headers.get('Authorization')
+	if (ckan_token) {
+		return await resolve(event)
+	}
 	log.trace({ message: `cookie is ${cookie}` })
 	log.trace({ message: `token is ${token}` })
 	log.trace({ message: `pathname is ${event.url.pathname}` })
@@ -125,7 +128,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 				log.trace({ message: `applying a redirec to` })
 				redirect(303, session.session.redirect_browser_to)
 			}
-			return resolve(event)
+			return await resolve(event)
 		}
 		const { action } = session
 		if (action === 'invalidate') {
@@ -140,7 +143,7 @@ const handleAuthentication: Handle = async ({ event, resolve }) => {
 		}
 	}
 
-	return resolve(event)
+	return await resolve(event)
 }
 
 const handleProfile: Handle = async ({ event, resolve }) => {
