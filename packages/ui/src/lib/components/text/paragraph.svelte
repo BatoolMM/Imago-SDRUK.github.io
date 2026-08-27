@@ -7,7 +7,8 @@
 		size = 'md',
 		current_colour,
 		align = 'left',
-		style = 'base'
+		style = 'base',
+		weight = 200
 	}: {
 		text?: string
 		size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'
@@ -15,6 +16,7 @@
 		children?: Snippet
 		current_colour?: boolean
 		style?: 'base' | 'label' | 'full-width'
+		weight?: number
 	} = $props()
 </script>
 
@@ -25,6 +27,7 @@
 		data-style={style}
 		data-current-colour={current_colour ? current_colour : undefined}
 		data-align={align ? align : undefined}
+		style:--weight={weight}
 	>
 		{@render children()}
 	</span>
@@ -36,6 +39,7 @@
 		data-style={style}
 		data-current-colour={current_colour ? current_colour : undefined}
 		data-align={align ? align : undefined}
+		style:--weight={weight}
 	>
 		{text}
 	</p>
@@ -45,7 +49,7 @@
 	.paragraph {
 		font-family: var(--paragraph);
 		color: var(--text);
-		font-weight: 300;
+		font-weight: var(--weight);
 	}
 	:global(.paragraph *) {
 		color: var(--theme-colour-text);
@@ -53,11 +57,9 @@
 
 	.paragraph[data-size='xs'] {
 		font-size: clamp(0.8rem, 0.783rem + 0.083vw, 0.85rem);
-		font-weight: 200;
 	}
 	.paragraph[data-size='sm'] {
 		font-size: clamp(0.825rem, 0.808rem + 0.083vw, 0.875rem);
-		font-weight: 200;
 	}
 	.paragraph[data-size='md'] {
 		font-size: clamp(0.875rem, 0.842rem + 0.167vw, 0.975rem);
