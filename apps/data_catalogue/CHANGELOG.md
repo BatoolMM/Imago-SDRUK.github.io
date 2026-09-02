@@ -1,5 +1,159 @@
 # data-catalogue
 
+## 3.0.39
+### Patch Changes
+
+- 5d49d7f: improve admin groups page consolidate permissions from actions to application
+  deprecate actions namespace (need to remove from keto) improve questions ui move
+  questions actions to remote funtions
+
+## 3.0.38
+### Patch Changes
+
+- 7979df1: ckan token verification fix
+
+## 3.0.37
+### Patch Changes
+
+- 2a8bf47: log request, update dependencies
+
+## 3.0.36
+### Patch Changes
+
+- f71654c: add more logs
+
+## 3.0.35
+### Patch Changes
+
+- 834835c: add more logs
+
+## 3.0.34
+### Patch Changes
+
+- 2d24635: add trace logs
+
+## 3.0.33
+### Patch Changes
+
+- ac8b649: remove permissions page, include border colour change
+
+## 3.0.32
+### Patch Changes
+
+- 7cd242f: add ckan token creation and revoke, add ckan user list
+
+## 3.0.31
+### Patch Changes
+
+- 4f847d3: add/remove superusers, derive format from mimetype
+- 907ff9f: add title section
+
+## 3.0.30
+### Patch Changes
+
+- eca77bc: display tags names with all characters
+
+## 3.0.29
+### Patch Changes
+
+- 280e4fe: add resource service update, add mime types, download file with mime type extension
+
+## 3.0.28
+### Patch Changes
+
+- 1b76527: recover if profile from kratos webhook is not created, closes #176
+- 2416cac: fix race condition on profile creation, fix pass kratos token
+
+## 3.0.27
+### Patch Changes
+
+- a09f65c: add join newsletter button, change snippet on data catalogue
+
+## 3.0.26
+### Patch Changes
+
+- 46fcb60: fix state options
+
+## 3.0.25
+### Patch Changes
+
+- c521ddf: add errors fmt
+  fix resource service fn
+  add permission check
+  fix pass allow manage registration
+  fix conditional delete dataset on permissions
+  feat add err page for dataset edit
+  fix conditional delete edit resource
+- 7fa2dd9: purge dataset instead of delete
+
+## 3.0.24
+### Patch Changes
+
+- 46c8139: add errors fmt
+  fix resource service fn
+  add permission check
+  fix pass allow manage registration
+  fix conditional delete dataset on permissions
+  feat add err page for dataset edit
+  fix conditional delete edit resource
+
+## 3.0.23
+### Patch Changes
+
+- a9c0506: allow dashboard access to selected groups
+  enable remote functions
+  fix permissions resource upload
+  fix resource size and format
+  add application domain
+
+## 3.0.22
+### Patch Changes
+
+- 7e2bdf8: revert colour
+
+## 3.0.21
+### Patch Changes
+
+- 13a2170: add delete tags
+
+## 3.0.20
+### Patch Changes
+
+- a843de6: add issues notice back
+- c6c2d9e: fix mobile views
+
+## 3.0.19
+### Patch Changes
+
+- b09a778: fix assert question id in validation
+
+## 3.0.18
+### Patch Changes
+
+- 5e213ae: improve accessibility, #71
+
+## 3.0.17
+### Patch Changes
+
+- 6b69aea: public return unauth early
+
+## 3.0.16
+### Patch Changes
+
+- 7eacdd5: fix button send to datasets, fix search str interpolation, move identity logic to use cases and add controllers, consolidate resource download logic, cleanup
+
+## 3.0.15
+### Patch Changes
+
+- 64a4913: remove beta label, add extra information on landing, add redirect to resource page when user is not logged in
+
+## 3.0.14
+### Patch Changes
+
+- 001ac53: add option to select vocabulary on tag creation, add delete tag
+- b5af729: add option to reset datastore metadata
+- 102ed16: add session token login
+
 ## 3.0.13
 ### Patch Changes
 

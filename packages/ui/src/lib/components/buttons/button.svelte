@@ -35,7 +35,18 @@
 		onpointerdown?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		onpointerup?: PointerEventHandler<HTMLButtonElement | HTMLAnchorElement>
 		active?: boolean
-		style?: 'base' | 'alt' | null | 'clean' | 'anchor' | 'clean-full' | 'square' | 'tag' | 'nav'
+		style?:
+			| 'base'
+			| 'alt'
+			| null
+			| 'clean'
+			| 'anchor'
+			| 'anchor-clean'
+			| 'clean-full'
+			| 'square'
+			| 'tag'
+			| 'nav'
+			| 'circle'
 		type?: 'button' | 'submit' | 'reset' | null
 		width?: 'full' | 'auto'
 		line_clamp?: boolean
@@ -124,6 +135,21 @@
 		color: var(--background-muted);
 	}
 
+	.btn[data-style='circle'] {
+		justify-content: space-between;
+		align-items: center;
+		border: 1px solid var(--border);
+		background-color: var(--background-muted);
+		gap: 1rem;
+		height: 100%;
+		max-height: 2rem;
+		aspect-ratio: 1 / 1;
+		border-radius: 999px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
 	.btn[data-style='alt'] {
 		font-weight: 400;
 		color: var(--tertiary-muted);
@@ -180,6 +206,35 @@
 	}
 
 	.btn[data-style='anchor'].active {
+		outline: 0.15rem solid var(--quarternary);
+		outline-offset: 0.2rem;
+	}
+
+	.btn[data-style='anchor-clean'] {
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+		transition: all var(--animation-time) ease-in-out;
+		position: relative;
+	}
+
+	.btn[data-style='anchor-clean']::after {
+		content: '';
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		z-index: -1;
+	}
+
+	.btn[data-style='anchor-clean']:hover {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+		color: var(--highlight-accent);
+	}
+
+	.btn[data-style='anchor-clean'].active {
 		outline: 0.15rem solid var(--quarternary);
 		outline-offset: 0.2rem;
 	}
@@ -251,10 +306,9 @@
 		padding: 0.25rem 0.5rem;
 		border-radius: var(--radius);
 	}
-	.btn[data-style='nav']:hover {
+	.btn[data-style='nav']:hover:not(:active) {
 		color: var(--background-muted);
 		background-color: var(--border-accent);
-		border-radius: var(--radius);
 	}
 	.btn[data-style='nav'].active {
 		background-color: var(--background-muted);

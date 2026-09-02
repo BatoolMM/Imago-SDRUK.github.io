@@ -1,5 +1,33 @@
 # cms
 
+## 1.1.13
+### Patch Changes
+
+- 3cbf819: add new external resource collection
+  add new block types
+  add block styles
+  allow pass weight to paragraph
+  update types
+  carousel now takes external resources
+  modify layout to consider min height
+  fix news page req on dev
+  add external link arrow marker
+
+## 1.1.12
+### Patch Changes
+
+- cdd8958: add footer option to pages
+
+## 1.1.11
+### Patch Changes
+
+- fe008ec: fix build
+
+## 1.1.10
+### Patch Changes
+
+- 8464810: add schema file, copy schema to docker image, update dependencies
+
 ## 1.1.9
 ### Patch Changes
 

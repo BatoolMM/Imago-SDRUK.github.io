@@ -1,5 +1,68 @@
 # @imago/ui
 
+## 1.0.30
+### Patch Changes
+
+- 5d49d7f: improve ui
+- 3cbf819: add new external resource collection
+  add new block types
+  add block styles
+  allow pass weight to paragraph
+  update types
+  carousel now takes external resources
+  modify layout to consider min height
+  fix news page req on dev
+  add external link arrow marker
+
+## 1.0.29
+### Patch Changes
+
+- 60a656a: add turnstile
+
+## 1.0.28
+### Patch Changes
+
+- ac8b649: remove permissions page, include border colour change
+
+## 1.0.27
+### Patch Changes
+
+- 907ff9f: add title section
+
+## 1.0.26
+### Patch Changes
+
+- 2b12a8a: add clean anchor style, add routes to footer
+
+## 1.0.25
+### Patch Changes
+
+- a9c0506: allow dashboard access to selected groups
+  enable remote functions
+  fix permissions resource upload
+  fix resource size and format
+  add application domain
+
+## 1.0.24
+### Patch Changes
+
+- a84d933: chore: add new icons
+
+## 1.0.23
+### Patch Changes
+
+- 5e213ae: improve accessibility, #71
+
+## 1.0.22
+### Patch Changes
+
+- 64a4913: add icon
+
+## 1.0.21
+### Patch Changes
+
+- 84c936d: fix select use place holder
+
 ## 1.0.20
 ### Patch Changes
 

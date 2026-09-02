@@ -1,5 +1,54 @@
 # website
 
+## 2.0.50
+### Patch Changes
+
+- 3cbf819: add new external resource collection
+  add new block types
+  add block styles
+  allow pass weight to paragraph
+  update types
+  carousel now takes external resources
+  modify layout to consider min height
+  fix news page req on dev
+  add external link arrow marker
+
+## 2.0.49
+### Patch Changes
+
+- 60a656a: add turnstile
+
+## 2.0.48
+### Patch Changes
+
+- cdd8958: add footer option to pages
+
+## 2.0.47
+### Patch Changes
+
+- 2489bab: Added icon next to 'Join Newsletter Button'- Icon was already available
+
+## 2.0.46
+### Patch Changes
+
+- a09f65c: add join newsletter button, change snippet on data catalogue
+
+## 2.0.45
+### Patch Changes
+
+- 5e213ae: improve accessibility, #71
+- 6ae88e2: fix mobile view, fix newsletter
+
+## 2.0.44
+### Patch Changes
+
+- fed9acf: err early if ap request is error
+
+## 2.0.43
+### Patch Changes
+
+- 171fba9: conditional key sign
+
 ## 2.0.42
 ### Patch Changes
 

@@ -437,6 +437,14 @@ export interface Block {
   /**
    * No description.
    *
+   * Type in directus: alias
+   * Type in database: no column
+   */
+   external_assets: BlocksExternalAsset[] | null;
+
+  /**
+   * No description.
+   *
    * Type in directus: uuid
    * Type in database: uuid
    */
@@ -472,7 +480,7 @@ export interface Block {
    * Type in directus: string
    * Type in database: character varying
    */
-   style: 'general' | 'title_and_image' | 'title_only';
+   style: 'general' | 'title_and_image' | 'title_only' | 'text_media' | 'media_text';
 
   /**
    * No description.
@@ -505,6 +513,41 @@ export interface Block {
    * Type in database: uuid
    */
    user_updated: DirectusUser | DirectusUser["id"] | null;
+}
+
+export interface BlocksExternalAsset {
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   blocks_id: Block | Block["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   external_assets_id: ExternalAsset | ExternalAsset["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: integer
+   * Type in database: integer
+   */
+   id: number;
+
+  /**
+   * No description.
+   *
+   * Type in directus: integer
+   * Type in database: integer
+   */
+   sort: number | null;
 }
 
 export interface BlocksFile {
@@ -1056,7 +1099,7 @@ export interface DirectusCollection {
    sort_field: string | null;
 
   /**
-   * No description.
+   * $t:field_options.directus_collections.collection_naming_translations_note
    *
    * Type in directus: json
    * Type in database: json
@@ -1214,6 +1257,255 @@ export interface DirectusDashboard {
    user_created: DirectusUser | DirectusUser["id"] | null;
 }
 
+export interface DirectusDeploymentProject {
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   date_created: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   deployable: boolean;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   deployment: DirectusDeployment | DirectusDeployment["id"];
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   external_id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   framework: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   name: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: alias
+   * Type in database: no column
+   */
+   runs: DirectusDeploymentRun[] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   url: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   user_created: DirectusUser | DirectusUser["id"] | null;
+}
+
+export interface DirectusDeploymentRun {
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   completed_at: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   date_created: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   external_id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   project: DirectusDeploymentProject | DirectusDeploymentProject["id"];
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   started_at: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   status: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   target: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   url: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   user_created: DirectusUser | DirectusUser["id"] | null;
+}
+
+export interface DirectusDeployment {
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   credentials: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   date_created: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   last_synced_at: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: text
+   */
+   options: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: alias
+   * Type in database: no column
+   */
+   projects: DirectusDeploymentProject[] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   provider: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   user_created: DirectusUser | DirectusUser["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: json
+   */
+   webhook_ids: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   webhook_secret: string | null;
+}
+
 export interface DirectusExtension {
 
   /**
@@ -1362,6 +1654,14 @@ export interface DirectusField {
    * Type in database: boolean
    */
    required: boolean | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   searchable: boolean;
 
   /**
    * No description.
@@ -2635,10 +2935,98 @@ export interface DirectusSetting {
   /**
    * No description.
    *
-   * Type in directus: boolean
-   * Type in database: boolean
+   * Type in directus: json
+   * Type in database: json
    */
-   accepted_terms: boolean | null;
+   ai_anthropic_allowed_models: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_anthropic_api_key: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: json
+   */
+   ai_google_allowed_models: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_google_api_key: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: json
+   */
+   ai_openai_allowed_models: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_openai_api_key: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_openai_compatible_api_key: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_openai_compatible_base_url: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: json
+   */
+   ai_openai_compatible_headers: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: json
+   * Type in database: json
+   */
+   ai_openai_compatible_models: any | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_openai_compatible_name: string | null;
+
+  /**
+   * $t:fields.directus_settings.ai_system_prompt_note
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   ai_system_prompt: string | null;
 
   /**
    * No description.
@@ -2663,6 +3051,14 @@ export interface DirectusSetting {
    * Type in database: json
    */
    basemaps: any | null;
+
+  /**
+   * $t:fields.directus_settings.collaborative_editing_note
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   collaborative_editing_enabled: boolean;
 
   /**
    * No description.
@@ -2777,6 +3173,22 @@ export interface DirectusSetting {
    module_bar: any | null;
 
   /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   org_name: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: boolean
+   * Type in database: boolean
+   */
+   product_updates: boolean | null;
+
+  /**
    * $t:field_options.directus_settings.project_color_note
    *
    * Type in directus: string
@@ -2822,7 +3234,31 @@ export interface DirectusSetting {
    * Type in directus: string
    * Type in database: character varying
    */
+   project_owner: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   project_status: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
    project_url: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   project_usage: string | null;
 
   /**
    * No description.
@@ -3413,97 +3849,6 @@ export interface DirectusVersion {
    user_updated: DirectusUser | DirectusUser["id"] | null;
 }
 
-export interface DirectusWebhook {
-
-  /**
-   * No description.
-   *
-   * Type in directus: csv
-   * Type in database: character varying
-   */
-   actions: string[];
-
-  /**
-   * No description.
-   *
-   * Type in directus: csv
-   * Type in database: character varying
-   */
-   collections: string[];
-
-  /**
-   * No description.
-   *
-   * Type in directus: boolean
-   * Type in database: boolean
-   */
-   data: boolean;
-
-  /**
-   * No description.
-   *
-   * Type in directus: json
-   * Type in database: json
-   */
-   headers: any | null;
-
-  /**
-   * No description.
-   *
-   * Type in directus: integer
-   * Type in database: integer
-   */
-   id: number;
-
-  /**
-   * No description.
-   *
-   * Type in directus: string
-   * Type in database: character varying
-   */
-   method: string;
-
-  /**
-   * No description.
-   *
-   * Type in directus: uuid
-   * Type in database: uuid
-   */
-   migrated_flow: DirectusFlow | DirectusFlow["id"] | null;
-
-  /**
-   * No description.
-   *
-   * Type in directus: string
-   * Type in database: character varying
-   */
-   name: string;
-
-  /**
-   * No description.
-   *
-   * Type in directus: string
-   * Type in database: character varying
-   */
-   status: string;
-
-  /**
-   * No description.
-   *
-   * Type in directus: string
-   * Type in database: character varying
-   */
-   url: string;
-
-  /**
-   * No description.
-   *
-   * Type in directus: boolean
-   * Type in database: boolean
-   */
-   was_active_before_deprecation: boolean;
-}
-
 export interface Event {
 
   /**
@@ -3684,6 +4029,105 @@ export interface EventsFile {
    * Type in database: integer
    */
    id: number;
+}
+
+export interface ExternalAsset {
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   code: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   date_created: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: timestamp
+   * Type in database: timestamp with time zone
+   */
+   date_updated: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: text
+   * Type in database: text
+   */
+   description: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   id: string;
+
+  /**
+   * No description.
+   *
+   * Type in directus: integer
+   * Type in database: integer
+   */
+   sort: number | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   status: 'published' | 'draft' | 'archived';
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   title: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   type: 'youtube' | 'iframe' | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: string
+   * Type in database: character varying
+   */
+   url: string | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   user_created: DirectusUser | DirectusUser["id"] | null;
+
+  /**
+   * No description.
+   *
+   * Type in directus: uuid
+   * Type in database: uuid
+   */
+   user_updated: DirectusUser | DirectusUser["id"] | null;
 }
 
 export interface MastodonFollower {
@@ -3940,7 +4384,7 @@ export interface Page {
    * Type in directus: string
    * Type in database: character varying
    */
-   type: 'home' | 'general';
+   type: 'home' | 'general' | 'footer';
 
   /**
    * No description.
@@ -4429,6 +4873,7 @@ export type Collections = {
   articles_article_sections: ArticlesArticleSection[];
   articles_files: ArticlesFile[];
   blocks: Block[];
+  blocks_external_assets: BlocksExternalAsset[];
   blocks_files: BlocksFile[];
   careers: Career[];
   careers_files: CareersFile[];
@@ -4438,6 +4883,9 @@ export type Collections = {
   directus_collections: DirectusCollection[];
   directus_comments: DirectusComment[];
   directus_dashboards: DirectusDashboard[];
+  directus_deployment_projects: DirectusDeploymentProject[];
+  directus_deployment_runs: DirectusDeploymentRun[];
+  directus_deployments: DirectusDeployment[];
   directus_extensions: DirectusExtension[];
   directus_fields: DirectusField[];
   directus_files: DirectusFile[];
@@ -4459,9 +4907,9 @@ export type Collections = {
   directus_translations: DirectusTranslation[];
   directus_users: DirectusUser[];
   directus_versions: DirectusVersion[];
-  directus_webhooks: DirectusWebhook[];
   events: Event[];
   events_files: EventsFile[];
+  external_assets: ExternalAsset[];
   mastodon_followers: MastodonFollower[];
   mastodon_replies: MastodonReply[];
   pages: Page[];
